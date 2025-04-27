@@ -40,3 +40,12 @@ pico_enable_stdio_usb(04-ledon-gpio0 1)
 pico_enable_stdio_uart(04-ledon-gpio0 1)
 pico_add_extra_outputs(04-ledon-gpio0)
 target_link_libraries(04-ledon-gpio0 pico_stdlib)
+
+#-- Ejemplo 05-ledon
+add_executable(05-ledon
+05-ledon.S
+)
+pico_enable_stdio_usb(05-ledon 1)
+pico_enable_stdio_uart(05-ledon 1)
+pico_add_extra_outputs(05-ledon)
+target_link_libraries(05-ledon pico_stdlib)
