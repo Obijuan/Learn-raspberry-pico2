@@ -11,41 +11,52 @@ _start:
     li a0,25
     jal gpio_init    # --  gpio_init(25)
 
-    lui s0,0xd0000   #-- s0 = 0xD0000000
-    lui s1,0x2000    #-- s1 = 0x02000000
-    sw	s1,56(s0)    #-- Mem[D000_0038]=0x02000000 
+    li s0, 0xd0000038
+    li s1, 0x02000000
+    sw	s1,0(s0)  
 
     li a0,0
     jal	gpio_init  # -- gpio_init(0)
 
+    li s0, 0xd0000040
     li  a1,1
-    sw  a1,64(s0)  # -- Mem[D000_0040]=1
+    sw  a1,0(s0)  
 
     li  a0,0
     li  a2,0
-    jal gpio_set_pulls  # -- gpio_set_pulls(0)
+    jal gpio_set_pulls  
 
-label:  
-    lw a5, 4(s0)       # -- a5 = Mem[D000_0004]
+label:
+    li s0, 0xd0000004  
+    lw a5, 0(s0)       
     andi a5,a5,1
     beqz a5,next
-loop:   
-    sw s1,24(s0)       # -- Mem[D000_0018]=0x02000000
-    lw	a5,4(s0)       # -- a5 = Mem[D000_0004]
+loop:
+    li s0, 0xd0000018
+    sw s1,0(s0)       
+
+    li s0, 0xd0000004
+    lw	a5,0(s0)       
     andi	a5,a5,1
     bnez	a5,loop
 next:   
-    sw s1,32(s0)       # -- Mem[D000_0020]=0x02000000
+    li s0, 0xd0000020
+    sw s1,0(s0)       
     j label
 
 
 gpio_init:
-    bset a3,zero,a0      #-- a3 = 1 << a0
-    lui	a4,0xd0000       #-- a4 = 0xD0000000
-    lui	a5,0x40038       #-- a5 = 0x40038000
-    sw a3,64(a4)         #-- Mem[D000_0040]=a3
-    addi a5,a5,4         #-- a5 = 0x40038004
-    sw	a3,32(a4)
+    li t0, 1
+    sll a3, t0, a0       #-- a3 = 1 << a0
+
+    li a4, 0xd0000040
+    sw a3,0(a4) 
+
+    li a5, 0x40038004
+    li a4, 0xd0000020
+    sw	a3,0(a4)
+
+
     sh2add	a5,a0,a5
     lw	a4,0(a5)
     lui	a3,0x1
