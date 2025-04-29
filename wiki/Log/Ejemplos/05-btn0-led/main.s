@@ -64,10 +64,12 @@ gpio_init:
     lw	a4,0(a5)
     li	a3,0x1000
     add	a3,a3,a5
-    xori	a4,a4,64
-    andi	a4,a4,192
-    lui	a2,0x40028
+    xori a4,a4,0x40
+    andi a4,a4,0xc0
+    li	a2,0x40028000
     sw	a4,0(a3)
+
+
     sh3add	a0,a0,a2
     li	a4,5
     lui	a3,0x3
