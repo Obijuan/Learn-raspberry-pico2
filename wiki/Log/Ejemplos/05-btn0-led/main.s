@@ -61,9 +61,8 @@ gpio_init:
     slli t0,t0, 2
     add a5,a5,t0 
     
-    
     lw	a4,0(a5)
-    lui	a3,0x1
+    li	a3,0x1000
     add	a3,a3,a5
     xori	a4,a4,64
     andi	a4,a4,192
