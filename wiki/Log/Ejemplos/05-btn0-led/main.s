@@ -64,9 +64,8 @@ gpio_init:
     li	a4,5
     sw	a4,0(a0)
 
-    lui	a3,0x3
-    add	a5,a5,a3
-    li	a4,256
+    li  a5, 0x4003b004
+    li	a4,0x100
     sw	a4,0(a5)
     ret
 
