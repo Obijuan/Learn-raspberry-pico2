@@ -7,9 +7,7 @@
 .global _start
 _start:
 
-    
-    li a0,25
-    jal gpio_init    # --  gpio_init(25)
+    jal config_led
 
     li s0, 0xd0000038
     li s1, 0x02000000
@@ -46,9 +44,8 @@ next:
 
 
 gpio_init:
-    li t0, 1
-    sll a3, t0, a0       #-- a3 = 1 << a0
-
+    
+    li a3, 1
     li a4, 0xd0000040
     sw a3,0(a4) 
 
