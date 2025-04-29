@@ -56,7 +56,12 @@ gpio_init:
     sw	a3,0(a4)
 
     li a5, 0x40038004
-    sh2add	a5,a0,a5
+
+    mv t0,a0
+    slli t0,t0, 2
+    add a5,a5,t0 
+    
+    
     lw	a4,0(a5)
     lui	a3,0x1
     add	a3,a3,a5
