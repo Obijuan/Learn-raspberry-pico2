@@ -13,11 +13,11 @@ LD="/home/obijuan/Develop/pico/corev-openhw-gcc-ubuntu2204-20240530/bin/riscv32-
 PICOTOOL="/home/obijuan/Develop/pico/picotool/build/picotool"
 
 # -- Ensamblado 
-$AS -g -march=rv32imac -mabi=ilp32 -I.. -o led.o led.s
-$AS -g -march=rv32imac -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
+#$AS -g -march=rv32imac -mabi=ilp32 -I.. -o led.o led.s
+$AS -g -march=rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
 
 # -- Linkado
-$LD -g -m elf32lriscv -T linker.ld -o $MAIN.elf $MAIN.o  led.o  
+$LD -g -m elf32lriscv -T linker.ld -o $MAIN.elf $MAIN.o  #led.o  
 
 # -- Convertir a UF2
 $PICOTOOL uf2 convert $MAIN.elf $MAIN.uf2 --family rp2350-riscv --abs-block
