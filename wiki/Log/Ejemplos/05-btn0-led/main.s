@@ -53,21 +53,15 @@ gpio_init:
     sw	a3,0(a4)
 
     li a5, 0x40038004
+    lw a4,0(a5)
 
-    mv t0,a0
-    slli t0,t0, 2
-    add a5,a5,t0 
-    
-    lw	a4,0(a5)
-    li	a3,0x1000
-    add	a3,a3,a5
     xori a4,a4,0x40
     andi a4,a4,0xc0
-    li	a2,0x40028000
-    sw	a4,0(a3)
+    li a3, 0x40039004
+    sw a4,0(a3)
 
-    slli a0,a0,3
-    add a0, a0, a2
+    li a2,0x40028000
+    mv a0,a2
     
     li	a4,5
     lui	a3,0x3
