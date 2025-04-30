@@ -71,10 +71,9 @@ gpio_init:
 
 
 gpio_set_pulls:
-    lui	a5,0x40038
-    addi	a5,a5,4 # 40038004 <__StackTop+0x1ffb6004>
-    sh2add	a0,a0,a5
+    li	a0,0x40038004
     lw	a5,0(a0)
+    
     slli	a1,a1,0x3
     slli	a2,a2,0x2
     or	a2,a2,a1
