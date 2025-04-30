@@ -58,7 +58,7 @@ gpio_init:
     li a3, 0x40039004
     sw a4,0(a3)
 
-    li a0,0x40028004
+    li a0,GPIO00_CTRL
     li	a4,5
     sw	a4,0(a0)
 
