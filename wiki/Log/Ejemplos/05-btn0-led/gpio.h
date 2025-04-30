@@ -68,7 +68,12 @@
 # -- Registro de habilitacion de salida
 # -- GPIOs de 0 a 31
 # --------------------------------------
-.equ GPIO_OE, 0xD0000030
+.equ GPIO_IN,      0xD0000004
+.equ GPIO_OUT_SET, 0xD0000018
+.equ GPIO_OUT_CLR, 0xD0000020
+.equ GPIO_OE,      0xD0000030
+.equ GPIO_OE_SET,  0xD0000038
+.equ GPIO_OE_CLR,  0xD0000040
 
 # --------------------------------------
 # -- Registro de salida
