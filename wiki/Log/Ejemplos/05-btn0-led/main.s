@@ -9,14 +9,12 @@ _start:
 
     jal config_led
 
-    li s0, 0xd0000038
-    li s1, 0x02000000
-    sw	s1,0(s0)  
+    li s1, BIT25
 
     li a0,0
     jal	gpio_init  # -- gpio_init(0)
 
-    li s0, 0xd0000040
+    li s0, GPIO_OE_CLR
     li  a1,1
     sw  a1,0(s0)  
 
@@ -25,12 +23,12 @@ _start:
     jal gpio_set_pulls  
 
 label:
-    li s0, 0xd0000004  
+    li s0, GPIO_IN
     lw a5, 0(s0)       
     andi a5,a5,1
     beqz a5,next
 loop:
-    li s0, 0xd0000018
+    li s0, GPIO_OUT_SET
     sw s1,0(s0)       
 
     li s0, 0xd0000004
@@ -74,9 +72,7 @@ gpio_set_pulls:
     li	a0,0x40038004
     lw	a5,0(a0)
 
-    li	a1,8
-    mv a2,a1
-    
+    li a2, 8
     xor	a2,a2,a5
     andi	a2,a2,0x0C 
     li a0, 0x40039004
