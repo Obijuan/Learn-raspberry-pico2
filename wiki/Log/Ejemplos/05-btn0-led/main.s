@@ -74,9 +74,9 @@ gpio_set_pulls:
     li	a0,0x40038004
     lw	a5,0(a0)
 
-    slli	a1,a1,0x3
-    slli	a2,a2,0x2
-    or	a2,a2,a1
+    li	a1,8
+    mv a2,a1
+    
     xor	a2,a2,a5
     andi	a2,a2,0x0C 
     li a0, 0x40039004
