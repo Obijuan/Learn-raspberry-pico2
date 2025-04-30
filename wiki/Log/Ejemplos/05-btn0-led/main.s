@@ -31,12 +31,12 @@ loop:
     li s0, GPIO_OUT_SET
     sw s1,0(s0)       
 
-    li s0, 0xd0000004
+    li s0, GPIO_IN
     lw	a5,0(s0)       
     andi	a5,a5,1
     bnez	a5,loop
 next:   
-    li s0, 0xd0000020
+    li s0, GPIO_OUT_CLR
     sw s1,0(s0)       
     j label
 
@@ -44,13 +44,13 @@ next:
 gpio_init:
     
     li a3, 1
-    li a4, 0xd0000040
+    li a4, GPIO_OE_CLR
     sw a3,0(a4) 
 
-    li a4, 0xd0000020
+    li a4, GPIO_OUT_CLR
     sw	a3,0(a4)
 
-    li a5, 0x40038004
+    li a5, PAD_GPIO0
     lw a4,0(a5)
 
     xori a4,a4,0x40
