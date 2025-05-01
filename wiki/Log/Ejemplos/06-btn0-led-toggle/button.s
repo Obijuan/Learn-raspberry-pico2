@@ -9,6 +9,8 @@
 
 .include "gpio.h"
 
+.section .text
+
 #-------------------------------------
 #-- Inicializacion del pulsador
 #-- Confgirar el GPIO0 como entrada
