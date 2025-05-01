@@ -18,12 +18,58 @@ _start:
 
     #-- Mostrar un valor por los LEDs
     mv a0, sp
-    jal debug_led1_lsb
+    jal debug_led1_MSB
     jal led_blinky
 
     #-- Fin
 inf:
     j inf
+
+#-------------------------------------------------
+#-- DEPURACION. Mostrar un numero de 32 bits
+#-- en el LED, bit a bit
+#-- Se muestra el bit MAS SIGNIFICATIVOprimero
+#-- Entradas:
+#-- a0: Valor a mostrar
+#-------------------------------------------------
+debug_led1_MSB:
+
+    #-- Preambulo de la funciona
+    addi sp, sp, -16
+    sw ra, 12(sp)
+    sw s0, 8(sp)
+    sw s1, 4(sp)
+
+    #-- Guardar el valor a mostrar
+    #-- en el registro s0
+    mv s0, a0
+
+    #-- Numero de bit a mostrar
+    #-- Empezamos por el bit 31
+    li s1,31
+
+debug_led1_MSB_loop:
+
+    #-- Mostar el bit actual en el LED
+    mv a0, s0
+    mv a1, s1
+    jal print_led1
+
+    #-- Esperar hasta que se apriete el pulsador
+    jal button_press
+
+    #-- Pasar al siguiente bit
+    addi s1, s1, -1
+
+    #-- Si es mayor o igual a 0, repetir
+    bge s1, zero, debug_led1_MSB_loop
+
+    #-- fin de la funcion
+    lw s1, 4(sp)
+    lw s0, 8(sp)
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    ret
 
 #-------------------------------------------------
 #-- DEPURACION. Mostrar un numero de 32 bits
