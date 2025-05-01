@@ -68,20 +68,20 @@
 # -- Registro de entrada/salida
 # -- GPIOs de 0 a 31
 # --------------------------------------
-.equ GPIO_IN,      0xD0000004
-.equ GPIO_OUT,     0xD0000010
-.equ GPIO_OUT_SET, 0xD0000018
-.equ GPIO_OUT_CLR, 0xD0000020
-.equ GPIO_OE,      0xD0000030
-.equ GPIO_OE_SET,  0xD0000038
-.equ GPIO_OE_CLR,  0xD0000040
+.equ GPIO_IN,      0xD0000004  #-- Lectura de GPIOs
+.equ GPIO_OUT,     0xD0000010  #-- Escritura de GPIOs
+.equ GPIO_OUT_SET, 0xD0000018  #-- Poner a 1 los GPIOs
+.equ GPIO_OUT_CLR, 0xD0000020  #-- Poner a 0 los GPIOs
+.equ GPIO_OE,      0xD0000030  #-- Establecer habilitación de salida
+.equ GPIO_OE_SET,  0xD0000038  #-- Habilitar la salida GPIOs indicados
+.equ GPIO_OE_CLR,  0xD0000040  #-- Deshabilitar la salida GPIOs indicados
 
 
 # ----------------------------------------------
 # -- Definiciones de las posiciones de los bits
 # -- Se usan como valores para GPIO_OE y GPIO_OUT
 # ----------------------------------------------
-.equ BIT0,  0x00000001
+.equ BIT0,  (1 <<  0)  # 0x0000_0001
 .equ BIT25, (1 << 25)  # 0x0200_0000
 .equ BIT26, (1 << 26)  # 0x0400_0000
 
