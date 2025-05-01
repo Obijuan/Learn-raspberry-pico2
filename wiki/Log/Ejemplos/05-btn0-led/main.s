@@ -23,7 +23,7 @@ _start:
     li t1, 0x0CB
     sw t1, 0(t0)
 
-     #-- Configurar el LED
+    #-- Configurar el LED
     jal config_led  
 
 loop:
