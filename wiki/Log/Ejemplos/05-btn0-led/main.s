@@ -34,21 +34,15 @@ loop:
 
     #-- Mostrar el valor en el LED
     #-- Según el caso
-    beq t1,zero, led_off
+    beq t1,zero, apagar_led
 
+    #-- Encender el led
+    jal led_on
+    j loop
 
-loop2:
-    li s0, GPIO_OUT_SET
-    sw s1,0(s0)       
-
-    li s0, GPIO_IN
-    lw	a5,0(s0)       
-    andi	a5,a5,1
-    bnez	a5,loop2
-    
-led_off:
-    li s0, GPIO_OUT_CLR
-    sw s1,0(s0)       
+    #-- Apagar el led
+apagar_led:
+    jal led_off
     j loop
 
 
