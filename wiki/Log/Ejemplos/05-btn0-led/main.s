@@ -7,7 +7,7 @@
 .global _start
 _start:
 
-    jal config_led
+   
 
     li s1, BIT25
 
@@ -22,23 +22,30 @@ _start:
     li  a2,0
     jal gpio_set_pulls  
 
-label:
-    li s0, GPIO_IN
-    lw a5, 0(s0)       
-    andi a5,a5,1
-    beqz a5,next
+    jal config_led
+
 loop:
+    #-- Direccion de los GPIOs
+    li t0, GPIO_IN
+
+    #-- Leer el GPIO0
+    lw t1, 0(t0)
+    andi t1, t1, BIT0
+
+    #-- Si es cero: apagar el led
+    beq t1,zero,next
+loop2:
     li s0, GPIO_OUT_SET
     sw s1,0(s0)       
 
     li s0, GPIO_IN
     lw	a5,0(s0)       
     andi	a5,a5,1
-    bnez	a5,loop
+    bnez	a5,loop2
 next:   
     li s0, GPIO_OUT_CLR
     sw s1,0(s0)       
-    j label
+    j loop
 
 
 gpio_init:
