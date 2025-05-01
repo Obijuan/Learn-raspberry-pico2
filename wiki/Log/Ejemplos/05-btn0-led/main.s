@@ -32,8 +32,11 @@ loop:
     lw t1, 0(t0)
     andi t1, t1, BIT0
 
-    #-- Si es cero: apagar el led
-    beq t1,zero,next
+    #-- Mostrar el valor en el LED
+    #-- Según el caso
+    beq t1,zero, led_off
+
+
 loop2:
     li s0, GPIO_OUT_SET
     sw s1,0(s0)       
@@ -42,7 +45,8 @@ loop2:
     lw	a5,0(s0)       
     andi	a5,a5,1
     bnez	a5,loop2
-next:   
+    
+led_off:
     li s0, GPIO_OUT_CLR
     sw s1,0(s0)       
     j loop
