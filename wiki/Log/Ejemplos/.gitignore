@@ -1,3 +1,6 @@
 build/
 ice-build/
+*.o
+*.elf
+*.uf2
 
