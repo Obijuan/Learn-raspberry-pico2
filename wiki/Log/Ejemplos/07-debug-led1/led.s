@@ -4,6 +4,7 @@
 .global led_off
 .global led_toggle
 .global led_set
+.global led_blinky
 
 # -- Definición de constantes para acceder 
 # -- a los GPIOs
@@ -69,5 +70,33 @@ led_toggle:
     li t0, GPIO_OUT_XOR
     li t1, BIT25    #-- Cambiar el estado del bit 25
     sw t1, 0(t0) 
+    ret
+
+#------------------------------------
+#-- led_blinky
+#-- Parpadear el LED infinitamente
+#-- ¡OJO! Esta funcion nunca acaba!
+#------------------------------------
+led_blinky:
+    
+    jal delay
+    jal led_toggle
+    j led_blinky
+
+# -----------------------------------------------
+# -- Delay
+# -- Realizar una pausa de medio segundo aprox.
+# -----------------------------------------------
+delay:
+    # -- Usar t0 como contador descendente
+    li t0, 0xFFFF
+delay_loop:
+    beq t0,zero, delay_end_loop
+    addi t0, t0, -1
+    j delay_loop
+
+    # -- Cuando el contador llega a cero
+    # -- se termina
+delay_end_loop:
     ret
 
