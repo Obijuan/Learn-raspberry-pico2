@@ -5,8 +5,9 @@
 .include "boot.h"
 .include "gpio.h"
 
-.equ CLOCKS_BASE,        0x40010000
+.equ CLOCK_BASE,        0x40010000
 .equ CLK_SYS_CTRL,       0x4001003C
+.equ CLK_SYS_SELECTED,   0x40010044
 .equ CLK_SYS_RESUS_CTRL, 0x40010084 
 
 
@@ -534,23 +535,24 @@ runtime_init_clocks:
     sw s1,4(sp)
     sw s2,0(sp)
 
-    li s0,CLK_SYS_RESUS_CTRL
-    sw	zero,0(s0)  # 40010084 
+    li s0, CLOCK_BASE
+    sw	zero,0x84(s0)  # 40010084 (CLK_SYS_RESUS_CTRL)
 
     #-- Inicializar oscilador externo
     jal	xosc_init  # 10000f84 
 
     #-- Seleccionar CLK-REF (?)
-    li a5,0x4001303c  #-- CLOCK_BASE + 0x3000  (CLOCK_CTRL_XOR)  
+    li a5,0x40013000  #-- CLOCK_BASE + 0x3000    
     li a4,1
-    sw a4,0(a5)
+    sw a4,0x3C(a5) #-- (CLOCK_CTRL_XOR)
+
+    #-- Esperar a que se realice la selección de reloj
+label_rt_5:
+    lw	a5,0x44(s0) # (CLK_SYS_SELECTED)
+    bne	a5,a4,label_rt_5  # 1000109a <runtime_init_clocks+0x1c>
 
     #-- DEBUG
     j runtime_init_clocks_end
-
-# label_rt_5:
-#     lw	a5,68(s0)
-#     bne	a5,a4,label_rt_5  # 1000109a <runtime_init_clocks+0x1c>
 
 #     li	a4,3
 #     lui	a5,0x40013
