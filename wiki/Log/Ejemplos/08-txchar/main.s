@@ -572,20 +572,22 @@ label_rt_6:
     li a3,5
     li a0,PLL_SYS_BASE
     jal pll_init # 10000ea8
-#                 li	a4,5
-#               	lui	a2,0x47869
-#                 mv	a3,a4
-#                 mv	a1,s0
-#               	addi	a2,a2,-1024 # 47868c00 <__StackTop+0x277e6c00>
-#               	lui	a0,0x40058
-#                 jal	10000ea8 <pll_init>
-#               	lui	a3,0xb72
-#               	addi	a3,a3,-1280 # b71b00 <HeapSize+0xb71300>
+
+    li	a4,5
+    lui	a2,0x47869
+    mv	a3,a4
+    mv	a1,s0
+    addi a2,a2,-1024 # 47868c00 <__StackTop+0x277e6c00>
+    lui	a0,0x40058
+    jal	pll_init # 10000ea8 <pll_init>
+
+#                 lui	a3,0xb72
+#                 addi	a3,a3,-1280 # b71b00 <HeapSize+0xb71300>
 #                 li	a2,0
 #                 li	a1,2
 #                 li	a0,4
 #                 jal	10000dc4 <clock_configure_undivided>
-#               	lui	a3,0x8f0d
+#                 lui	a3,0x8f0d
 #                 mv	a1,s0
 #               	addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
 #                 li	a2,0
