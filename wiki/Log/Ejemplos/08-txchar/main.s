@@ -664,7 +664,6 @@ xosc_init_loop:
 
 
 pll_init:
-
     li a5,0x00b72000
     addi a5,a5,-1280 # b71b00 <HeapSize+0xb71300>
     divu a5,a5,a1
@@ -682,28 +681,35 @@ pll_init_label4:
     beq	a0,a5,pll_init_label2  # 10000f2e <pll_init+0x86>
 
 pll_init_label3:
-# 10000ed2:	400227b7          	lui	a5,0x40022
-# 10000ed6:	c398                	sw	a4,0(a5)
-# 10000ed8:	400206b7          	lui	a3,0x40020
-# 10000edc:	400237b7          	lui	a5,0x40023
-# 10000ee0:	c398                	sw	a4,0(a5)
-# 10000ee2:	06a1                	addi	a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
-# 10000ee4:	429c                	lw	a5,0(a3)
-# 10000ee6:	40f777b3          	andn	a5,a4,a5
-# 10000eea:	ffed                	bnez	a5,10000ee4 <pll_init+0x3c>
-# 10000eec:	670d                	lui	a4,0x3
-# 10000eee:	c10c                	sw	a1,0(a0)
-# 10000ef0:	0711                	addi	a4,a4,4 # 3004 <HeapSize+0x2804>
-# 10000ef2:	c510                	sw	a2,8(a0)
-# 10000ef4:	972a                	add	a4,a4,a0
-# 10000ef6:	02100793          	li	a5,33
-# 10000efa:	c31c                	sw	a5,0(a4)
-# 10000efc:	411c                	lw	a5,0(a0)
-# 10000efe:	fe07dfe3          	bgez	a5,10000efc <pll_init+0x54>
+    lui	a5,0x40022
+    sw	a4,0(a5)
+    lui	a3,0x40020
+    lui	a5,0x40023
+    sw	a4,0(a5)
+    addi a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
+
+pll_init_label5:
+    lw	a5,0(a3)
+    andn	a5,a4,a5
+    bnez	a5,pll_init_label5  # 10000ee4 <pll_init+0x3c>
+
+    lui	a4,0x3
+    sw	a1,0(a0)
+    addi a4,a4,4 # 3004 <HeapSize+0x2804>
+    sw	a2,8(a0)
+    add	a4,a4,a0
+    li	a5,33
+    sw	a5,0(a4)
+
+pll_init_label6:
+    lw a5,0(a0)
+    bgez a5,pll_init_label6  # 10000efc <pll_init+0x54>
+
+
 # 10000f02:	01052623          	sw	a6,12(a0)
-# 10000f06:	47a1                	li	a5,8
-# 10000f08:	c31c                	sw	a5,0(a4)
-# 10000f0a:	8082                	ret
+# 10000f06:	47a1                li	a5,8
+# 10000f08:	c31c                sw	a5,0(a4)
+# 10000f0a:	8082                ret
 
 pll_init_label1:
 # 10000f0c:	411c                	lw	a5,0(a0)
