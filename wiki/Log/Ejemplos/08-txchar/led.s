@@ -5,6 +5,7 @@
 .global led_toggle
 .global led_set
 .global led_blinky
+.global led_blinky2
 
 # -- Definición de constantes para acceder 
 # -- a los GPIOs
@@ -83,6 +84,11 @@ led_blinky:
     jal led_toggle
     j led_blinky
 
+led_blinky2:
+    jal delay2
+    jal led_toggle
+    j led_blinky2
+
 # -----------------------------------------------
 # -- Delay
 # -- Realizar una pausa de medio segundo aprox.
@@ -98,5 +104,22 @@ delay_loop:
     # -- Cuando el contador llega a cero
     # -- se termina
 delay_end_loop:
+    ret
+
+# -----------------------------------------------
+# -- Delay
+# -- Realizar una pausa de medio segundo aprox.
+# -----------------------------------------------
+delay2:
+    # -- Usar t0 como contador descendente
+    li t0, 0x2FFFF
+delay2_loop:
+    beq t0,zero, delay2_end_loop
+    addi t0, t0, -1
+    j delay2_loop
+
+    # -- Cuando el contador llega a cero
+    # -- se termina
+delay2_end_loop:
     ret
 

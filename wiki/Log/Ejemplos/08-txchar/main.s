@@ -69,7 +69,7 @@ _start:
 runtime_init:
     li s0,0x10001000 #-- XIP BASE + 0x1000
     jal	runtime_run_initializers
-    #jal led_on
+
     #j halt
 
     #-- TODO
@@ -86,6 +86,8 @@ runtime_init:
     li a1,115200      #-- Baudios
     li a0,UART0_BASE
     jal uart_init 
+
+    jal led_blinky
 
     #-- La primera vez que se llama simplemente retorna sin configurar nada...
     #-- Pero al hacer un reset con el pulsador (pin run a GND) entonces si
@@ -109,11 +111,15 @@ next:
     andi	a5,a5,0x20
     bnez	a5,next
 
+    #jal led_blinky2
+
     #-- Transmitir!
     li	a5,'A'
     sw	a5,0(a4)
 
     #-- Esperar!
+    jal delay
+    jal delay
     jal delay
     jal led_toggle
     j main_loop
@@ -157,6 +163,8 @@ uart_init:
     #beq s0,a5,label1   # 10000dac
 
     #----------------- Configuracion de la UART0
+uart_init_label6:
+    # 10000cb2:
     li a4,BIT26
     lui a5,0x40022  #-- RESET_CTRL + 0x2000  (¿set?)
     sw a4,0(a5)
@@ -165,8 +173,6 @@ uart_init:
     li a3,RESET_CTRL
     lui a5,0x40023  #-- RESET_CTRL + 0x3000 (¿clear?)
     sw a4,0(a5)
-
-    jal led_on
 
     li a3, RESET_DONE 
 loop1:
@@ -178,12 +184,124 @@ loop1:
     #-- Llega aquí si el bit26 del registro reset_done está a 1
     #-- Es decir, llega aquí cuando se ha reseteado la uart0
 
+    lui	a5,0xbff88
+    add	a5,a5,s0
+    lui	a4,0x20000
+    addi	a4,a4,1348 # 20000544 <uart_char_to_line_feed>
+    seqz	a5,a5
+    sh1add	a5,a5,a4
+    li	a0,6
+    li	a4,256
+    sh	a4,0(a5) # bff88000 <__StackTop+0x9ff06000>
+    jal	clock_get_hz  # 10000e98 <clock_get_hz>
+
+    slli	a5,a0,0x3
+    divu	a5,a5,s1
+    addi	a5,a5,1
+    srli	a4,a5,0x7
+    bnez	a4,uart_init_label1 # 10000d52 <uart_init+0xc2>
+
+    li	s3,64
+    li	a3,1
+
+uart_init_label3:
+# 10000d04:	
+    sw a3,36(s0)
+    sw a4,40(s0)
+    lw s2,48(s0)
+    andi a5,s2,1
+    bnez a5,uart_init_label4 # 10000d76 <uart_init+0xe6>
+
+uart_init_label5:
+# 10000d12:
+    lui s1,0x1
+    addi s1,s1,44 # 102c <HeapSize+0x82c>
+    add	s1,s1,s0
+    lw a5,44(s0)
+    sw zero,0(s1)
+    sw s2,48(s0)
+    li	a0,6
+    jal	clock_get_hz  # 10000e98 <clock_get_hz>
+
+    lw a5,44(s0)
+    slli a0,a0,0x2
+    divu a0,a0,s3
+    xori a5,a5,112
+    andi a5,a5,126
+    sw a5,0(s1)
+    li a3,769
+    lw	s2,16(sp)
+    lw	s3,12(sp)
+    li	a4,3
+    sw	a3,48(s0)
+    sw	a4,72(s0)
+    lw	ra,28(sp)
+    lw	s0,24(sp)
+    lw	s1,20(sp)
+    addi	sp,sp,32
+    ret
+
+
+uart_init_label1:
+    lui	a2,0x10
+    addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
+    lui	a3,0x10
+    bgeu a2,a4,uart_init_label2 # 10000db2 <uart_init+0x122>
+
+    addi a3,a3,-1 # ffff <HeapSize+0xf7ff>
+    sw	a3,36(s0)
+    li	a4,0
+    sw	a4,40(s0)
+    lw	s2,48(s0)
+    lui	s3,0x400
+    addi s3,s3,-64 # 3fffc0 <HeapSize+0x3ff7c0>
+    andi a5,s2,1
+    beqz a5, uart_init_label5 # <uart_init+0x82>
+
+uart_init_label4:
+    lui	a5,0x3
+    addi a5,a5,48 # 3030 <HeapSize+0x2830>
+    add	a5,a5,s0
+    li	a4,769
+    sw	a4,0(a5)
+    lw	s1,36(s0)
+    lw	a5,40(s0)
+    li	a0,6
+    slli s1,s1,0x6
+    add	s1,s1,a5
+    jal	clock_get_hz  # 10000e98 <clock_get_hz>
+
+    lui	a5,0x8f2b8
+    addi a5,a5,-1163 # 8f2b7b75 <__StackTop+0x6f235b75>
+    mulhu a5,a0,a5
+    slli a0,s1,0xa
+    li	a1,0
+    srli a5,a5,0xb
+    divu a0,a0,a5
+    jal	busy_wait_us
+# 10000daa:	b7a5                	j	uart_init_label5 # 10000d12 <uart_init+0x82>
+# 10000dac:	08000737          	lui	a4,0x8000
+# 10000db0:	b709                	j	uart_init_label6  # 10000cb2 <uart_init+0x22>
+
+uart_init_label2:
+# 10000db2:	
+    srli a5,a5,0x1
+    andi a5,a5,63
+    slli s3,a4,0x6
+    mv a3,a4
+    add	s3,s3,a5
+    mv a4,a5
+    j uart_init_label3 # 10000d04 <uart_init+0x74>
+
+
+
+
     #-- TODO
-    jal led_blinky
+    #jal led_blinky2
 
     #-- DEBUG!!
-    jal debug_led1_MSB
-    jal led_blinky
+    #jal debug_led1_MSB
+    #jal led_blinky
 
 
 uart_init_end:
@@ -376,6 +494,7 @@ runtime_run_initializers:
     jal runtime_init_early_resets
     jal runtime_init_usb_power_down
     jal runtime_init_clocks
+    jal runtime_init_post_clock_resets
 
     j runtime_run_initializers_end
 
@@ -417,12 +536,11 @@ runtime_run_initializers_end:
 # ✅10001578:	.word runtime_init_early_resets # 0x1000_0fee
 # 1000157c <__pre_init_runtime_init_usb_power_down>:
 # ✅1000157c:	.word runtime_init_usb_power_down # 0x1000_1018
-# 
 # 10001580 <__pre_init_runtime_init_clocks>:
-# 10001580:	     .word runtime_init_clocks # 0x1000_107e
+# ✅10001580:	     .word runtime_init_clocks # 0x1000_107e
 # 
 # 10001584 <__pre_init_runtime_init_post_clock_resets>:
-# 10001584:	1032 1000                                   2...
+# 10001584:	    .word runtime_init_post_clock_resets # 0x1000_1032
 # 
 # 10001588 <__pre_init_runtime_init_boot_locks_reset>:
 # 10001588:	0f66 1000                                   f...
@@ -588,51 +706,58 @@ label_rt_6:
     li	a0,4
     jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
 
+    lui	a3,0x8f0d
+    mv	a1,s0
+    addi a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
+    li a2,0
+    li a0,5
+    #-- Comentada... la segunda pasada peta :-(
+    #jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
 
-#                 lui	a3,0x8f0d
-#                 mv	a1,s0
-#                 addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
-#                 li	a2,0
-#                 li	a0,5
-#                 jal	10000dc4 <clock_configure_undivided>
-#               	lui	a3,0x2dc7
-#               	addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
-#                 li	a2,0
-#                 li	a1,0
-#                 li	a0,8
-#                 jal	10000dc4 <clock_configure_undivided>
-#               	lui	a3,0x2dc7
-#               	addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
-#                 li	a2,0
-#                 li	a1,0
-#                 li	a0,9
-#                 jal	10000dc4 <clock_configure_undivided>
-#               	lui	a3,0x8f0d
-#               	addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
-#                 li	a2,0
-#                 li	a1,0
-#                 li	a0,6
-#                 jal	10000dc4 <clock_configure_undivided>
-#               	lui	a3,0x8f0d
-#               	addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
-#                 li	a2,0
-#                 li	a1,0
-#                 li	a0,7
-#                 jal	10000dc4 <clock_configure_undivided>
-#                 li	a0,4
-#                 jal	10000e98 <clock_get_hz>
-#               	lui	a5,0x431be
-#               	addi	a5,a5,-381 # 431bde83 <__StackTop+0x2313be83>
-#               	mulhu	s1,a0,a5
-#                 li	s0,0
-#                 li	s2,6
-#                 srli	s1,s1,0x12
-# label_rt_7:
-#                 mv	a0,s0
-#                 mv	a1,s1
-#                 addi	s0,s0,1
-#                 jal	10000f32 <tick_start>
-#               	bne	s0,s2,label_rt_7  # 10001152 <runtime_init_clocks+0xd4>
+    lui	a3,0x2dc7
+    addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
+    li	a2,0
+    li	a1,0
+    li	a0,8
+    jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
+
+    lui	a3,0x2dc7
+    addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
+    li	a2,0
+    li	a1,0
+    li	a0,9
+    jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
+
+    lui	a3,0x8f0d
+    addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
+    li	a2,0
+    li	a1,0
+    li	a0,6
+    jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
+
+    lui	a3,0x8f0d
+    addi a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
+    li	a2,0
+    li	a1,0
+    li	a0,7
+    jal	clock_configure_undivided  # 10000dc4 <clock_configure_undivided>
+
+    li	a0,4
+    jal	clock_get_hz  # 10000e98 <clock_get_hz>
+
+    lui	a5,0x431be
+    addi a5,a5,-381 # 431bde83 <__StackTop+0x2313be83>
+    mulhu s1,a0,a5
+    li s0,0
+    li s2,6
+    srli s1,s1,0x12
+
+label_rt_7:
+    mv	a0,s0
+    mv	a1,s1
+    addi s0,s0,1
+    jal	tick_start  # 10000f32 <tick_start>
+    bne s0,s2,label_rt_7  # 10001152 <runtime_init_clocks+0xd4>
 
 runtime_init_clocks_end:
     lw ra,12(sp)
@@ -736,7 +861,8 @@ pll_init_label2:
     j	pll_init_label3 # 10000ed2 <pll_init+0x2a>
 
 
-#--- Primera llamada: a0 = 4
+#--- Primera llamada: a0 = 4, a1 = 2, a2=0
+#--- Segunda llamada: a0 = 5, a1 = 1, a2=0
 clock_configure_undivided:
     li a5,CLOCK_BASE
     sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
@@ -744,23 +870,25 @@ clock_configure_undivided:
                       #-- a4 = a0 + a0<<1
 
     #-- Primera llamada: a4 = 4 + 4<<1 = 12
-
-#--- BUG: NO SALE DE ESTE BUCLE!!!!
+    #-- Segunda llamda: a4 = 15
     sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
                       #-- Primera llamada: a4 = 0x40010030 (CLK_REF_CTRL)
-    lw a6,4(a4) # Se lee registro (CLK_REF_DIV Register)
+                      #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL)
+    lw a6,4(a4) # Se lee registro (CLK_REF_DIV (1ª), CLK_SYS_DIV (2º)
     li a5,0x10000
+
     bgeu a6,a5,clock_configure_undivided_label1  # 10000ddc <clock_configure_undivided+0x18>
     sw	a5,4(a4)
 
 clock_configure_undivided_label1:
-#10000ddc:	
+# 10000ddc:	
     addi a6,a0,-4
     li a5,1
     bgeu a5,a6, clock_configure_undivided_label2 # 10000e4e
 
 clock_configure_undivided_label3:
 # 10000de6:	
+
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 <configured_freq>
     sh2add a5,a0,t1
@@ -810,43 +938,147 @@ clock_configure_undivided_label6:
 
 clock_configure_undivided_label2:
 # 10000e4e:
+# Segunda llamada: a1 = 1, a5=1, a4 = 0x4001003c (CLK_SYS_CTRL)
     bne	a1,a5,clock_configure_undivided_label3  # 10000de6 <clock_configure_undivided+0x22>
-   
-    lui	a5,0x3
+
+    li  a5,0x3000
     add	a5,a5,a4
+    #-- Segunda llamada: a5 = 0x4001003c + 0x3000 = 0x4001303c (CLK_SYS_CTRL_XOR?)
+
     li	a6,3
     sw	a6,0(a5) # 3000 <HeapSize+0x2800>
 
 clock_configure_undivided_label7:
 # 10000e5c:	
-    lw	a5,8(a4)
-    andi	a5,a5,1
-    beqz	a5,clock_configure_undivided_label7 # 10000e5c <clock_configure_undivided+0x98>
+    lw a5,8(a4)    #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL) Se lee: CLK_SYS_SELECTED
+    andi a5,a5,1
+    beqz a5,clock_configure_undivided_label7 # 10000e5c <clock_configure_undivided+0x98>
 
-    lw	a6,0(a4)
-    slli	a2,a2,0x5
-    lui	a5,0x1
-    xor	a2,a2,a6
-    andi	a2,a2,224
-    add	a5,a5,a4
+    lw	a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
+    slli a2,a2,0x5  #-- Segunda llamada: a2 = 0 + 5 = 5
+    li a5,0x1000
+    xor	a2,a2,a6    #-- Segunda llamada: a2 = a2 xor a6 = 3
+    andi a2,a2,0xe0  #-- Segunda llamada: a2 = 0 
+    add	a5,a5,a4     #-- Segunda llamada: CLK_SYS_CTRL + 0x1000
     lui	t1,0x20000
-    slli	a0,a0,0x2
-    sw	a2,0(a5)
+    slli a0,a0,0x2   #-- Segunda llamada: a0 = 5, a0 = 5 << 2 = 20
+    sw	a2,0(a5)     #-- Segunda llamada: Escritura en CLK_SYS_CTRL + 0x1000
     addi	t1,t1,1268 # 200004f4 <configured_freq>
 
 clock_configure_undivided_label5:
 # 10000e80:	
-    lw a6,0(a4)
-    bset	a2,zero,a1
-    xor	a1,a1,a6
-    andi	a1,a1,3
-    sw	a1,0(a5)
+    lw a6,0(a4)          #-- Leer registro CLK_SYS_CTRL
+    bset	a2,zero,a1   #-- Segunda llamada: a1 = 1, a2 = 1
+    xor	a1,a1,a6         #-- Segunda llamada: a1 = 1 xor x6 = 01 xor 11 = 10
+    andi	a1,a1,3      #-- Segunda llamada: a1 = 1 and 11 = 1
+
+    #-- AQUI PETA!!!!!!
+    sw	a1,0(a5)  #Comentada para que no pete... (¿?)
 
 clock_configure_undivided_label8:
+#-- SE QUEDA EN BUCLE INFINITO!!!
 # 10000e90:	
-    lw a5,8(a4)
+    lw a5,8(a4)   #-- CLK_SYS_SELECTED
     and	a5,a5,a2
     beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
     j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
 
+
+tick_start:
+    lui	a5,0x40108
+    sh1add	a0,a0,a0
+    sh2add	a0,a0,a5
+    sw	a1,4(a0)
+    li	a5,1
+    sw	a5,0(a0)
+    ret
+
+
+runtime_init_post_clock_resets:
+# 10001032:	
+    lui	a4,0x20000
+    addi	a4,a4,-1 # 1fffffff <__flash_binary_end+0xfffe60b>
+    lui	a5,0x40023
+    lui	a3,0x40020
+    sw	a4,0(a5)
+    addi	a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
+runtime_init_post_clock_resets_label1:    
+# 10001044
+    lw	a5,0(a3)
+    andn	a5,a4,a5
+    bnez	a5,runtime_init_post_clock_resets_label1 # 10001044 <runtime_init_post_clock_resets+0x12>
+    ret
+
+
+
+busy_wait_us:
+
+    lui	a4,0x400b0
+    lw a5,36(a4)
+
+busy_wait_us_label1:
+# 10000c2e:	
+    lw a6,40(a4) # 400b0028 <__StackTop+0x2002e028>
+    mv	a3,a5
+    lw	a5,36(a4)
+    bne	a5,a3,busy_wait_us_label1 # 10000c2e <busy_wait_us+0x6>
+
+    add	a2,a0,a6
+    add	a1,a1,a5
+    sltu a4,a2,a0
+    add	a4,a4,a1
+    bltu a4,a5,busy_wait_us_label2  # 10000c7e <busy_wait_us+0x56>
+
+busy_wait_us_label11:
+# 10000c4e
+    beq	a5,a4,busy_wait_us_label3  # 10000c7a <busy_wait_us+0x52>
+    lui	a5,0x400b0
+    lw	a5,36(a5)
+    bgeu a5,a4,busy_wait_us_label4 # 10000c62 <busy_wait_us+0x3a>
+
+busy_wait_us_label8:
+# 10000c58
+    lui	a3,0x400b0
+
+busy_wait_us_label5:
+# 10000c5c:	
+    lw a5,36(a3)
+    bltu a5,a4,busy_wait_us_label5   # 10000c5c <busy_wait_us+0x34>
+
+busy_wait_us_label4:
+# 10000c62:	
+    bne a5,a4,busy_wait_us_label4 # 10000c78 <busy_wait_us+0x50>
+
+busy_wait_us_label9:
+# 10000c66
+    lui	a4,0x400b0
+    j	busy_wait_us_label6   # 10000c72 <busy_wait_us+0x4a>
+
+busy_wait_us_label7:
+# 10000c6c:
+    lw	a3,36(a4)
+    bne	a3,a5,busy_wait_us_label10  # <busy_wait_us+0x50>
+
+busy_wait_us_label6:
+# 10000c72:	
+    lw a3,40(a4)
+    bltu a3,a2,busy_wait_us_label7   # 10000c6c <busy_wait_us+0x44>
+
+busy_wait_us_label10:
+# 10000c78:	
+ret
+
+busy_wait_us_label3:
+# 10000c7a:	
+    bgeu a2,a6, busy_wait_us_label11  # 10000c4e <busy_wait_us+0x26>
+
+busy_wait_us_label2:
+# 10000c7e:	
+    lui	a5,0x400b0
+    lw	a5,36(a5)
+    li	a4,-1
+    mv	a2,a4
+    bne	a5,a4,busy_wait_us_label8    # 10000c58 <busy_wait_us+0x30>
+    mv a2,a5
+    j busy_wait_us_label9  # 10000c66 <busy_wait_us+0x3e>
 
