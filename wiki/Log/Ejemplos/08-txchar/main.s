@@ -761,26 +761,26 @@ clock_configure_undivided_label1:
 
 clock_configure_undivided_label3:
 # 10000de6:	
-
     lui t1,0x20000
-# 10000dea:	4f430313          	addi	t1,t1,1268 # 200004f4 <configured_freq>
-# 10000dee:	206547b3          	sh2add	a5,a0,t1
-# 10000df2:	0007a883          	lw	a7,0(a5) # 10000 <HeapSize+0xf800>
-# 10000df6:	678d                lui	a5,0x3
-# 10000df8:	97ba                add	a5,a5,a4
-# 10000dfa:	28b01e13          	bseti	t3,zero,0xb
-# 10000dfe:	01c7a023          	sw	t3,0(a5) # 3000 <HeapSize+0x2800>
-# 10000e02:	050a                slli	a0,a0,0x2
-# 10000e04:	02089963          	bnez	a7,clock_configure_undivided_label4 # 10000e36 <clock_configure_undivided+0x72>
-# 10000e08:	00072883          	lw	a7,0(a4)
-# 10000e0c:	0616                slli	a2,a2,0x5
-# 10000e0e:	6785                lui	a5,0x1
-# 10000e10:	01164633          	xor	a2,a2,a7
-# 10000e14:	0e067613          	andi	a2,a2,224
-# 10000e18:	97ba                add	a5,a5,a4
-# 10000e1a:	c390                sw	a2,0(a5)
-# 10000e1c:	4605                li	a2,1
-# 10000e1e:	07067163          	bgeu	a2,a6,clock_configure_undivided_label5  #  10000e80 <clock_configure_undivided+0xbc>
+    addi t1,t1,1268 # 200004f4 <configured_freq>
+    sh2add a5,a0,t1
+    lw a7,0(a5) # 10000 <HeapSize+0xf800>
+    lui	a5,0x3
+    add	a5,a5,a4
+    bseti t3,zero,0xb
+    sw t3,0(a5) # 3000 <HeapSize+0x2800>
+    slli a0,a0,0x2
+    bnez a7,clock_configure_undivided_label4 # 10000e36 <clock_configure_undivided+0x72>
+
+    lw a7,0(a4)
+    slli a2,a2,0x5
+    lui a5,0x1
+    xor a2,a2,a7
+    andi a2,a2,224
+    add a5,a5,a4
+    sw a2,0(a5)
+    li a2,1
+    bgeu a2,a6,clock_configure_undivided_label5  #  10000e80 <clock_configure_undivided+0xbc>
 
 clock_configure_undivided_label9:
 # 10000e22:	
@@ -834,12 +834,11 @@ clock_configure_undivided_label7:
 
 clock_configure_undivided_label5:
 # 10000e80:	
-# 00072803          	lw	a6,0(a4)
-# 10000e84:	28b01633          	bset	a2,zero,a1
-# 10000e88:	0105c5b3          	xor	a1,a1,a6
-# 10000e8c:	898d                andi	a1,a1,3
-# 10000e8e:	c38c                sw	a1,0(a5)
-
+    lw a6,0(a4)
+    bset	a2,zero,a1
+    xor	a1,a1,a6
+    andi	a1,a1,3
+    sw	a1,0(a5)
 
 clock_configure_undivided_label8:
 # 10000e90:	
@@ -847,5 +846,5 @@ clock_configure_undivided_label8:
 # 10000e92:	8ff1                and	a5,a5,a2
 # 10000e94:	dff5                beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
 # 10000e96:	b771                j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
-
+ret #-- DEBUG!! QUITAR!!!
 
