@@ -551,18 +551,15 @@ label_rt_5:
     lw	a5,0x44(s0) # (CLK_SYS_SELECTED)
     bne	a5,a4,label_rt_5  # 1000109a <runtime_init_clocks+0x1c>
 
-    #-- DEBUG
-    j runtime_init_clocks_end
+    li a4,3
+    li a5,0x40013000 #-- CLOCK_BASE + 0x3000
+    sw	a4,0x30(a5)  #-- CLK_REF_CTRL
 
-#     li	a4,3
-#     lui	a5,0x40013
-#     sw	a4,48(a5)
-#     li	s0,1
-#     lui	a4,0x40010
-
-# label_rt_6:
-#     lw	a5,56(a4)
-#     bne	a5,s0,label_rt_6  # 100010ae <runtime_init_clocks+0x30>
+    li	s0,1
+    li	a4,CLOCK_BASE
+label_rt_6:
+    lw	a5,0x38(a4)  #-- CLK_REF_SELECTED 
+    bne	a5,s0,label_rt_6  # 100010ae <runtime_init_clocks+0x30>
 
 #               	lui	a2,0x59683
 #                 mv	a1,s0
