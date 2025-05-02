@@ -443,30 +443,29 @@ runtime_init_early_resets:
     # -- a5 = 0xefef3b7f
 
     li a3,0x40022000   # -- RESET_CTRL + 0x2000
-    li a4,0x03f40000
 
+    #-- ESTO PARECE QUE ES ACTIVAR EL RESET
     #-- Valor inicial a5: 1110 1111 1110 1111 0011 1011 0111 1111
     #-- Valor usado     : 1110 1111 1110 1111 0011 1011 0011 FFFF
     #-- Cambia el bit del IO_BANK0
     li a5,0xEFEF3B3F  #-- Si se hace reset de IO_BANK0, peta...
     sw a5,0(a3)
 
-    #----- WARNING! Al hacer este store se va todo al carajo...
-    #--- deja de ejecutar instrucciones!!!!
-
-    jal delay
-    jal led_blinky
-
-    ret
-
+    li a4,0x03f40000
     addi	a4,a4,-10 # 3f3fff6 <HeapSize+0x3f3f7f6>
-    lui	a5,0x40023
-    lui	a3,0x40020
-    sw	a4,0(a5)
-    addi	a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
+    # a4 = 0x03f3fff6
 
+    # -- ESTO PARECE QUE ES DESACTIVAR EL RESET
+    # -- 0000 0011 1111 0011 1111 1111 1111 0110
+    li  a5,0x40023000   #-- RESET_CTRL + 0x3000
+    sw	a4,0(a5)
+
+    li	a3,RESET_DONE
+
+    #-- Esperar a que se reinicien todos los sistemas
 label_rt_3:
     lw	a5,0(a3)
     andn	a5,a4,a5
     bnez	a5,label_rt_3 # 1000100e <runtime_init_early_resets+0x20>
+
     ret
