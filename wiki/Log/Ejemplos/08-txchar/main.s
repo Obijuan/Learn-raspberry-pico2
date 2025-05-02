@@ -5,6 +5,10 @@
 .include "boot.h"
 .include "gpio.h"
 
+.equ CLOCKS_BASE,        0x40010000
+.equ CLK_SYS_RESUS_CTRL, 0x40010084 
+
+
 # -----------------------------------
 # -- Registro de Control del Reset 
 # -----------------------------------
@@ -26,6 +30,14 @@
 .equ SRAM_BASE,  0x20000000
 .equ UART0_BASE, 0x40070000
 .equ UART1_BASE, 0x40078000
+
+#-- Crystal oscillator
+.equ XOSC_BASE,    0x40048000
+.equ XOSC_CTRL,    0x40048000
+  .equ XOSC_CTRL_SET,0x4004A000
+
+.equ XOSC_STATUS,  0x40048004
+.equ XOSC_STARTUP, 0x4004800C
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
@@ -358,6 +370,7 @@ runtime_run_initializers:
     jal runtime_init_bootrom_reset
     jal runtime_init_early_resets
     jal runtime_init_usb_power_down
+    jal runtime_init_clocks
 
     j runtime_run_initializers_end
 
@@ -397,12 +410,11 @@ runtime_run_initializers_end:
 # ✅10001574:	.word runtime_init_bootrom_reset # 0x1000_104e
 # 10001578 <__pre_init_runtime_init_early_resets>:
 # ✅10001578:	.word runtime_init_early_resets # 0x1000_0fee
-
 # 1000157c <__pre_init_runtime_init_usb_power_down>:
-# 1000157c:	    .word runtime_init_usb_power_down # 1018 1000
+# ✅1000157c:	.word runtime_init_usb_power_down # 0x1000_1018
 # 
 # 10001580 <__pre_init_runtime_init_clocks>:
-# 10001580:	107e 1000                                   ~...
+# 10001580:	     .word runtime_init_clocks # 0x1000_107e
 # 
 # 10001584 <__pre_init_runtime_init_post_clock_resets>:
 # 10001584:	1032 1000                                   2...
@@ -495,6 +507,8 @@ label_rt_3:
     #-- están a 1
     ret
 
+
+
 runtime_init_usb_power_down:
     li a5,USB_SIE_CTRL
     lw a4,0(a5)
@@ -508,3 +522,136 @@ label_rt_4:
     li	a4,0x40000  #-- TRANSCEIVER_PD: Apagar el transceptor del bus
     sw	a4,0(a5)
     ret
+
+
+
+runtime_init_clocks:
+    addi sp,sp,-16
+    sw ra,12(sp)
+    sw s0,8(sp)
+    sw s1,4(sp)
+    sw s2,0(sp)
+
+    li s0,CLK_SYS_RESUS_CTRL
+    sw	zero,0(s0)  # 40010084 
+    jal	xosc_init  # 10000f84 
+
+    #-- DEBUG
+    j runtime_init_clocks_end
+    
+
+#     lui	a5,0x40013
+#     li	a4,1
+#     sw	a4,60(a5)
+
+# label_rt_5:
+#     lw	a5,68(s0)
+#     bne	a5,a4,label_rt_5  # 1000109a <runtime_init_clocks+0x1c>
+
+#     li	a4,3
+#     lui	a5,0x40013
+#     sw	a4,48(a5)
+#     li	s0,1
+#     lui	a4,0x40010
+
+# label_rt_6:
+#     lw	a5,56(a4)
+#     bne	a5,s0,label_rt_6  # 100010ae <runtime_init_clocks+0x30>
+
+#               	lui	a2,0x59683
+#                 mv	a1,s0
+#               	addi	a2,a2,-256 # 59682f00 <__StackTop+0x39600f00>
+#                 li	a4,2
+#                 li	a3,5
+#               	lui	a0,0x40050
+#                 jal	10000ea8 <pll_init>
+#                 li	a4,5
+#               	lui	a2,0x47869
+#                 mv	a3,a4
+#                 mv	a1,s0
+#               	addi	a2,a2,-1024 # 47868c00 <__StackTop+0x277e6c00>
+#               	lui	a0,0x40058
+#                 jal	10000ea8 <pll_init>
+#               	lui	a3,0xb72
+#               	addi	a3,a3,-1280 # b71b00 <HeapSize+0xb71300>
+#                 li	a2,0
+#                 li	a1,2
+#                 li	a0,4
+#                 jal	10000dc4 <clock_configure_undivided>
+#               	lui	a3,0x8f0d
+#                 mv	a1,s0
+#               	addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
+#                 li	a2,0
+#                 li	a0,5
+#                 jal	10000dc4 <clock_configure_undivided>
+#               	lui	a3,0x2dc7
+#               	addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
+#                 li	a2,0
+#                 li	a1,0
+#                 li	a0,8
+#                 jal	10000dc4 <clock_configure_undivided>
+#               	lui	a3,0x2dc7
+#               	addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
+#                 li	a2,0
+#                 li	a1,0
+#                 li	a0,9
+#                 jal	10000dc4 <clock_configure_undivided>
+#               	lui	a3,0x8f0d
+#               	addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
+#                 li	a2,0
+#                 li	a1,0
+#                 li	a0,6
+#                 jal	10000dc4 <clock_configure_undivided>
+#               	lui	a3,0x8f0d
+#               	addi	a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
+#                 li	a2,0
+#                 li	a1,0
+#                 li	a0,7
+#                 jal	10000dc4 <clock_configure_undivided>
+#                 li	a0,4
+#                 jal	10000e98 <clock_get_hz>
+#               	lui	a5,0x431be
+#               	addi	a5,a5,-381 # 431bde83 <__StackTop+0x2313be83>
+#               	mulhu	s1,a0,a5
+#                 li	s0,0
+#                 li	s2,6
+#                 srli	s1,s1,0x12
+# label_rt_7:
+#                 mv	a0,s0
+#                 mv	a1,s1
+#                 addi	s0,s0,1
+#                 jal	10000f32 <tick_start>
+#               	bne	s0,s2,label_rt_7  # 10001152 <runtime_init_clocks+0xd4>
+
+runtime_init_clocks_end:
+    lw ra,12(sp)
+    lw s0,8(sp)
+    lw s1,4(sp)
+    lw s2,0(sp)
+    addi sp,sp,16
+    ret
+
+xosc_init:
+    #-- Rango de frecuencias: 1Mhz - 15Mhz
+    li a5, 0xaa0
+    li a4,XOSC_CTRL
+    sw a5,0(a4)
+
+    #-- Empezar una cuenta atrás de 282 ciclos
+    li a4, XOSC_STARTUP
+    li a5,282 
+    sw a5,0(a4)
+
+    #-- HABILITAR el oscilador!
+    li a5, XOSC_CTRL_SET
+    li a3,0x00fab000
+    sw a3,0(a5)
+
+    #-- Esperar hasta que se estabilice el oscilador externo
+xosc_init_loop:
+    li a4, XOSC_STATUS
+    lw a5,0(a4) 
+    bgez a5, xosc_init_loop  # 10000fa0 <xosc_init+0x1c>
+
+    ret
+
