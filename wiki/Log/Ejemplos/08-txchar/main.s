@@ -39,18 +39,35 @@ _start:
     jal led_init  
 
      #-- Configurar el pulsador
-    jal button_init
+    #jal button_init
 
     #-- main
     li a1,115200      #-- Baudios
     li a0,UART0_BASE
     jal uart_init 
 
+    #-- La primera vez que se llama simplemente retorna sin configurar nada...
+    #-- Pero al hacer un reset con el pulsador (pin run a GND) entonces si
+    #-- que configura cosas...
 
+    li a1,2
+    li a0,0
+    jal gpio_set_function
 
+    li	a1,2
+    li	a0,1
+    jal	gpio_set_function
 
+    #-- TODO: Analizar este codigo
 
-
+    lui	a4,0x40070
+next:
+    lw	a5,24(a4)
+    andi	a5,a5,32
+    bnez	a5,next
+    li	a5,65
+    sw	a5,0(a4)
+    li	a0,0
 
     jal led_on
 
@@ -82,16 +99,25 @@ uart_init:
     li a0,6
     jal clock_get_hz
 
+    #-- a0 vale 0 (la primera vez)
+    beqz  a0,uart_init_end
 
+    #-- Esto no se ejecuta la primera vez
+    #-- 
+    #-- TODO
+    jal led_blinky
 
     #-- DEBUG!!
     jal debug_led1_MSB
     jal led_blinky
 
+
+uart_init_end:
     #-- Fin de la funcion
     lw ra,28(sp)
     lw s0,24(sp)
     lw s1,20(sp)
+    addi sp,sp,32
     ret
 
 
@@ -109,8 +135,24 @@ clock_get_hz:
     ret
 
 
-
-
+gpio_set_function:
+    lui	a5,0x40038
+    addi	a5,a5,4 # 40038004 <__StackTop+0x1ffb6004>
+    sh2add	a5,a0,a5
+    lw	a4,0(a5)
+    lui	a3,0x1
+    add	a3,a3,a5
+    xori	a4,a4,64
+    andi	a4,a4,192
+    lui	a2,0x40028
+    sw	a4,0(a3)
+    sh3add	a0,a0,a2
+    lui	a4,0x3
+    add	a5,a5,a4
+    sw	a1,4(a0)
+    li	a4,256
+    sw	a4,0(a5)
+    ret
 
 
 
@@ -191,5 +233,6 @@ wait_reset:
         #-- Fin
 inf:    j inf
    
-
+halt:
+    j halt
 
