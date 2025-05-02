@@ -714,14 +714,15 @@ pll_init_label1:
     andi a5,a5,63
     bne	a5,a1,pll_init_label4 # 10000ec8 <pll_init+0x20>
 
-# 10000f16:	451c                lw	a5,8(a0)
-# 10000f18:	07d2                slli	a5,a5,0x14
-# 10000f1a:	83d1                srli	a5,a5,0x14
-# 10000f1c:	fac796e3          	bne	a5,a2,10000ec8 <pll_init+0x20>
-# 10000f20:	455c                lw	a5,12(a0)
-# 10000f22:	00077737          	lui	a4,0x77
-# 10000f26:	8ff9                and	a5,a5,a4
-# 10000f28:	fb0790e3          	bne	a5,a6,10000ec8 <pll_init+0x20>
+    lw a5,8(a0)
+    slli a5,a5,0x14
+    srli a5,a5,0x14
+    bne a5,a2,pll_init_label4 # 10000ec8 <pll_init+0x20>
+
+    lw	a5,12(a0)
+    lui	a4,0x77
+    and	a5,a5,a4
+    bne	a5,a6,pll_init_label4 # 10000ec8 <pll_init+0x20>
     ret
 
 pll_init_label2:
