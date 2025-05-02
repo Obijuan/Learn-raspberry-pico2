@@ -13,6 +13,7 @@
 # * Bit 26: UART0
 # -----------------------------------
 .equ RESET_CTRL,     0x40020000
+.equ RESET_CTRL_SET, 0x40022000
 .equ RESET_CTRL_CLR, 0x40023000
 
 # -----------------------------------
@@ -26,6 +27,10 @@
 .equ UART0_BASE, 0x40070000
 .equ UART1_BASE, 0x40078000
 
+.equ USBCTRL_REGS_BASE, 0x50110000
+.equ USB_SIE_CTRL,      0x5011004c
+.equ USB_SIE_CTRL_SET,  0x5011204c
+
 
 .section .text
 
@@ -38,6 +43,9 @@ _start:
 
     #-- Configurar el LED
     jal led_init  
+
+    #-- TEST
+    #j test2
 
 #-------------------------------
 
@@ -231,13 +239,17 @@ delay_end_loop:
 #-----------------------------------
 
 
+test2:
+
+    #-- Configurar boton
+    jal button_init
 
     # --------- Configurar la UART0
 
     #-- Configurar pin GPIO0 como UART0-TX
     li t0, GPIO00_CTRL
     li t1, FUNC_UART0_TX
-    sw t1, 0(t0)
+    #sw t1, 0(t0)
 
 
     #-- DEBUG: Observar el valor del registro
@@ -246,10 +258,21 @@ delay_end_loop:
     li a1, BIT26
     jal print_led1
 
+    li t0, RESET_CTRL_SET
+    sw a1, 0(t0)
+
+    jal button_press
+
     #-- Poner el bit 26 a 0
-    not a1,a1
-    and a0, a0,a1
-    sw a0, 0(t0)
+    li a1, BIT26
+    li t0, RESET_CTRL_CLR
+    sw a1, 0(t0)
+
+    #-- DEBUG: Observar el valor del registro
+    li t0, RESET_CTRL
+    lw a0, 0(t0)
+    li a1, BIT26
+    jal print_led1
 
     #-- Esperar a que se pulse el boton
     jal button_press
@@ -331,9 +354,10 @@ runtime_run_initializers:
     #-- s0 = 0x10001574
     addi s0,s0,0x574
 
-
+    #-- Inicializaciones!!
     jal runtime_init_bootrom_reset
     jal runtime_init_early_resets
+    jal runtime_init_usb_power_down
 
     j runtime_run_initializers_end
 
@@ -371,12 +395,11 @@ runtime_run_initializers_end:
 #-- Esta es la tabla de vectores de inicializacion
 #-- <__pre_init_runtime_init_bootrom_reset>:
 # ✅10001574:	.word runtime_init_bootrom_reset # 0x1000_104e
-
 # 10001578 <__pre_init_runtime_init_early_resets>:
-# 10001578:	.word runtime_init_early_resets # 0x1000_0fee                                   ....
-# 
+# ✅10001578:	.word runtime_init_early_resets # 0x1000_0fee
+
 # 1000157c <__pre_init_runtime_init_usb_power_down>:
-# 1000157c:	1018 1000                                   ....
+# 1000157c:	    .word runtime_init_usb_power_down # 1018 1000
 # 
 # 10001580 <__pre_init_runtime_init_clocks>:
 # 10001580:	107e 1000                                   ~...
@@ -468,4 +491,20 @@ label_rt_3:
     andn	a5,a4,a5
     bnez	a5,label_rt_3 # 1000100e <runtime_init_early_resets+0x20>
 
+    #-- Todos los bits especificados de RESET_DONE
+    #-- están a 1
+    ret
+
+runtime_init_usb_power_down:
+    li a5,USB_SIE_CTRL
+    lw a4,0(a5)
+    li a5,0x00008000  #-- PULLDOWN_EN
+    beq	a4,a5,label_rt_4  # 10001026 <runtime_init_usb_power_down+0xe>
+    ret
+
+    #-- Esto se ejecuta si está habilitado el pull-down
+label_rt_4:
+    li	a5,USB_SIE_CTRL_SET
+    li	a4,0x40000  #-- TRANSCEIVER_PD: Apagar el transceptor del bus
+    sw	a4,0(a5)
     ret
