@@ -704,24 +704,23 @@ pll_init_label5:
 pll_init_label6:
     lw a5,0(a0)
     bgez a5,pll_init_label6  # 10000efc <pll_init+0x54>
-
-
-# 10000f02:	01052623          	sw	a6,12(a0)
-# 10000f06:	47a1                li	a5,8
-# 10000f08:	c31c                sw	a5,0(a4)
-# 10000f0a:	8082                ret
+    sw	a6,12(a0)
+    li	a5,8
+    sw	a5,0(a4)
+    ret
 
 pll_init_label1:
-# 10000f0c:	411c                	lw	a5,0(a0)
-# 10000f0e:	03f7f793          	andi	a5,a5,63
-# 10000f12:	fab79be3          	bne	a5,a1,10000ec8 <pll_init+0x20>
-# 10000f16:	451c                	lw	a5,8(a0)
-# 10000f18:	07d2                	slli	a5,a5,0x14
-# 10000f1a:	83d1                	srli	a5,a5,0x14
+    lw a5,0(a0)
+    andi a5,a5,63
+    bne	a5,a1,pll_init_label4 # 10000ec8 <pll_init+0x20>
+
+# 10000f16:	451c                lw	a5,8(a0)
+# 10000f18:	07d2                slli	a5,a5,0x14
+# 10000f1a:	83d1                srli	a5,a5,0x14
 # 10000f1c:	fac796e3          	bne	a5,a2,10000ec8 <pll_init+0x20>
-# 10000f20:	455c                	lw	a5,12(a0)
+# 10000f20:	455c                lw	a5,12(a0)
 # 10000f22:	00077737          	lui	a4,0x77
-# 10000f26:	8ff9                	and	a5,a5,a4
+# 10000f26:	8ff9                and	a5,a5,a4
 # 10000f28:	fb0790e3          	bne	a5,a6,10000ec8 <pll_init+0x20>
     ret
 
