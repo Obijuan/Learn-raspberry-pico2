@@ -6,7 +6,9 @@
 .include "gpio.h"
 
 .equ CLOCKS_BASE,        0x40010000
+.equ CLK_SYS_CTRL,       0x4001003C
 .equ CLK_SYS_RESUS_CTRL, 0x40010084 
+
 
 
 # -----------------------------------
@@ -534,15 +536,17 @@ runtime_init_clocks:
 
     li s0,CLK_SYS_RESUS_CTRL
     sw	zero,0(s0)  # 40010084 
+
+    #-- Inicializar oscilador externo
     jal	xosc_init  # 10000f84 
+
+    #-- Seleccionar CLK-REF (?)
+    li a5,0x4001303c  #-- CLOCK_BASE + 0x3000  (CLOCK_CTRL_XOR)  
+    li a4,1
+    sw a4,0(a5)
 
     #-- DEBUG
     j runtime_init_clocks_end
-    
-
-#     lui	a5,0x40013
-#     li	a4,1
-#     sw	a4,60(a5)
 
 # label_rt_5:
 #     lw	a5,68(s0)
