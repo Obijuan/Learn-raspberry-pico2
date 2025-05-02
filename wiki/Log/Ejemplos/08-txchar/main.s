@@ -842,9 +842,9 @@ clock_configure_undivided_label5:
 
 clock_configure_undivided_label8:
 # 10000e90:	
-# 471c                lw	a5,8(a4)
-# 10000e92:	8ff1                and	a5,a5,a2
-# 10000e94:	dff5                beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
-# 10000e96:	b771                j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
-ret #-- DEBUG!! QUITAR!!!
+    lw a5,8(a4)
+    and	a5,a5,a2
+    beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
+    j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
+
 
