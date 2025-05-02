@@ -772,6 +772,8 @@ clock_configure_undivided_label3:
     slli a0,a0,0x2
     bnez a7,clock_configure_undivided_label4 # 10000e36 <clock_configure_undivided+0x72>
 
+clock_configure_undivided_label10:
+# 10000e08
     lw a7,0(a4)
     slli a2,a2,0x5
     lui a5,0x1
@@ -784,28 +786,27 @@ clock_configure_undivided_label3:
 
 clock_configure_undivided_label9:
 # 10000e22:	
-# 6789                lui	a5,0x2
-# 10000e24:	97ba                add	a5,a5,a4
-# 10000e26:	28b01613          	bseti	a2,zero,0xb
-# 10000e2a:	c390                sw	a2,0(a5)
-# 10000e2c:	951a                add	a0,a0,t1
-# 10000e2e:	67c1                lui	a5,0x10
-# 10000e30:	c114                sw	a3,0(a0)
-# 10000e32:	c35c                sw	a5,4(a4)
-# 10000e34:	8082                ret
-ret
+    lui a5,0x2
+    add	a5,a5,a4
+    bseti a2,zero,0xb
+    sw	a2,0(a5)
+    add	a0,a0,t1
+    lui	a5,0x10
+    sw	a3,0(a0)
+    sw	a5,4(a4)
+    ret
 clock_configure_undivided_label4:
 # 10000e36:	 
-# 01432783          	lw	a5,20(t1)
-# 10000e3a:	0317d7b3          	divu	a5,a5,a7
-# 10000e3e:	0785                addi	a5,a5,1 # 10001 <HeapSize+0xf801>
-# 10000e40:	20f7a7b3          	sh1add	a5,a5,a5
+    lw a5,20(t1)
+    divu a5,a5,a7
+    addi a5,a5,1 # 10001 <HeapSize+0xf801>
+    sh1add a5,a5,a5
 
 clock_configure_undivided_label6:
 # 10000e44:	
-# ffe78793          	addi	a5,a5,-2
-# 10000e48:	fe07dee3          	bgez	a5,clock_configure_undivided_label6 # 10000e44 <clock_configure_undivided+0x80>
-# 10000e4c:	bf75                j	10000e08 <clock_configure_undivided+0x44>
+    addi a5,a5,-2
+    bgez	a5,clock_configure_undivided_label6 # 10000e44 <clock_configure_undivided+0x80>
+    j	clock_configure_undivided_label10 # 10000e08 <clock_configure_undivided+0x44>
 
 clock_configure_undivided_label2:
 # 10000e4e:
