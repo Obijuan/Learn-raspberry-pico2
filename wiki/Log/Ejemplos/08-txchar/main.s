@@ -42,6 +42,8 @@
 .equ XOSC_STATUS,  0x40048004
 .equ XOSC_STARTUP, 0x4004800C
 
+.equ PLL_SYS_BASE, 0x40050000 
+
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
 .equ USB_SIE_CTRL_SET,  0x5011204c
@@ -561,13 +563,15 @@ label_rt_6:
     lw	a5,0x38(a4)  #-- CLK_REF_SELECTED 
     bne	a5,s0,label_rt_6  # 100010ae <runtime_init_clocks+0x30>
 
-#               	lui	a2,0x59683
-#                 mv	a1,s0
-#               	addi	a2,a2,-256 # 59682f00 <__StackTop+0x39600f00>
-#                 li	a4,2
-#                 li	a3,5
-#               	lui	a0,0x40050
-#                 jal	10000ea8 <pll_init>
+    li a2,0x59683000
+    mv a1,s0
+    addi a2,a2,-256 # 59682f00 <__StackTop+0x39600f00>
+    #-- a2 = 0x59682f00
+
+    li a4,2
+    li a3,5
+    li a0,PLL_SYS_BASE
+    jal pll_init # 10000ea8
 #                 li	a4,5
 #               	lui	a2,0x47869
 #                 mv	a3,a4
@@ -658,3 +662,63 @@ xosc_init_loop:
 
     ret
 
+
+pll_init:
+
+    li a5,0x00b72000
+    addi a5,a5,-1280 # b71b00 <HeapSize+0xb71300>
+    divu a5,a5,a1
+    lw a7,0(a0)
+
+    slli a3,a3,0x10
+    slli a4,a4,0xc
+    or a6,a3,a4
+    divu a2,a2,a5
+    bltz a7,pll_init_label1  # 10000f0c <pll_init+0x64>
+
+pll_init_label4:
+    li a5,0x40058000
+    li a4,0x4000
+    beq	a0,a5,pll_init_label2  # 10000f2e <pll_init+0x86>
+
+pll_init_label3:
+# 10000ed2:	400227b7          	lui	a5,0x40022
+# 10000ed6:	c398                	sw	a4,0(a5)
+# 10000ed8:	400206b7          	lui	a3,0x40020
+# 10000edc:	400237b7          	lui	a5,0x40023
+# 10000ee0:	c398                	sw	a4,0(a5)
+# 10000ee2:	06a1                	addi	a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
+# 10000ee4:	429c                	lw	a5,0(a3)
+# 10000ee6:	40f777b3          	andn	a5,a4,a5
+# 10000eea:	ffed                	bnez	a5,10000ee4 <pll_init+0x3c>
+# 10000eec:	670d                	lui	a4,0x3
+# 10000eee:	c10c                	sw	a1,0(a0)
+# 10000ef0:	0711                	addi	a4,a4,4 # 3004 <HeapSize+0x2804>
+# 10000ef2:	c510                	sw	a2,8(a0)
+# 10000ef4:	972a                	add	a4,a4,a0
+# 10000ef6:	02100793          	li	a5,33
+# 10000efa:	c31c                	sw	a5,0(a4)
+# 10000efc:	411c                	lw	a5,0(a0)
+# 10000efe:	fe07dfe3          	bgez	a5,10000efc <pll_init+0x54>
+# 10000f02:	01052623          	sw	a6,12(a0)
+# 10000f06:	47a1                	li	a5,8
+# 10000f08:	c31c                	sw	a5,0(a4)
+# 10000f0a:	8082                	ret
+
+pll_init_label1:
+# 10000f0c:	411c                	lw	a5,0(a0)
+# 10000f0e:	03f7f793          	andi	a5,a5,63
+# 10000f12:	fab79be3          	bne	a5,a1,10000ec8 <pll_init+0x20>
+# 10000f16:	451c                	lw	a5,8(a0)
+# 10000f18:	07d2                	slli	a5,a5,0x14
+# 10000f1a:	83d1                	srli	a5,a5,0x14
+# 10000f1c:	fac796e3          	bne	a5,a2,10000ec8 <pll_init+0x20>
+# 10000f20:	455c                	lw	a5,12(a0)
+# 10000f22:	00077737          	lui	a4,0x77
+# 10000f26:	8ff9                	and	a5,a5,a4
+# 10000f28:	fb0790e3          	bne	a5,a6,10000ec8 <pll_init+0x20>
+    ret
+
+pll_init_label2:
+    li a4,0x8000
+    j	pll_init_label3 # 10000ed2 <pll_init+0x2a>
