@@ -78,6 +78,18 @@ runtime_init:
     li a0,0
     jal gpio_set_function
 
+    #-- Cuanto vale el registro PAD del GPIO0 ?
+    jal button_init15
+    
+    li t0, PAD_GPIO0
+    lw a0, 0(t0)
+    #jal debug_led1_lsb
+
+    #-- PAD_GPIO0: 000000000000000000000000_0_0101_0110
+    li t0, PAD_GPIO0
+    li t1, 0x56
+    sw t1,0(t0)
+
 main_loop:
 
     li	a4,UART0_BASE
@@ -292,24 +304,16 @@ clock_get_hz:
 
 
 gpio_set_function:
-    li a5, PAD_GPIO0     # 0x40038004
-    li a3, PAD_GPIO0_SET # 0x4003A004
 
-    #-- Leer PAD_GPIO0
-    lw a4,0(a5)
-    xori a4,a4,0x40
-    andi a4,a4,0xC0
-    sw a4,0(a3)
+    #-- Configurar el PAD del GPIO0
+    li t0, PAD_GPIO0
+    li t1, 0x56
+    sw t1,0(t0)
 
-    #-- Funcion 2
+    #-- Asignar el GPIO0 al pin tx de la UART0
     li a0,GPIO00_CTRL
     li a1, 2
     sw a1,0(a0)
-
-    #-- Desactivar bit ISO
-    li a5, PAD_GPIO0_XOR   
-    li	a4,0x100
-    sw	a4,0(a5)
     ret
 
 

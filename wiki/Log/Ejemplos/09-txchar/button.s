@@ -4,8 +4,10 @@
 #--------------------------------------------------
 
 #--- Funciones de interfaz
-.global button_init
-.global button_press
+.global button_init0
+.global button_init15
+.global button_press0
+.global button_press15
 
 .include "gpio.h"
 
@@ -16,7 +18,7 @@
 #-- Confgirar el GPIO0 como entrada
 #-- y habilitar el pull-up
 #-------------------------------------
-button_init:
+button_init0:
 
     #-- GPIO0: Control por software
     li t0, GPIO00_CTRL  
@@ -30,15 +32,32 @@ button_init:
     li t0, PAD_GPIO0 
     li t1, 0x0CB
     sw t1, 0(t0)
-
     ret
+
+
+button_init15:
+
+    #-- GPIO15: Control por software
+    li t0, GPIO15_CTRL  
+    li t1, FUNC_SOFTWARE          
+    sw t1, 0(t0)
+
+    #-- Configuración del PAD: ENTRADA
+    #--  8  |  7 |  6 |  5    |  4  |  3  |   2     |   1
+    #-- ISO | OD | IE | DRIVE | PUE | PDE | SCHMITT | SLEWFAST 
+    #--  0  | 1  | 1  | 00    | 1   | 0   |   1     | 1        
+    li t0, PAD_GPIO15 
+    li t1, 0x0CB
+    sw t1, 0(t0)
+    ret
+
 
 #------------------------------------------------
 #-- Esperar a que se apriete el pulsador
 #-- La funcion retorna cuando el pulsador se ha  
 #-- apretado
 #------------------------------------------------
-button_press:
+button_press0:
 
     # -- Cabecera funcion
     addi sp,sp, -16
@@ -77,6 +96,54 @@ wait_0:
     lw ra, 12(sp)
     addi sp,sp, 16
     ret
+
+#------------------------------------------------
+#-- Esperar a que se apriete el pulsador
+#-- La funcion retorna cuando el pulsador se ha  
+#-- apretado
+#------------------------------------------------
+button_press15:
+
+    # -- Cabecera funcion
+    addi sp,sp, -16
+    sw ra, 12(sp)   
+
+    #-- Esperar hasta que el GPIO0 está a 1
+    #-- (Boton no pulsado)
+btn15_wait_1:
+
+    li t0, GPIO_IN
+    lw t1, 0(t0)   
+    li t2, BIT15
+    and t1, t1, t2  #-- Leer pulsador del GPIO0
+
+    #-- Si está pulsado, esperar a que se suelte
+    beq t1,zero, btn15_wait_1
+
+    #---- El boton NO está apretado
+    #-- Espera antirrebotes
+    jal delay 
+
+    #-- Esperar hasta que el GOPIO0 esté a 0
+    #-- (Boton pulsado)
+btn15_wait_0:
+    li t0, GPIO_IN
+    lw t1, 0(t0)
+    li t2, BIT15
+    and t1, t1, t2  #-- Leer pulsador del GPIO0
+
+    #-- si no apretado, esperar
+    bne t1,zero, btn15_wait_0
+
+    #--- BOTON APRETADO
+    #-- Espera antirrebotes
+    jal delay
+
+    #-- Fin de la funcion
+    lw ra, 12(sp)
+    addi sp,sp, 16
+    ret
+
 
 # -----------------------------------------------
 # -- Delay

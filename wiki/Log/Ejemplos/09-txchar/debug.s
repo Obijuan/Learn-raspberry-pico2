@@ -40,7 +40,7 @@ debug_led1_MSB_loop:
     jal print_led1
 
     #-- Esperar hasta que se apriete el pulsador
-    jal button_press
+    jal button_press15
 
     #-- Pasar al siguiente bit
     addi s1, s1, -1
@@ -86,7 +86,7 @@ loop:
     jal print_led1
 
     #-- Esperar hasta que se apriete el pulsador
-    jal button_press
+    jal button_press15
 
     #-- Pasar al siguiente bit
     addi s1, s1, 1
