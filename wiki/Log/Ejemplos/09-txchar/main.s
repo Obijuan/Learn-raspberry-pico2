@@ -32,9 +32,10 @@
 # -----------------------------------
 .equ RESET_DONE, 0x40020008
 
-.equ SRAM_BASE,  0x20000000
-.equ UART0_BASE, 0x40070000
-.equ UART1_BASE, 0x40078000
+.equ SRAM_BASE,      0x20000000
+.equ UART0_BASE,     0x40070000
+.equ UART0_UARTIBRD, 0x40070024
+.equ UART1_BASE,     0x40078000
 
 #-- Crystal oscillator
 .equ XOSC_BASE,    0x40048000
@@ -179,7 +180,24 @@ wait_reset_done:
     add	s3,s3,a5
     mv a4,a5
 
-    sw a3,36(s0)
+    #-- Parte entera de los baudios (Integer Baudrate)
+    li t0, UART0_UARTIBRD
+    li a3, 0x51
+    sw a3, 0(t0)
+
+
+    #-- DEBUG: Cuanto vale el registro PAD del GPIO0 ?
+    #jal button_init15
+    
+    #li t0, UART0_UARTIBRD
+    #lw a0, 0(t0)
+    #jal debug_led1_lsb
+
+    #--  10001010000000000000000000000000
+
+    #-- 0000_0000_0101_0001
+    #--   0    0    5    1
+
     sw a4,40(s0)
     lw s2,48(s0)
     andi a5,s2,1
