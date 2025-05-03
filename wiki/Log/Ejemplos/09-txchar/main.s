@@ -205,10 +205,7 @@ wait_reset_done:
     lw s2,48(s0)
     andi a5,s2,1
 
-    li s1, UART0_UARTLCR_H_XOR
-
     lw a5,44(s0)
-    #sw zero,0(s1)
     sw s2,48(s0)
     li	a0,6
     jal	clock_get_hz  # 10000e98 <clock_get_hz>
@@ -218,7 +215,9 @@ wait_reset_done:
     divu a0,a0,s3
     xori a5,a5,112
     andi a5,a5,126
-    sw a5,0(s1)
+
+    li t0, UART0_UARTLCR_H_XOR
+    sw a5,0(t0)
 
     #-- Habilitar la UART
     #-- Habilitar transmisor
