@@ -32,12 +32,14 @@
 # -----------------------------------
 .equ RESET_DONE, 0x40020008
 
-.equ SRAM_BASE,       0x20000000
-.equ UART0_BASE,      0x40070000
-.equ UART0_UARTIBRD,  0x40070024
-.equ UART0_UARTFBRD,  0x40070028
-.equ UART0_UARTCR,    0x40070030 
-.equ UART0_UARTDMACR, 0x40070048
+.equ SRAM_BASE,             0x20000000
+.equ UART0_BASE,            0x40070000
+.equ UART0_UARTIBRD,        0x40070024
+.equ UART0_UARTFBRD,        0x40070028
+.equ UART0_UARTLCR_H,       0x4007002C
+  .equ UART0_UARTLCR_H_XOR, 0x4007102C
+.equ UART0_UARTCR,          0x40070030 
+.equ UART0_UARTDMACR,       0x40070048
 
 .equ UART1_BASE,     0x40078000
 
@@ -200,15 +202,11 @@ wait_reset_done:
     #jal debug_led1_lsb
 
    
-
-
-
     lw s2,48(s0)
     andi a5,s2,1
 
-    lui s1,0x1
-    addi s1,s1,44 # 102c <HeapSize+0x82c>
-    add	s1,s1,s0
+    li s1, UART0_UARTLCR_H_XOR
+
     lw a5,44(s0)
     sw zero,0(s1)
     sw s2,48(s0)
