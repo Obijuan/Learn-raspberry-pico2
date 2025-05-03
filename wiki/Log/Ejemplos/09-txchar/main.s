@@ -78,10 +78,6 @@ runtime_init:
     li a0,0
     jal gpio_set_function
 
-    li	a1,2
-    li	a0,1
-    #jal	gpio_set_function
-
 main_loop:
 
     li	a4,UART0_BASE
@@ -296,9 +292,8 @@ clock_get_hz:
 
 
 gpio_set_function:
-    lui	a5,0x40038
-    addi	a5,a5,4 # 40038004 <__StackTop+0x1ffb6004>
-    sh2add	a5,a0,a5
+    li a5, PAD_GPIO0  # 0x40038004
+    #sh2add	a5,a0,a5
     lw	a4,0(a5)
     lui	a3,0x1
     add	a3,a3,a5
