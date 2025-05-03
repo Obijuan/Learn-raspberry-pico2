@@ -18,8 +18,12 @@
 # * Bit 26: UART0
 # -----------------------------------
 .equ RESET_CTRL,     0x40020000
-.equ RESET_CTRL_SET, 0x40022000
-.equ RESET_CTRL_CLR, 0x40023000
+  .equ RESET_CTRL_XOR, 0x40021000
+  .equ RESET_CTRL_SET, 0x40022000
+  .equ RESET_CTRL_CLR, 0x40023000
+
+# --- Valor del registro de reset
+.equ RESET_UART0, BIT26
 
 # -----------------------------------
 # -- Registro de Status del reset
@@ -125,14 +129,14 @@ uart_init:
 
     #----------------- Configuracion de la UART0
 uart_init_label6:
-    # 10000cb2:
-    li a4,BIT26
-    lui a5,0x40022  #-- RESET_CTRL + 0x2000  (¿set?)
+
+    #-- Activar reset de la uart0
+    li a4,RESET_UART0
+    li a5,RESET_CTRL_SET  
     sw a4,0(a5)
 
-    
-    li a3,RESET_CTRL
-    lui a5,0x40023  #-- RESET_CTRL + 0x3000 (¿clear?)
+    #-- Desactivar el reset de la uart0
+    li a5,RESET_CTRL_CLR
     sw a4,0(a5)
 
     li a3, RESET_DONE 
