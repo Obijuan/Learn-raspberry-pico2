@@ -123,21 +123,6 @@ uart_init:
     #-- s1: Baudios
     mv s1,a1
 
-    #-- Llamar a clock_get_hz(6)
-    #-- Devuelve el contenido de la posicion de memoria 0x2000050c
-    #-- En principio eso es SRAM... no registros especificos
-    #-- Es una variable, que inicialmente vale 0
-    li a0,6
-    jal clock_get_hz
-
-    #-- a0 vale 0 (la primera vez)
-    beqz  a0,uart_init_end
-
-    #-- Aquí comienza la inicializacion de la uart
-    li a5,UART1_BASE
-    li a4,0x04000000
-    #beq s0,a5,label1   # 10000dac
-
     #----------------- Configuracion de la UART0
 uart_init_label6:
     # 10000cb2:
@@ -278,11 +263,6 @@ uart_init_end:
     lw s3,12(sp)
     addi sp,sp,32
     ret
-
-#-- Configuracion de la UART1
-label1:
-    #jal halt
-
 
 #-------------------------------
 #-- Lectura de una variable
