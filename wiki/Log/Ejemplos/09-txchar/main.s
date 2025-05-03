@@ -168,8 +168,6 @@ wait_reset_done:
     addi	a5,a5,1
     srli	a4,a5,0x7
 
-    #--- Pasa por aqui
-
     lui	a2,0x10
     addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
     lui	a3,0x10
@@ -180,17 +178,11 @@ wait_reset_done:
     mv a3,a4
     add	s3,s3,a5
     mv a4,a5
-   
-    #--- Pasa por aquí
 
     sw a3,36(s0)
     sw a4,40(s0)
     lw s2,48(s0)
     andi a5,s2,1
-
-    #--- Pasa por aqui
-
-    #--- Pasa por aquí
 
     lui s1,0x1
     addi s1,s1,44 # 102c <HeapSize+0x82c>
