@@ -167,16 +167,18 @@ wait_reset_done:
     slli	a5,a0,0x3
     divu	a5,a5,s1
     addi	a5,a5,1
-    srli	a4,a5,0x7
+    #srli	a4,a5,0x7
 
     lui	a2,0x10
     addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
-    lui	a3,0x10
+    #lui	a3,0x10
 
     srli a5,a5,0x1
     andi a5,a5,63
     slli s3,a4,0x6
-    mv a3,a4
+
+    #mv a3,a4
+
     add	s3,s3,a5
     mv a4,a5
 
