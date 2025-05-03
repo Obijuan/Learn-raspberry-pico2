@@ -167,26 +167,12 @@ wait_reset_done:
     divu	a5,a5,s1
     addi	a5,a5,1
     srli	a4,a5,0x7
-    bnez	a4,uart_init_label1 # 10000d52 <uart_init+0xc2>
-
-uart_init_label1:
 
     #--- Pasa por aqui
 
     lui	a2,0x10
     addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
     lui	a3,0x10
-    bgeu a2,a4,uart_init_label2 # 10000db2 <uart_init+0x122>
-
-    addi a3,a3,-1 # ffff <HeapSize+0xf7ff>
-    sw	a3,36(s0)
-    li	a4,0
-    sw	a4,40(s0)
-    lw	s2,48(s0)
-    lui	s3,0x400
-    addi s3,s3,-64 # 3fffc0 <HeapSize+0x3ff7c0>
-    andi a5,s2,1
-    beqz a5, uart_init_label5 # <uart_init+0x82>
 
 uart_init_label2:
 
