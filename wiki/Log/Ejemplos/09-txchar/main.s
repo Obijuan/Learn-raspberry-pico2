@@ -56,39 +56,34 @@ _start:
     #-- Inicializar la pila
     la sp, _stack_top
 
-    #-- Configurar el LED
-    jal led_init  
-
-#-------------------------------
-
-runtime_init:
     li s0,0x10001000 #-- XIP BASE + 0x1000
     jal	runtime_run_initializers
+
+     #-- Configurar el LED
+    jal led_init  
 
     #-- main
     li a1,115200      #-- Baudios
     li a0,UART0_BASE
     jal uart_init 
 
-    #-- La primera vez que se llama simplemente retorna sin configurar nada...
-    #-- Pero al hacer un reset con el pulsador (pin run a GND) entonces si
-    #-- que configura cosas...
-
-    li a1,2
-    li a0,0
-    jal gpio_set_function
-
-    #-- Cuanto vale el registro PAD del GPIO0 ?
-    jal button_init15
-    
-    li t0, PAD_GPIO0
-    lw a0, 0(t0)
-    #jal debug_led1_lsb
-
-    #-- PAD_GPIO0: 000000000000000000000000_0_0101_0110
+    #--------- Configurar pin TX UART0
+    #-- Configurar el PAD del GPIO0
     li t0, PAD_GPIO0
     li t1, 0x56
     sw t1,0(t0)
+
+    #-- Asignar el GPIO0 al pin tx de la UART0
+    li a0,GPIO00_CTRL
+    li a1, 2
+    sw a1,0(a0)
+
+    #-- DEBUG: Cuanto vale el registro PAD del GPIO0 ?
+    #jal button_init15
+    
+    #li t0, PAD_GPIO0
+    #lw a0, 0(t0)
+    #jal debug_led1_lsb
 
 main_loop:
 
@@ -303,18 +298,7 @@ clock_get_hz:
     ret
 
 
-gpio_set_function:
 
-    #-- Configurar el PAD del GPIO0
-    li t0, PAD_GPIO0
-    li t1, 0x56
-    sw t1,0(t0)
-
-    #-- Asignar el GPIO0 al pin tx de la UART0
-    li a0,GPIO00_CTRL
-    li a1, 2
-    sw a1,0(a0)
-    ret
 
 
 # -----------------------------------------------
