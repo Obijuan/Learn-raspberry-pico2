@@ -48,7 +48,8 @@
 # * SLEWFAST (0): 1= rápido. 0= lento
 #
 # -- Direcciones
-.equ PAD_GPIO0,  0x40038004
+.equ PAD_GPIO0,       0x40038004
+  .equ PAD_GPIO0_SET, 0x4003A004 
 .equ PAD_GPIO15, 0x40038040
 .equ PAD_GPIO25, 0x40038068
 

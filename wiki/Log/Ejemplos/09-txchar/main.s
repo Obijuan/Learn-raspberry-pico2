@@ -292,19 +292,23 @@ clock_get_hz:
 
 
 gpio_set_function:
-    li a5, PAD_GPIO0  # 0x40038004
-    #sh2add	a5,a0,a5
-    lw	a4,0(a5)
-    lui	a3,0x1
-    add	a3,a3,a5
-    xori	a4,a4,64
-    andi	a4,a4,192
-    lui	a2,0x40028
-    sw	a4,0(a3)
-    sh3add	a0,a0,a2
+    li a5, PAD_GPIO0     # 0x40038004
+    li a3, PAD_GPIO0_SET # 0x4003A004
+
+    #-- Leer PAD_GPIO0
+    lw a4,0(a5)
+    xori a4,a4,0x40
+    andi a4,a4,0xC0
+    sw a4,0(a3)
+
+    #-- Funcion 2
+    li a0,GPIO00_CTRL
+    li a1, 2
+    sw a1,0(a0)
+
     lui	a4,0x3
     add	a5,a5,a4
-    sw	a1,4(a0)
+   
     li	a4,256
     sw	a4,0(a5)
     ret
