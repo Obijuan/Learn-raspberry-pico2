@@ -306,10 +306,9 @@ gpio_set_function:
     li a1, 2
     sw a1,0(a0)
 
-    lui	a4,0x3
-    add	a5,a5,a4
-   
-    li	a4,256
+    #-- Desactivar bit ISO
+    li a5, PAD_GPIO0_XOR   
+    li	a4,0x100
     sw	a4,0(a5)
     ret
 
