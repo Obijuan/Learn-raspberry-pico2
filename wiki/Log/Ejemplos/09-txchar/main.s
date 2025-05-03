@@ -35,6 +35,8 @@
 .equ SRAM_BASE,      0x20000000
 .equ UART0_BASE,     0x40070000
 .equ UART0_UARTIBRD, 0x40070024
+.equ UART0_UARTFBRD, 0x40070028 
+
 .equ UART1_BASE,     0x40078000
 
 #-- Crystal oscillator
@@ -167,17 +169,13 @@ wait_reset_done:
     slli	a5,a0,0x3
     divu	a5,a5,s1
     addi	a5,a5,1
-    #srli	a4,a5,0x7
 
     lui	a2,0x10
     addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
-    #lui	a3,0x10
 
     srli a5,a5,0x1
     andi a5,a5,63
     slli s3,a4,0x6
-
-    #mv a3,a4
 
     add	s3,s3,a5
     mv a4,a5
@@ -187,20 +185,26 @@ wait_reset_done:
     li a3, 0x51
     sw a3, 0(t0)
 
+    #-- Parte fraccional de los baudios (Fractional baudrate)
+    li t0, UART0_UARTFBRD
+    li a4, 0x18
+    sw a4, 0(t0)
 
-    #-- DEBUG: Cuanto vale el registro PAD del GPIO0 ?
+    #sw a4,0x28(s0)
+
     #jal button_init15
     
-    #li t0, UART0_UARTIBRD
+    #li t0, UART0_UARTFBRD
     #lw a0, 0(t0)
     #jal debug_led1_lsb
 
-    #--  10001010000000000000000000000000
+    #-- 000110   
+    #-- 01_1000
+    #--  1_8
+   
 
-    #-- 0000_0000_0101_0001
-    #--   0    0    5    1
 
-    sw a4,40(s0)
+
     lw s2,48(s0)
     andi a5,s2,1
 
