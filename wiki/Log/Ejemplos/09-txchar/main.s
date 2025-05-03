@@ -63,12 +63,10 @@ _start:
     li s0,0x10001000 #-- XIP BASE + 0x1000
     jal	runtime_run_initializers
 
-     #-- Configurar el LED
+    #-- Configurar el LED
     jal led_init  
 
-    #-- main
-    li a1,115200      #-- Baudios
-    li a0,UART0_BASE
+    #-- Inicializar la UART
     jal uart_init 
 
     #--------- Configurar pin TX UART0
@@ -121,11 +119,8 @@ uart_init:
     sw s2,16(sp)
     sw s3,12(sp)
 
-    #-- s0: Puntero a la uart0
-    mv s0,a0
-
-    #-- s1: Baudios
-    mv s1,a1
+    li s1,115200  #-- Baudios
+    li s0,UART0_BASE
 
     #----------------- Configuracion de la UART0
 uart_init_label6:
@@ -139,15 +134,23 @@ uart_init_label6:
     li a5,RESET_CTRL_CLR
     sw a4,0(a5)
 
-    li a3, RESET_DONE 
-loop1:
-    lw a5,0(a3)     # a5 = Registro Reset_done
-    li a4, BIT26
-    andn a5,a4,a5   # a5 = a4 and ~a5
-    bnez a5,loop1   # 10000cc4
+    #-- Esperar hasta que el reset termine
+    li a3, RESET_DONE   #-- Registro de reset
+    li a4, RESET_UART0  #-- Bit de reset de la uart0
 
-    #-- Llega aquí si el bit26 del registro reset_done está a 1
-    #-- Es decir, llega aquí cuando se ha reseteado la uart0
+wait_reset_done:
+    lw a5,0(a3)      #-- Leer estado del reset
+    and a5, a5, a4   #-- Aislar el bit de reset de la uart
+
+    #-- Bit RESET_UART0 == 0? --> Esperar
+    beq a5, zero, wait_reset_done
+
+    #-- El bit RESET_UART0 del registro RESET_DONE está a 1
+    #-- Significa que la UART0 está inicializada
+
+
+
+
 
     lui	a5,0xbff88
     add	a5,a5,s0
@@ -166,19 +169,24 @@ loop1:
     srli	a4,a5,0x7
     bnez	a4,uart_init_label1 # 10000d52 <uart_init+0xc2>
 
-    li	s3,64
-    li	a3,1
 
 uart_init_label3:
 # 10000d04:	
+    #--- Pasa por aquí
+
     sw a3,36(s0)
     sw a4,40(s0)
     lw s2,48(s0)
     andi a5,s2,1
     bnez a5,uart_init_label4 # 10000d76 <uart_init+0xe6>
 
+    #--- Pasa por aqui
+
 uart_init_label5:
 # 10000d12:
+
+    #--- Pasa por aquí
+
     lui s1,0x1
     addi s1,s1,44 # 102c <HeapSize+0x82c>
     add	s1,s1,s0
@@ -208,6 +216,9 @@ uart_init_label5:
 
 
 uart_init_label1:
+
+    #--- Pasa por aqui
+
     lui	a2,0x10
     addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
     lui	a3,0x10
@@ -223,6 +234,8 @@ uart_init_label1:
     andi a5,s2,1
     beqz a5, uart_init_label5 # <uart_init+0x82>
 
+    #-- NO PASA POR AQUI
+   
 uart_init_label4:
     lui	a5,0x3
     addi a5,a5,48 # 3030 <HeapSize+0x2830>
@@ -249,6 +262,7 @@ uart_init_label4:
 # 10000db0:	b709                	j	uart_init_label6  # 10000cb2 <uart_init+0x22>
 
 uart_init_label2:
+
 # 10000db2:	
     srli a5,a5,0x1
     andi a5,a5,63
