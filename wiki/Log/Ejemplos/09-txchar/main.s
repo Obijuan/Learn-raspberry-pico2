@@ -169,6 +169,36 @@ wait_reset_done:
     srli	a4,a5,0x7
     bnez	a4,uart_init_label1 # 10000d52 <uart_init+0xc2>
 
+uart_init_label1:
+
+    #--- Pasa por aqui
+
+    lui	a2,0x10
+    addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
+    lui	a3,0x10
+    bgeu a2,a4,uart_init_label2 # 10000db2 <uart_init+0x122>
+
+    addi a3,a3,-1 # ffff <HeapSize+0xf7ff>
+    sw	a3,36(s0)
+    li	a4,0
+    sw	a4,40(s0)
+    lw	s2,48(s0)
+    lui	s3,0x400
+    addi s3,s3,-64 # 3fffc0 <HeapSize+0x3ff7c0>
+    andi a5,s2,1
+    beqz a5, uart_init_label5 # <uart_init+0x82>
+
+uart_init_label2:
+
+# 10000db2:	
+    srli a5,a5,0x1
+    andi a5,a5,63
+    slli s3,a4,0x6
+    mv a3,a4
+    add	s3,s3,a5
+    mv a4,a5
+    j uart_init_label3 # 10000d04 <uart_init+0x74>
+
 
 uart_init_label3:
 # 10000d04:	
@@ -178,7 +208,7 @@ uart_init_label3:
     sw a4,40(s0)
     lw s2,48(s0)
     andi a5,s2,1
-    bnez a5,uart_init_label4 # 10000d76 <uart_init+0xe6>
+    #bnez a5,uart_init_label4 # 10000d76 <uart_init+0xe6>
 
     #--- Pasa por aqui
 
@@ -215,62 +245,7 @@ uart_init_label5:
     ret
 
 
-uart_init_label1:
 
-    #--- Pasa por aqui
-
-    lui	a2,0x10
-    addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
-    lui	a3,0x10
-    bgeu a2,a4,uart_init_label2 # 10000db2 <uart_init+0x122>
-
-    addi a3,a3,-1 # ffff <HeapSize+0xf7ff>
-    sw	a3,36(s0)
-    li	a4,0
-    sw	a4,40(s0)
-    lw	s2,48(s0)
-    lui	s3,0x400
-    addi s3,s3,-64 # 3fffc0 <HeapSize+0x3ff7c0>
-    andi a5,s2,1
-    beqz a5, uart_init_label5 # <uart_init+0x82>
-
-    #-- NO PASA POR AQUI
-   
-uart_init_label4:
-    lui	a5,0x3
-    addi a5,a5,48 # 3030 <HeapSize+0x2830>
-    add	a5,a5,s0
-    li	a4,769
-    sw	a4,0(a5)
-    lw	s1,36(s0)
-    lw	a5,40(s0)
-    li	a0,6
-    slli s1,s1,0x6
-    add	s1,s1,a5
-    jal	clock_get_hz  # 10000e98 <clock_get_hz>
-
-    lui	a5,0x8f2b8
-    addi a5,a5,-1163 # 8f2b7b75 <__StackTop+0x6f235b75>
-    mulhu a5,a0,a5
-    slli a0,s1,0xa
-    li	a1,0
-    srli a5,a5,0xb
-    divu a0,a0,a5
-    jal	busy_wait_us
-# 10000daa:	b7a5                	j	uart_init_label5 # 10000d12 <uart_init+0x82>
-# 10000dac:	08000737          	lui	a4,0x8000
-# 10000db0:	b709                	j	uart_init_label6  # 10000cb2 <uart_init+0x22>
-
-uart_init_label2:
-
-# 10000db2:	
-    srli a5,a5,0x1
-    andi a5,a5,63
-    slli s3,a4,0x6
-    mv a3,a4
-    add	s3,s3,a5
-    mv a4,a5
-    j uart_init_label3 # 10000d04 <uart_init+0x74>
 
 uart_init_end:
     #-- Fin de la funcion
