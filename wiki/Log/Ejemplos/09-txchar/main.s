@@ -278,7 +278,7 @@ uart_init_end:
 
 #-- Configuracion de la UART1
 label1:
-    jal halt
+    #jal halt
 
 
 #-------------------------------
