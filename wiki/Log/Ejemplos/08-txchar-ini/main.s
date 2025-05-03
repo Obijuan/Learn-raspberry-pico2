@@ -59,6 +59,9 @@ _start:
     #-- Configurar el LED
     jal led_init  
 
+    #-- TEST
+    #j test2
+
 #-------------------------------
 
 runtime_init:
@@ -80,7 +83,9 @@ runtime_init:
 
     li	a1,2
     li	a0,1
-    #jal	gpio_set_function
+    jal	gpio_set_function
+
+    #-- TODO: Analizar este codigo
 
 main_loop:
 
@@ -90,6 +95,8 @@ next:
     andi	a5,a5,0x20
     bnez	a5,next
 
+    #jal led_blinky2
+
     #-- Transmitir!
     li	a5,'A'
     sw	a5,0(a4)
@@ -98,6 +105,8 @@ next:
     jal delay
     jal led_toggle
     j main_loop
+
+inf3: j inf3
 
 #--------------------------------
 #-- Inicializar la UART
@@ -266,6 +275,17 @@ uart_init_label2:
     mv a4,a5
     j uart_init_label3 # 10000d04 <uart_init+0x74>
 
+
+
+
+    #-- TODO
+    #jal led_blinky2
+
+    #-- DEBUG!!
+    #jal debug_led1_MSB
+    #jal led_blinky
+
+
 uart_init_end:
     #-- Fin de la funcion
     lw ra,28(sp)
@@ -334,6 +354,100 @@ delay_end_loop:
 
 
 #-----------------------------------
+
+
+test2:
+
+    #-- Configurar boton
+    jal button_init
+
+    # --------- Configurar la UART0
+
+    #-- Configurar pin GPIO0 como UART0-TX
+    li t0, GPIO00_CTRL
+    li t1, FUNC_UART0_TX
+    #sw t1, 0(t0)
+
+
+    #-- DEBUG: Observar el valor del registro
+    li t0, RESET_CTRL
+    lw a0, 0(t0)
+    li a1, BIT26
+    jal print_led1
+
+    li t0, RESET_CTRL_SET
+    sw a1, 0(t0)
+
+    jal button_press
+
+    #-- Poner el bit 26 a 0
+    li a1, BIT26
+    li t0, RESET_CTRL_CLR
+    sw a1, 0(t0)
+
+    #-- DEBUG: Observar el valor del registro
+    li t0, RESET_CTRL
+    lw a0, 0(t0)
+    li a1, BIT26
+    jal print_led1
+
+    #-- Esperar a que se pulse el boton
+    jal button_press
+
+    #-- Observar el bit 26 otra vez
+    li t0, RESET_DONE
+    lw a0, 0(t0)
+    li a1, BIT26
+    jal print_led1
+
+
+inf2:
+    j inf2
+
+    #jal debug_led1_MSB
+
+    #-- Al terminar hacer parpadear el LED rápidamente
+    #jal led_blinky
+
+
+
+
+
+
+
+
+
+    #-- Activar el reset de la UART0
+    li t0, RESET_CTRL
+    li t1, BIT26  #-- UART0
+    sw t1, 0(t0)
+
+    #-- Desactivar el reset
+    li t0, RESET_CTRL_CLR
+    li t1, BIT26  #-- UART0
+    sw t1, 0(t0)
+
+    #---------- Esperar a que el reset se complete
+    li t0, RESET_DONE
+
+wait_reset:
+    lw t1, 0(t0)  #-- Leer estado del reset
+    li t2, BIT26  #-- Mascara para lectura del reset
+    and t1, t1, t2 #-- Comprobar si el reset se ha completado
+    beq t1,zero, wait_reset
+
+    # -- Encender el LED
+    jal led_on
+
+
+    #-- ddd
+
+        #-- Fin
+inf:    j inf
+   
+halt:
+    j halt
+
 
 
 runtime_run_initializers:
@@ -406,9 +520,39 @@ runtime_run_initializers_end:
 # ✅1000157c:	.word runtime_init_usb_power_down # 0x1000_1018
 # 10001580 <__pre_init_runtime_init_clocks>:
 # ✅10001580:	     .word runtime_init_clocks # 0x1000_107e
+# 
 # 10001584 <__pre_init_runtime_init_post_clock_resets>:
-# ✅10001584:	    .word runtime_init_post_clock_resets # 0x1000_1032
-
+# 10001584:	    .word runtime_init_post_clock_resets # 0x1000_1032
+# 
+# 10001588 <__pre_init_runtime_init_boot_locks_reset>:
+# 10001588:	0f66 1000                                   f...
+# 
+# 1000158c <__pre_init_runtime_init_spin_locks_reset>:
+# 1000158c:	107a 1000                                   z...
+# 
+# 10001590 <__pre_init_runtime_init_bootrom_locking_enable>:
+# 10001590:	0f54 1000                                   T...
+# 
+# 10001594 <__pre_init_runtime_init_mutex>:
+# 10001594:	03d2 1000                                   ....
+# 
+# 10001598 <__pre_init_runtime_init_default_alarm_pool>:
+# 10001598:	0824 1000                                   $...
+# 
+# 1000159c <__pre_init_first_per_core_initializer>:
+# 1000159c:	0fa8 1000                                   ....
+# 
+# 100015a0 <__pre_init_runtime_init_per_core_bootrom_reset>:
+# 100015a0:	1064 1000                                   d...
+# 
+# 100015a4 <__pre_init_runtime_init_per_core_h3_irq_registers>:
+# 100015a4:	119e 1000                                   ....
+# 
+# 100015a8 <__pre_init_runtime_init_per_core_irq_priorities>:
+# 100015a8:	02d2 1000                                   ....
+# 
+# 100015ac <__frame_dummy_init_array_entry>:
+# 100015ac:	015a 1000 14dc 1000                         Z.......
 
 runtime_init_bootrom_reset:
     li  a0,0x5000
