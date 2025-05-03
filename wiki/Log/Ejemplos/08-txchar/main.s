@@ -10,8 +10,6 @@
 .equ CLK_SYS_SELECTED,   0x40010044
 .equ CLK_SYS_RESUS_CTRL, 0x40010084 
 
-
-
 # -----------------------------------
 # -- Registro de Control del Reset 
 # -----------------------------------
@@ -70,24 +68,10 @@ runtime_init:
     li s0,0x10001000 #-- XIP BASE + 0x1000
     jal	runtime_run_initializers
 
-    #j halt
-
-    #-- TODO
-
-
-
-
-
-#-------------------------
-    #-- Configurar el pulsador
-    #jal button_init
-
     #-- main
     li a1,115200      #-- Baudios
     li a0,UART0_BASE
     jal uart_init 
-
-    jal led_blinky
 
     #-- La primera vez que se llama simplemente retorna sin configurar nada...
     #-- Pero al hacer un reset con el pulsador (pin run a GND) entonces si
@@ -118,8 +102,6 @@ next:
     sw	a5,0(a4)
 
     #-- Esperar!
-    jal delay
-    jal delay
     jal delay
     jal led_toggle
     j main_loop
