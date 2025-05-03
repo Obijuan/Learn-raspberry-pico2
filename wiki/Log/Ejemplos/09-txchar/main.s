@@ -233,21 +233,10 @@ uart_init_label5:
     andi a5,a5,126
     sw a5,0(s1)
     li a3,769
-    lw	s2,16(sp)
-    lw	s3,12(sp)
-    li	a4,3
-    sw	a3,48(s0)
-    sw	a4,72(s0)
-    lw	ra,28(sp)
-    lw	s0,24(sp)
-    lw	s1,20(sp)
-    addi	sp,sp,32
-    ret
-
-
-
-
-uart_init_end:
+    li a4,3
+    sw a3,48(s0)
+    sw a4,72(s0)
+    
     #-- Fin de la funcion
     lw ra,28(sp)
     lw s0,24(sp)
