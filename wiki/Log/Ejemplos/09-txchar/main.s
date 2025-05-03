@@ -32,10 +32,12 @@
 # -----------------------------------
 .equ RESET_DONE, 0x40020008
 
-.equ SRAM_BASE,      0x20000000
-.equ UART0_BASE,     0x40070000
-.equ UART0_UARTIBRD, 0x40070024
-.equ UART0_UARTFBRD, 0x40070028 
+.equ SRAM_BASE,       0x20000000
+.equ UART0_BASE,      0x40070000
+.equ UART0_UARTIBRD,  0x40070024
+.equ UART0_UARTFBRD,  0x40070028
+.equ UART0_UARTCR,    0x40070030 
+.equ UART0_UARTDMACR, 0x40070048
 
 .equ UART1_BASE,     0x40078000
 
@@ -178,7 +180,7 @@ wait_reset_done:
     slli s3,a4,0x6
 
     add	s3,s3,a5
-    mv a4,a5
+    #mv a4,a5
 
     #-- Parte entera de los baudios (Integer Baudrate)
     li t0, UART0_UARTIBRD
@@ -190,7 +192,6 @@ wait_reset_done:
     li a4, 0x18
     sw a4, 0(t0)
 
-    #sw a4,0x28(s0)
 
     #jal button_init15
     
@@ -198,9 +199,6 @@ wait_reset_done:
     #lw a0, 0(t0)
     #jal debug_led1_lsb
 
-    #-- 000110   
-    #-- 01_1000
-    #--  1_8
    
 
 
@@ -223,10 +221,9 @@ wait_reset_done:
     xori a5,a5,112
     andi a5,a5,126
     sw a5,0(s1)
+
     li a3,769
-    li a4,3
-    sw a3,48(s0)
-    sw a4,72(s0)
+    sw a3,0x30(s0)
     
     #-- Fin de la funcion
     lw ra,28(sp)
