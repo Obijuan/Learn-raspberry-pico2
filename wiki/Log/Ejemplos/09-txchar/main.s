@@ -216,6 +216,9 @@ wait_reset_done:
     xori a5,a5,112
     andi a5,a5,126
 
+    #-- TODO: Visualizar a5 y ver qué valor tiene...
+    #-- para "cablearlo" directamente
+
     li t0, UART0_UARTLCR_H_XOR
     sw a5,0(t0)
 
