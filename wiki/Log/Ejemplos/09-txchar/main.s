@@ -222,8 +222,12 @@ wait_reset_done:
     andi a5,a5,126
     sw a5,0(s1)
 
-    li a3,769
-    sw a3,0x30(s0)
+    #-- Habilitar la UART
+    #-- Habilitar transmisor
+    #-- Habilitar receptor
+    li t0, UART0_UARTCR
+    li t1,0x301
+    sw t1,0(t0)
     
     #-- Fin de la funcion
     lw ra,28(sp)
