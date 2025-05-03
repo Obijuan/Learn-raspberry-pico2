@@ -208,7 +208,7 @@ wait_reset_done:
     li s1, UART0_UARTLCR_H_XOR
 
     lw a5,44(s0)
-    sw zero,0(s1)
+    #sw zero,0(s1)
     sw s2,48(s0)
     li	a0,6
     jal	clock_get_hz  # 10000e98 <clock_get_hz>
