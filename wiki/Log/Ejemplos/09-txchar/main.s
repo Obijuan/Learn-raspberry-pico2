@@ -193,22 +193,14 @@ wait_reset_done:
     li t0, UART0_UARTFBRD
     li a4, 0x18
     sw a4, 0(t0)
-
    
-    lw s2,48(s0)
-    andi a5,s2,1
+    #lw s2,0x30(s0)
+    #andi a5,s2,1
 
-    lw a5,44(s0)
-    sw s2,48(s0)
-    li	a0,6
-    jal	clock_get_hz  # 10000e98 <clock_get_hz>
+    #lw a5,44(s0)
 
-    lw a5,44(s0)
-    slli a0,a0,0x2
-    divu a0,a0,s3
-    xori a5,a5,112
-    andi a5,a5,126
 
+    #sw s2,0x30(s0)
     
     #-- DEBUG
     #jal button_init15
