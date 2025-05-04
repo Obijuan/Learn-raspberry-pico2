@@ -199,7 +199,7 @@ wait_reset_done:
 
     #lw a5,44(s0)
 
-
+    #-- TODO: Mirar valores del registro UARTCR
     #sw s2,0x30(s0)
     
     #-- DEBUG
