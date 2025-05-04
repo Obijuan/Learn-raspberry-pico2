@@ -234,9 +234,8 @@ runtime_run_initializers:
     addi s0,s0,0x574
 
     #-- Inicializaciones!!
-    jal runtime_init_bootrom_reset
+    #jal runtime_init_bootrom_reset
     jal runtime_init_early_resets
-    #jal runtime_init_usb_power_down
     jal runtime_init_clocks
     jal runtime_init_post_clock_resets
 
@@ -285,29 +284,6 @@ runtime_run_initializers_end:
 # 10001584 <__pre_init_runtime_init_post_clock_resets>:
 # ✅10001584:	    .word runtime_init_post_clock_resets # 0x1000_1032
 
-
-runtime_init_bootrom_reset:
-    li  a0,0x5000
-    addi sp,sp,-16
-    addi  a0,a0,0x253 # 5253 <HeapSize+0x4a53>
-    sw ra,12(sp)
-
-    # -- a0 = 0x5253
-    jal	rom_func_lookup # 10000f46
-    lw ra,12(sp)
-    mv a5,a0
-    li a0,4
-    addi sp,sp,16
-    jr a5
-
-rom_func_lookup:
-    li a5,0x8000
-    addi	a5,a5,-518 # 7dfa <HeapSize+0x75fa>
-
-    #-- a5 = 0x7dfa
-    lhu	a5,0(a5)
-    li	a1,1
-    jr a5
 
 runtime_init_early_resets:
     li a5, 0xefef4000
