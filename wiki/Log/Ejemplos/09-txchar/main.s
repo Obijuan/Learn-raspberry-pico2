@@ -7,7 +7,6 @@
 
 .equ CLOCK_BASE,         0x40010000
 .equ CLK_SYS_CTRL,       0x4001003C
-  .equ CLK_SYS_CTRL_CLR, 0x4001303C
 .equ CLK_SYS_SELECTED,   0x40010044
 .equ CLK_SYS_RESUS_CTRL, 0x40010084 
 
@@ -250,18 +249,15 @@ runtime_init_clocks:
     sw s2,0(sp)
 
     li s0, CLOCK_BASE
-
-    #-- Inicializar RESUS
-    li t0, CLK_SYS_RESUS_CTRL
-    sw	zero,0(t0)
+    sw	zero,0x84(s0)  # 40010084 (CLK_SYS_RESUS_CTRL)
 
     #-- Inicializar oscilador externo
-    jal	xosc_init
+    jal	xosc_init  # 10000f84 
 
-    #-- Seleccionar CLK-REF
-    li t0, CLK_SYS_CTRL_CLR 
-    li t1,1
-    sw t1,0(t0)
+    #-- Seleccionar CLK-REF (?)
+    li a5,0x40013000  #-- CLOCK_BASE + 0x3000    
+    li a4,1
+    sw a4,0x3C(a5) #-- (CLOCK_CTRL_XOR)
 
     #-- Esperar a que se realice la selección de reloj
 label_rt_5:
