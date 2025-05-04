@@ -108,19 +108,19 @@ uart_init:
     sw t1,0(t0)
 
     #-- Desactivar el reset de la uart0
-    li a5,RESET_CTRL_CLR
-    sw a4,0(a5)
+    li t0,RESET_CTRL_CLR
+    sw t1,0(t0)
 
     #-- Esperar hasta que el reset termine
-    li a3, RESET_DONE   #-- Registro de reset
-    li a4, RESET_UART0  #-- Bit de reset de la uart0
+    li t0, RESET_DONE   #-- Registro de reset
+    li t1, RESET_UART0  #-- Bit de reset de la uart0
 
 wait_reset_done:
-    lw a5,0(a3)      #-- Leer estado del reset
-    and a5, a5, a4   #-- Aislar el bit de reset de la uart
+    lw t2,0(t0)      #-- Leer estado del reset
+    and t2, t2, t1   #-- Aislar el bit de reset de la uart
 
     #-- Bit RESET_UART0 == 0? --> Esperar
-    beq a5, zero, wait_reset_done
+    beq t2, zero, wait_reset_done
 
     #-- El bit RESET_UART0 del registro RESET_DONE está a 1
     #-- Significa que la UART0 está inicializada
