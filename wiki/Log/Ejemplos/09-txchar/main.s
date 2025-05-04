@@ -208,23 +208,17 @@ wait_reset_done:
     divu a0,a0,s3
     xori a5,a5,112
     andi a5,a5,126
-    mv s6,a5
 
-    #-- TODO: Visualizar a5 y ver qué valor tiene...
-    #-- para "cablearlo" directamente
-
-    #jal button_init15
     
-    mv a0, s6
+    #-- DEBUG
+    #jal button_init15
     #jal debug_led1_lsb
 
-    #-- 000011100000000000000000000000000
-    #-- 0000000000000000000000000_0111_0000
-
-
-    li t0, UART0_UARTLCR_H_XOR
+    #-- Configurar UART
+    #-- 8bits de datos. Sin paridad
+    li t0, UART0_UARTLCR_H
     li t1, 0xE0
-    sw a5,0(t0)
+    sw t1,0(t0)
 
     #-- Habilitar la UART
     #-- Habilitar transmisor
