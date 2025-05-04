@@ -34,7 +34,16 @@
 
 .equ SRAM_BASE,             0x20000000
 .equ UART0_BASE,            0x40070000
+
+#-- Registro de datos de la uart
+.equ UART0_UARTDR,          0x40070000
+
+#-- Registro flags de la UART
 .equ UART0_UARTF,           0x40070018
+
+  #-- Transmisor ocupado
+  .equ TXFF, 0x20
+
 .equ UART0_UARTIBRD,        0x40070024
 .equ UART0_UARTFBRD,        0x40070028
 .equ UART0_UARTLCR_H,       0x4007002C
@@ -83,17 +92,19 @@ _start:
 
 main_loop:
 
-    li a4,UART0_BASE
-
-next:
+    #-- Esperar a que el transmisor esté listo
+wait_tx:
     li t0, UART0_UARTF
-    lw a5, 0(t0)  
-    andi	a5,a5,0x20
-    bnez	a5,next
+    lw t1, 0(t0)  
+    andi t1,t1,TXFF
+
+    #-- ¿Bit TXFF==1? (Ocupado), esperar
+    bne t1, zero, wait_tx
 
     #-- Transmitir!
-    li	a5,'A'
-    sw	a5,0(a4)
+    li t0,UART0_UARTDR
+    li t1,'A'
+    sw t1,0(t0)
 
     #-- Esperar!
     jal delay
