@@ -236,7 +236,7 @@ runtime_run_initializers:
     #-- Inicializaciones!!
     jal runtime_init_bootrom_reset
     jal runtime_init_early_resets
-    jal runtime_init_usb_power_down
+    #jal runtime_init_usb_power_down
     jal runtime_init_clocks
     jal runtime_init_post_clock_resets
 
@@ -343,24 +343,6 @@ label_rt_3:
     #-- Todos los bits especificados de RESET_DONE
     #-- están a 1
     ret
-
-
-
-runtime_init_usb_power_down:
-    li a5,USB_SIE_CTRL
-    lw a4,0(a5)
-    li a5,0x00008000  #-- PULLDOWN_EN
-    beq	a4,a5,label_rt_4  # 10001026 <runtime_init_usb_power_down+0xe>
-    ret
-
-    #-- Esto se ejecuta si está habilitado el pull-down
-label_rt_4:
-    li	a5,USB_SIE_CTRL_SET
-    li	a4,0x40000  #-- TRANSCEIVER_PD: Apagar el transceptor del bus
-    sw	a4,0(a5)
-    ret
-
-
 
 runtime_init_clocks:
     addi sp,sp,-16
