@@ -264,10 +264,11 @@ runtime_init_clocks:
     sw t1,0(t0)
 
     #-- Esperar a que se realice la selección de reloj
-label_rt_5:
-    lw	a5,0x44(s0) # (CLK_SYS_SELECTED)
-    li a4,1
-    bne	a5,a4,label_rt_5  # 1000109a <runtime_init_clocks+0x1c>
+wait_selected:
+    li t0, CLK_SYS_SELECTED
+    lw	t1,0(t0)
+    li t2,1
+    bne	t1,t2, wait_selected
 
     li a4,3
     li a5,0x40013000 #-- CLOCK_BASE + 0x3000
