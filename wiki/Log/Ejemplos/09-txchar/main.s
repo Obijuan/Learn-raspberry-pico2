@@ -234,7 +234,6 @@ runtime_run_initializers:
     addi s0,s0,0x574
 
     #-- Inicializaciones!!
-    #jal runtime_init_bootrom_reset
     jal runtime_init_early_resets
     jal runtime_init_clocks
     jal runtime_init_post_clock_resets
