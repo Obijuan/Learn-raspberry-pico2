@@ -194,13 +194,6 @@ wait_reset_done:
     li a4, 0x18
     sw a4, 0(t0)
 
-
-    #jal button_init15
-    
-    #li t0, UART0_UARTFBRD
-    #lw a0, 0(t0)
-    #jal debug_led1_lsb
-
    
     lw s2,48(s0)
     andi a5,s2,1
@@ -215,11 +208,22 @@ wait_reset_done:
     divu a0,a0,s3
     xori a5,a5,112
     andi a5,a5,126
+    mv s6,a5
 
     #-- TODO: Visualizar a5 y ver qué valor tiene...
     #-- para "cablearlo" directamente
 
+    #jal button_init15
+    
+    mv a0, s6
+    #jal debug_led1_lsb
+
+    #-- 000011100000000000000000000000000
+    #-- 0000000000000000000000000_0111_0000
+
+
     li t0, UART0_UARTLCR_H_XOR
+    li t1, 0xE0
     sw a5,0(t0)
 
     #-- Habilitar la UART
