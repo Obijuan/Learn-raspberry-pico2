@@ -250,7 +250,6 @@ runtime_init_clocks:
     sw s2,0(sp)
 
     li s0, CLOCK_BASE
-    #sw	zero,0x84(s0)  # 40010084 (CLK_SYS_RESUS_CTRL)
 
     #-- Inicializar RESUS
     li t0, CLK_SYS_RESUS_CTRL
@@ -258,11 +257,6 @@ runtime_init_clocks:
 
     #-- Inicializar oscilador externo
     jal	xosc_init
-
-    #-- Seleccionar CLK-REF (?)
-    li a5,0x40013000  #-- CLOCK_BASE + 0x3000    
-    li a4,1
-    sw a4,0x3C(a5) #-- (CLOCK_CTRL_XOR)
 
     #-- Seleccionar CLK-REF
     li t0, CLK_SYS_CTRL_CLR 
@@ -272,6 +266,7 @@ runtime_init_clocks:
     #-- Esperar a que se realice la selección de reloj
 label_rt_5:
     lw	a5,0x44(s0) # (CLK_SYS_SELECTED)
+    li a4,1
     bne	a5,a4,label_rt_5  # 1000109a <runtime_init_clocks+0x1c>
 
     li a4,3
