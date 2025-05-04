@@ -34,6 +34,7 @@
 
 .equ SRAM_BASE,             0x20000000
 .equ UART0_BASE,            0x40070000
+.equ UART0_UARTF,           0x40070018
 .equ UART0_UARTIBRD,        0x40070024
 .equ UART0_UARTFBRD,        0x40070028
 .equ UART0_UARTLCR_H,       0x4007002C
@@ -82,9 +83,11 @@ _start:
 
 main_loop:
 
-    li	a4,UART0_BASE
+    li a4,UART0_BASE
+
 next:
-    lw	a5,0x18(a4)    #-- Leer Registro UARTFR (Flag-register)
+    li t0, UART0_UARTF
+    lw a5, 0(t0)  
     andi	a5,a5,0x20
     bnez	a5,next
 
