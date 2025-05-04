@@ -127,13 +127,13 @@ wait_reset_done:
 
     #-- Parte entera de los baudios (Integer Baudrate)
     li t0, UART0_UARTIBRD
-    li a3, 0x51
-    sw a3, 0(t0)
+    li t1, 0x51
+    sw t1, 0(t0)
 
     #-- Parte fraccional de los baudios (Fractional baudrate)
     li t0, UART0_UARTFBRD
-    li a4, 0x18
-    sw a4, 0(t0) 
+    li t1, 0x18
+    sw t1, 0(t0) 
 
     #-- Configurar UART
     #-- 8bits de datos. Sin paridad
@@ -155,9 +155,9 @@ wait_reset_done:
     sw t1,0(t0)
 
     #-- Asignar el GPIO0 al pin tx de la UART0
-    li a0,GPIO00_CTRL
-    li a1, 2
-    sw a1,0(a0)
+    li t0,GPIO00_CTRL
+    li t1, 2
+    sw t1,0(t0)
     ret
 
 #-------------------------------
