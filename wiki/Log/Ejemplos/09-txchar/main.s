@@ -76,22 +76,8 @@ _start:
     #-- Inicializar la UART
     jal uart_init 
 
-    #--------- Configurar pin TX UART0
-    #-- Configurar el PAD del GPIO0
-    li t0, PAD_GPIO0
-    li t1, 0x56
-    sw t1,0(t0)
-
-    #-- Asignar el GPIO0 al pin tx de la UART0
-    li a0,GPIO00_CTRL
-    li a1, 2
-    sw a1,0(a0)
-
-    #-- DEBUG: Cuanto vale el registro PAD del GPIO0 ?
+    #-- DEBUG
     #jal button_init15
-    
-    #li t0, PAD_GPIO0
-    #lw a0, 0(t0)
     #jal debug_led1_lsb
 
 main_loop:
@@ -113,24 +99,8 @@ next:
 
 #--------------------------------
 #-- Inicializar la UART
-#-- a0: Direccion base usart0
-#-- a1: Baudios
 #---------------------------------
 uart_init:
-    
-    #-- Preambulo de la funcion
-    addi sp,sp,-32
-    sw ra,28(sp)
-    sw s0,24(sp)
-    sw s1,20(sp)
-    sw s2,16(sp)
-    sw s3,12(sp)
-
-    li s1,115200  #-- Baudios
-    li s0,UART0_BASE
-
-    #----------------- Configuracion de la UART0
-uart_init_label6:
 
     #-- Activar reset de la uart0
     li a4,RESET_UART0
@@ -155,35 +125,6 @@ wait_reset_done:
     #-- El bit RESET_UART0 del registro RESET_DONE está a 1
     #-- Significa que la UART0 está inicializada
 
-
-
-
-
-    lui	a5,0xbff88
-    add	a5,a5,s0
-    lui	a4,0x20000
-    addi	a4,a4,1348 # 20000544 <uart_char_to_line_feed>
-    seqz	a5,a5
-    sh1add	a5,a5,a4
-    li	a0,6
-    li	a4,256
-    sh	a4,0(a5) # bff88000 <__StackTop+0x9ff06000>
-    jal	clock_get_hz  # 10000e98 <clock_get_hz>
-
-    slli	a5,a0,0x3
-    divu	a5,a5,s1
-    addi	a5,a5,1
-
-    lui	a2,0x10
-    addi a2,a2,-2 # fffe <HeapSize+0xf7fe>
-
-    srli a5,a5,0x1
-    andi a5,a5,63
-    slli s3,a4,0x6
-
-    add	s3,s3,a5
-    #mv a4,a5
-
     #-- Parte entera de los baudios (Integer Baudrate)
     li t0, UART0_UARTIBRD
     li a3, 0x51
@@ -192,19 +133,7 @@ wait_reset_done:
     #-- Parte fraccional de los baudios (Fractional baudrate)
     li t0, UART0_UARTFBRD
     li a4, 0x18
-    sw a4, 0(t0)
-   
-    #lw s2,0x30(s0)
-    #andi a5,s2,1
-
-    #lw a5,44(s0)
-
-    #-- TODO: Mirar valores del registro UARTCR
-    #sw s2,0x30(s0)
-    
-    #-- DEBUG
-    #jal button_init15
-    #jal debug_led1_lsb
+    sw a4, 0(t0) 
 
     #-- Configurar UART
     #-- 8bits de datos. Sin paridad
@@ -218,14 +147,17 @@ wait_reset_done:
     li t0, UART0_UARTCR
     li t1,0x301
     sw t1,0(t0)
-    
-    #-- Fin de la funcion
-    lw ra,28(sp)
-    lw s0,24(sp)
-    lw s1,20(sp)
-    lw s2,16(sp)
-    lw s3,12(sp)
-    addi sp,sp,32
+
+    #--------- Configurar pin TX UART0
+    #-- Configurar el PAD del GPIO0
+    li t0, PAD_GPIO0
+    li t1, 0x56
+    sw t1,0(t0)
+
+    #-- Asignar el GPIO0 al pin tx de la UART0
+    li a0,GPIO00_CTRL
+    li a1, 2
+    sw a1,0(a0)
     ret
 
 #-------------------------------
