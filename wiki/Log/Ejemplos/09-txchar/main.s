@@ -227,39 +227,13 @@ runtime_run_initializers:
     #-- s1 = 0x100015ac
     addi s1,s1,0x5ac # 100015ac <__frame_dummy_init_array_entry>
 
-    # -- Este salto NO se hace
-    bgeu a5,s1,runtime_run_initializers_end   # 10000fe4 <runtime_run_initializers+0x2a> # label_rt_1
-
     #-- s0 = 0x10001574
     addi s0,s0,0x574
 
     #-- Inicializaciones!!
-    #jal runtime_init_early_resets
     jal runtime_init_clocks
     jal runtime_init_post_clock_resets
 
-    j runtime_run_initializers_end
-
-
-
-    #-- Se comienza analizando lo que hay en __pre_init_runtime_init_bootrom_reset
-label_rt_2:
-
-    #-- Cargar direccion guardada en s0
-    lw	a5,0(s0)
-
-    #-- Apuntar a la siguiente entrada
-    addi	s0,s0,4
-
-    #-- Ejecutar el codigo en esa direccion
-    jalr	a5
-
-    #-- Mientras que s0 < s0, se continua ejecutando ese codigo
-    bltu	s0,s1,label_rt_2    # 10000fda <runtime_run_initializers+0x20> # label_rt_2
-
-    #-- Fin de la inicializacion
-
-runtime_run_initializers_end:
     lw ra,12(sp)
     lw s0,8(sp)
     lw s1,4(sp)
