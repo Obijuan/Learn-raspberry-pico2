@@ -234,7 +234,7 @@ runtime_run_initializers:
     addi s0,s0,0x574
 
     #-- Inicializaciones!!
-    jal runtime_init_early_resets
+    #jal runtime_init_early_resets
     jal runtime_init_clocks
     jal runtime_init_post_clock_resets
 
@@ -266,58 +266,6 @@ runtime_run_initializers_end:
     addi sp,sp,16
     ret
 
-#------------------------------------------------------
-#-- Estas son las funciones de inicializacion que
-#-- se ejecutan
-#-- Algunas seran críticas para la uart, otras no...
-#------------------------------------------------------
-#-- Esta es la tabla de vectores de inicializacion
-#-- <__pre_init_runtime_init_bootrom_reset>:
-# ✅10001574:	.word runtime_init_bootrom_reset # 0x1000_104e
-# 10001578 <__pre_init_runtime_init_early_resets>:
-# ✅10001578:	.word runtime_init_early_resets # 0x1000_0fee
-# 1000157c <__pre_init_runtime_init_usb_power_down>:
-# ✅1000157c:	.word runtime_init_usb_power_down # 0x1000_1018
-# 10001580 <__pre_init_runtime_init_clocks>:
-# ✅10001580:	     .word runtime_init_clocks # 0x1000_107e
-# 10001584 <__pre_init_runtime_init_post_clock_resets>:
-# ✅10001584:	    .word runtime_init_post_clock_resets # 0x1000_1032
-
-
-runtime_init_early_resets:
-    li a5, 0xefef4000
-    addi a5,a5,-1153 # efef3b7f <__StackTop+0xcfe71b7f>
-    # -- a5 = 0xefef3b7f
-
-    li a3,0x40022000   # -- RESET_CTRL + 0x2000
-
-    #-- ESTO PARECE QUE ES ACTIVAR EL RESET
-    #-- Valor inicial a5: 1110 1111 1110 1111 0011 1011 0111 1111
-    #-- Valor usado     : 1110 1111 1110 1111 0011 1011 0011 FFFF
-    #-- Cambia el bit del IO_BANK0
-    li a5,0xEFEF3B3F  #-- Si se hace reset de IO_BANK0, peta...
-    sw a5,0(a3)
-
-    li a4,0x03f40000
-    addi	a4,a4,-10 # 3f3fff6 <HeapSize+0x3f3f7f6>
-    # a4 = 0x03f3fff6
-
-    # -- ESTO PARECE QUE ES DESACTIVAR EL RESET
-    # -- 0000 0011 1111 0011 1111 1111 1111 0110
-    li  a5,0x40023000   #-- RESET_CTRL + 0x3000
-    sw	a4,0(a5)
-
-    li	a3,RESET_DONE
-
-    #-- Esperar a que se reinicien todos los sistemas
-label_rt_3:
-    lw	a5,0(a3)
-    andn	a5,a4,a5
-    bnez	a5,label_rt_3 # 1000100e <runtime_init_early_resets+0x20>
-
-    #-- Todos los bits especificados de RESET_DONE
-    #-- están a 1
-    ret
 
 runtime_init_clocks:
     addi sp,sp,-16
