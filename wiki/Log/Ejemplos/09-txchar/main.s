@@ -103,9 +103,9 @@ next:
 uart_init:
 
     #-- Activar reset de la uart0
-    li a4,RESET_UART0
-    li a5,RESET_CTRL_SET  
-    sw a4,0(a5)
+    li t0,RESET_CTRL_SET  
+    li t1,RESET_UART0
+    sw t1,0(t0)
 
     #-- Desactivar el reset de la uart0
     li a5,RESET_CTRL_CLR
