@@ -541,9 +541,9 @@ wait_pll_sys_lock:
     sw a6,0x0C(a0)
 
     #-- Configuracion
-    li a4, PLL_USB_PWR_CLR
-    li a5, 0x8
-    sw a5, 0(a4)
+    li t0, PLL_USB_PWR_CLR
+    li t1, 0x8
+    sw t1, 0(t0)
     ret
 
 
