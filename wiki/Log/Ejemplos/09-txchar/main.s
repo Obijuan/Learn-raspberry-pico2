@@ -529,23 +529,13 @@ clock_configure_undivided_:
     li t3, 0x0B
     sw t3, 0(a5)
 
-    #slli a0,a0,0x2
     li a0, 16
     li a4, CLOCK_REF_CTRL
-
-    #lw a7,0(a4)
 
     li a5, CLK_REF_CTRL_XOR
     sw a2, 0(a5)
 
-    #j clock_configure_undivided_label5_
-
-
-#clock_configure_undivided_label5_:
-
-    #-- POR AQUI PASA
-
-# 10000e80:	
+    #---- TODO
     lw a6,0(a4)          #-- Leer registro CLK_SYS_CTRL
     bset	a2,zero,a1   #-- Segunda llamada: a1 = 1, a2 = 1
     xor	a1,a1,a6         #-- Segunda llamada: a1 = 1 xor x6 = 01 xor 11 = 10
