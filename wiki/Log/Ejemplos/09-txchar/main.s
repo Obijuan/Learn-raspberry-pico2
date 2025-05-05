@@ -307,7 +307,7 @@ wait_clk_ref_selected:
     li a4,2
     li a3,5
     li a0,PLL_SYS_BASE
-    jal pll_init # 10000ea8
+    jal pll_init_ # 10000ea8
 
     li	a4,5
     lui	a2,0x47869
@@ -411,6 +411,116 @@ xosc_init_loop:
 
     ret
 
+
+pll_init_:
+    li a5,0x00b72000
+    addi a5,a5,-1280 # b71b00 <HeapSize+0xb71300>
+    divu a5,a5,a1
+    lw a7,0(a0)
+
+    slli a3,a3,0x10
+    slli a4,a4,0xc
+    or a6,a3,a4
+    divu a2,a2,a5
+    bltz a7,pll_init_label1_  # 10000f0c <pll_init+0x64>
+
+     #--- PASA POR AQUI
+
+pll_init_label4_:
+    li a5,0x40058000
+    beq	a0,a5,pll_init_label2_  # 10000f2e <pll_init+0x86>
+
+    li a4, RESET_PLL_SYS
+
+    #--- PASA POR AQUI (la primera vez)
+
+pll_init_label3_:
+
+    #--- Reset del PLL_SYS
+    li a5, RESET_CTRL_SET
+    sw a4, 0(a5)
+
+    #-- Desactivar reset PLL_SYS
+    li a5, RESET_CTRL_CLR
+    sw a4,0(a5)
+
+    #--- Esperar a que se termine el reset
+    li a3, RESET_DONE
+wait_pll_sys_reset_:
+    lw a5,0(a3)
+    andn a5,a4,a5
+    bnez a5, wait_pll_sys_reset_  
+
+    #li a0, PLL_SYS_CR
+    #li a1, 1  #-- sin division la señal de entrada
+    sw	a1,0(a0)
+
+    #-- li a0, PLL_SYS_FBDIV_INT
+    #-- TODO: Calcular a2 y meterlo a pelo
+    li a2, 0x7D
+    sw	a2,8(a0)
+
+    li a4,0x3000
+    addi a4,a4,4 # 3004 <HeapSize+0x2804>
+    add	a4,a4,a0
+
+    #li a4, PLL_SYS_PWR_CLR
+    li a5, 0x21
+    sw a5,0(a4)
+
+    #-- Esperar a que el PLL se estabilice
+wait_pll_sys_lock_:
+    lw a5,0(a0)
+    bge a5,zero, wait_pll_sys_lock_  
+
+    #-- ¿Cuanto vale a6?
+
+    #mv s6,a6
+
+    #-- DEBUG
+    #jal led_init
+    #jal button_init15
+
+    #mv a0,s6
+    #jal debug_led1_lsb
+    #jal led_blinky
+
+    #-- 00000000000001001010000000000000
+    #-- 0000_0000_0000_0101_0010_0000_0000_0000
+    #-- 0x00052000
+
+    #-- Configuracion
+    #-- li a0, PLL_SYS_PRIM
+    #-- PostDiv1: 5
+    #-- PostDiv2: 4
+    li a6, 0x52000
+    sw a6,0x0C(a0)
+
+    #-- Configuracion
+    #li a4, PLL_SYS_PWR_CLR
+    li a5, 0x8
+    sw a5, 0(a4)
+    ret
+
+pll_init_label1_:
+    lw a5,0(a0)
+    andi a5,a5,63
+    bne	a5,a1,pll_init_label4_ # 10000ec8 <pll_init+0x20>
+
+    lw a5,8(a0)
+    slli a5,a5,0x14
+    srli a5,a5,0x14
+    bne a5,a2,pll_init_label4_ # 10000ec8 <pll_init+0x20>
+
+    lw	a5,12(a0)
+    lui	a4,0x77
+    and	a5,a5,a4
+    bne	a5,a6,pll_init_label4_ # 10000ec8 <pll_init+0x20>
+    ret
+
+pll_init_label2_:
+    li a4,0x8000
+    j	pll_init_label3_ # 10000ed2 <pll_init+0x2a>
 
 pll_init:
     li a5,0x00b72000
@@ -521,6 +631,10 @@ pll_init_label1:
 pll_init_label2:
     li a4,0x8000
     j	pll_init_label3 # 10000ed2 <pll_init+0x2a>
+
+
+
+
 
 
 #--- Primera llamada: a0 = 4, a1 = 2, a2=0
