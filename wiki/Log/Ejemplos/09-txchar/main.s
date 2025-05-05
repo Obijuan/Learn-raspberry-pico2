@@ -480,16 +480,15 @@ wait_pll_sys_lock_:
     #jal debug_led1_lsb
     #jal led_blinky
 
-    #-- Configuracion
-    #-- li a0, PLL_SYS_PRIM
+    li t0, PLL_SYS_PRIM
     #-- PostDiv1: 5
     #-- PostDiv2: 4
-    li a6, 0x52000
-    sw a6,0x0C(a0)
+    li t1, 0x52000
+    sw t1, 0(t0)
 
-    li a4, PLL_SYS_PWR_CLR
-    li a5, 0x8
-    sw a5, 0(a4)
+    li t0, PLL_SYS_PWR_CLR
+    li t1, 0x8
+    sw t1, 0(t0)
     ret
 
 pll_init_label1_:
