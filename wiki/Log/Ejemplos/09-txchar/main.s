@@ -307,7 +307,7 @@ wait_clk_ref_selected:
     li a4,2
     li a3,5
     li a0,PLL_SYS_BASE
-    jal pll_init_ # 10000ea8
+    jal pll_sys_init
 
     li	a4,5
     lui	a2,0x47869
@@ -412,24 +412,7 @@ xosc_init_loop:
     ret
 
 
-pll_init_:
-    li a5,0x00b72000
-    addi a5,a5,-1280 # b71b00 <HeapSize+0xb71300>
-    divu a5,a5,a1
-    lw a7,0(a0)
-
-    slli a3,a3,0x10
-    slli a4,a4,0xc
-    or a6,a3,a4
-    divu a2,a2,a5
-
-pll_init_label4_:
-    li a5,0x40058000
-    beq	a0,a5,pll_init_label2_  # 10000f2e <pll_init+0x86>
-
-    #--- PASA POR AQUI (la primera vez)
-
-pll_init_label3_:
+pll_sys_init:
 
     #--- Reset del PLL_SYS
     li t0, RESET_CTRL_SET
@@ -476,10 +459,6 @@ wait_pll_sys_lock_:
     li t1, 0x8
     sw t1, 0(t0)
     ret
-
-pll_init_label2_:
-    li a4,0x8000
-    j pll_init_label3_ # 10000ed2 <pll_init+0x2a>
 
 
 
