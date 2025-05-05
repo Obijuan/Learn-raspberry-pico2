@@ -315,7 +315,7 @@ wait_clk_ref_selected:
     mv	a3,a4
     mv	a1,s0
     addi a2,a2,-1024 # 47868c00 <__StackTop+0x277e6c00>
-    lui	a0,0x40058
+    li a0, PLL_USB_BASE
     jal	pll_usb_init # 10000ea8 <pll_init>
 
     lui	a3,0xb72
@@ -513,25 +513,10 @@ wait_pll_usb_reset:
     sw a5,0(a4)
 
     #-- Esperar a que el PLL se estabilice
-wait_pll_sys_lock:
+    li a0, PLL_USB_CR
+wait_pll_usb_lock:
     lw a5,0(a0)
-    bge a5,zero, wait_pll_sys_lock  
-
-    #-- ¿Cuanto vale a6?
-
-    #mv s6,a6
-
-    #-- DEBUG
-    #jal led_init
-    #jal button_init15
-
-    #mv a0,s6
-    #jal debug_led1_lsb
-    #jal led_blinky
-
-    #-- 00000000000001001010000000000000
-    #-- 0000_0000_0000_0101_0010_0000_0000_0000
-    #-- 0x00052000
+    bge a5,zero, wait_pll_usb_lock  
 
     li t0, PLL_USB_PRIM
     #-- PostDiv1: 5
