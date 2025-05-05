@@ -534,13 +534,12 @@ clock_configure_undivided_:
     sh2add a5,a0,t1
     lw a7,0(a5) # 10000 <HeapSize+0xf800>
 
+    li a5, CLK_REF_CTRL_CLR
 
-    lui	a5,0x3
-    add	a5,a5,a4
-    bseti t3,zero,0xb
-    sw t3,0(a5) # 3000 <HeapSize+0x2800>
+    li t3, 0x0B
+    sw t3, 0(a5)
 
-    
+
     slli a0,a0,0x2
 
 clock_configure_undivided_label10_:
