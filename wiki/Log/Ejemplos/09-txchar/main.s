@@ -482,12 +482,12 @@ pll_usb_init:
     #jal led_blinky
 
     #--- Reset del PLL
-    li a5, RESET_CTRL_SET
-    sw a4, 0(a5)
+    li t0, RESET_CTRL_SET
+    sw a4, 0(t0)
 
     #-- Desactivar reset PLL
-    li a5, RESET_CTRL_CLR
-    sw a4,0(a5)
+    li t0, RESET_CTRL_CLR
+    sw a4, 0(t0)
 
    #--- Esperar a que se termine el reset
     li t0, RESET_DONE
