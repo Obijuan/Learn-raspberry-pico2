@@ -533,11 +533,11 @@ wait_pll_sys_lock:
     #-- 0000_0000_0000_0101_0010_0000_0000_0000
     #-- 0x00052000
 
-    li a0, PLL_USB_PRIM
+    li t0, PLL_USB_PRIM
     #-- PostDiv1: 5
     #-- PostDiv2: 4
-    li a6, 0x52000
-    sw a6, 0(a0)
+    li t1, 0x52000
+    sw t1, 0(t0)
 
     li t0, PLL_USB_PWR_CLR
     li t1, 0x8
