@@ -6,12 +6,16 @@
 .include "gpio.h"
 
 .equ CLOCK_BASE,         0x40010000
+
 .equ CLOCK_REF_CTRL,     0x40010030
   .equ CLK_REF_CTRL_CLR, 0x40013030
+
 .equ CLK_SYS_CTRL,       0x4001003C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
 .equ CLK_SYS_SELECTED,   0x40010044
-.equ CLK_SYS_RESUS_CTRL, 0x40010084 
+.equ CLK_SYS_RESUS_CTRL, 0x40010084
+.equ CLK_REF_SELECTED,   0x40010038
+
 
 # -----------------------------------
 # -- Registro de Control del Reset 
@@ -281,12 +285,14 @@ wait_selected:
     #li a5,0x40013000 #-- CLOCK_BASE + 0x3000
     #sw	a4,0x30(a5)  #-- CLK_REF_CTRL
 
-    li	s0,1
-    li	a4,CLOCK_BASE
-label_rt_6:
-    lw	a5,0x38(a4)  #-- CLK_REF_SELECTED 
-    bne	a5,s0,label_rt_6  # 100010ae <runtime_init_clocks+0x30>
+    #-- Esperar a que se finalice la seleccion
+wait_clk_ref_selected:
+    li t0, CLK_REF_SELECTED
+    lw t1, 0(t0)
+    li t2,1
+    bne t1,t2, wait_clk_ref_selected
 
+    li	s0,1
     li a2,0x59683000
     mv a1,s0
     addi a2,a2,-256 # 59682f00 <__StackTop+0x39600f00>
