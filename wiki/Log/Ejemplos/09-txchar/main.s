@@ -469,16 +469,10 @@ wait_pll_sys_reset_:
     sw a5,0(a4)
 
     #-- Esperar a que el PLL se estabilice
+    li t0, PLL_SYS_CR
 wait_pll_sys_lock_:
-    lw a5,0(a0)
-    bge a5,zero, wait_pll_sys_lock_  
-
-    #-- DEBUG
-    #jal led_init
-    #jal button_init15
-
-    #jal debug_led1_lsb
-    #jal led_blinky
+    lw t1,0(t0)
+    bge t1,zero, wait_pll_sys_lock_  
 
     li t0, PLL_SYS_PRIM
     #-- PostDiv1: 5
@@ -492,6 +486,16 @@ wait_pll_sys_lock_:
     ret
 
 pll_init_label1_:
+
+
+    #-- DEBUG
+    #jal led_init
+    #jal button_init15
+
+    #jal debug_led1_lsb
+    #jal led_blinky
+
+
     lw a5,0(a0)
     andi a5,a5,63
     bne	a5,a1,pll_init_label4_ # 10000ec8 <pll_init+0x20>
