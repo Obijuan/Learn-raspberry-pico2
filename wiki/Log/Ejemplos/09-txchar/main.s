@@ -529,13 +529,7 @@ clock_configure_undivided_:
 
     addi a6,a0,-4
 
-    lui t1,0x20000
-    addi t1,t1,1268 # 200004f4 <configured_freq>
-    sh2add a5,a0,t1
-    lw a7,0(a5) # 10000 <HeapSize+0xf800>
-
     li a5, CLK_REF_CTRL_CLR
-
     li t3, 0x0B
     sw t3, 0(a5)
 
