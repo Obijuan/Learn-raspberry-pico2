@@ -76,6 +76,15 @@
 .equ PLL_SYS_FBDIV_INT, 0x40050008
 .equ PLL_SYS_PRIM,      0x4005000C
 
+.equ PLL_USB_BASE,      0x40058000
+.equ PLL_USB_CR,        0x40058000
+.equ PLL_USB_PWR,       0x40058004
+  .equ PLL_USB_PWR_CLR, 0x4005B004
+.equ PLL_USB_FBDIV_INT, 0x40058008
+.equ PLL_USB_PRIM,      0x4005800C
+
+
+
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
 .equ USB_SIE_CTRL_SET,  0x5011204c
@@ -471,20 +480,20 @@ pll_usb_init:
     #jal led_init
     #jal led_blinky
 
-    #--- Reset del PLL_SYS
+    #--- Reset del PLL
     li a5, RESET_CTRL_SET
     sw a4, 0(a5)
 
-    #-- Desactivar reset PLL_SYS
+    #-- Desactivar reset PLL
     li a5, RESET_CTRL_CLR
     sw a4,0(a5)
 
     #--- Esperar a que se termine el reset
     li a3, RESET_DONE
-wait_pll_sys_reset:
+wait_pll_usb_reset:
     lw a5,0(a3)
     andn a5,a4,a5
-    bnez a5, wait_pll_sys_reset  
+    bnez a5, wait_pll_usb_reset  
 
     #li a0, PLL_SYS_CR
     #li a1, 1  #-- sin division la señal de entrada
@@ -532,7 +541,7 @@ wait_pll_sys_lock:
     sw a6,0x0C(a0)
 
     #-- Configuracion
-    #li a4, PLL_SYS_PWR_CLR
+    li a4, PLL_USB_PWR_CLR
     li a5, 0x8
     sw a5, 0(a4)
     ret
