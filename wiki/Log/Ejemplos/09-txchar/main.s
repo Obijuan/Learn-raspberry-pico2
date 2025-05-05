@@ -307,7 +307,7 @@ wait_clk_ref_selected:
     mv	a1,s0
     addi a2,a2,-1024 # 47868c00 <__StackTop+0x277e6c00>
     lui	a0,0x40058
-    jal	pll_init # 10000ea8 <pll_init>
+    jal	pll_usb_init # 10000ea8 <pll_init>
 
     lui	a3,0xb72
     addi a3,a3,-1280 # b71b00 <HeapSize+0xb71300>
@@ -453,11 +453,7 @@ wait_pll_sys_lock_:
     ret
 
 
-
-
-
-
-pll_init:
+pll_usb_init:
     li a5,0x00b72000
     addi a5,a5,-1280 # b71b00 <HeapSize+0xb71300>
     divu a5,a5,a1
@@ -467,9 +463,12 @@ pll_init:
     slli a4,a4,0xc
     or a6,a3,a4
     divu a2,a2,a5
-    bltz a7,pll_init_label1  # 10000f0c <pll_init+0x64>
 
-     #--- PASA POR AQUI
+    #-- DEBUG
+    #jal led_init
+    #jal led_blinky
+
+    #--- PASA POR AQUI
 
 pll_init_label4:
     li a5,0x40058000
@@ -545,22 +544,6 @@ wait_pll_sys_lock:
     #li a4, PLL_SYS_PWR_CLR
     li a5, 0x8
     sw a5, 0(a4)
-    ret
-
-pll_init_label1:
-    lw a5,0(a0)
-    andi a5,a5,63
-    bne	a5,a1,pll_init_label4 # 10000ec8 <pll_init+0x20>
-
-    lw a5,8(a0)
-    slli a5,a5,0x14
-    srli a5,a5,0x14
-    bne a5,a2,pll_init_label4 # 10000ec8 <pll_init+0x20>
-
-    lw	a5,12(a0)
-    lui	a4,0x77
-    and	a5,a5,a4
-    bne	a5,a6,pll_init_label4 # 10000ec8 <pll_init+0x20>
     ret
 
 pll_init_label2:
