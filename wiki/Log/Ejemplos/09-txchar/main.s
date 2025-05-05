@@ -508,6 +508,9 @@ wait_pll_usb_lock:
 
 clock_configure_undivided_:
 
+    addi sp,sp,-16
+    sw ra, 12(sp)
+
     li s0,1
     li a3, 0xB71B00
     li a2,0
@@ -520,18 +523,21 @@ clock_configure_undivided_:
     li t0, CLK_REF_DIV
     lw a6, 0(t0)
 
+    #-- Divisor: 1
     li a5,0x10000
     sw a5, 0(t0)
 
-    #jal led_init
-    #jal led_blinky
-
     addi a6,a0,-4
     li a5,1
-    bgeu a5,a6, clock_configure_undivided_label2_ # 10000e4e
+    j clock_configure_undivided_label2_ 
+
+
+    #--- Por aqui NO pasa
 
 clock_configure_undivided_label3_:
 # 10000de6:	
+
+    #--- PASA POR AQUI
 
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 <configured_freq>
@@ -543,6 +549,8 @@ clock_configure_undivided_label3_:
     sw t3,0(a5) # 3000 <HeapSize+0x2800>
     slli a0,a0,0x2
     bnez a7,clock_configure_undivided_label4_ # 10000e36 <clock_configure_undivided+0x72>
+
+    #--- PASA POR AQUI
 
 clock_configure_undivided_label10_:
 # 10000e08
@@ -556,6 +564,8 @@ clock_configure_undivided_label10_:
     li a2,1
     bgeu a2,a6,clock_configure_undivided_label5_  #  10000e80 <clock_configure_undivided+0xbc>
 
+    #-- POR AQUI NO PASA
+
 clock_configure_undivided_label9_:
 # 10000e22:	
     lui a5,0x2
@@ -566,7 +576,11 @@ clock_configure_undivided_label9_:
     lui	a5,0x10
     sw	a3,0(a0)
     sw	a5,4(a4)
+
+    lw ra, 12(sp)
+    addi sp,sp,16
     ret
+
 clock_configure_undivided_label4_:
 # 10000e36:	 
     lw a5,20(t1)
@@ -581,9 +595,14 @@ clock_configure_undivided_label6_:
     j	clock_configure_undivided_label10_ # 10000e08 <clock_configure_undivided+0x44>
 
 clock_configure_undivided_label2_:
+
+    #-- PASA POR AQUI
+
 # 10000e4e:
 # Segunda llamada: a1 = 1, a5=1, a4 = 0x4001003c (CLK_SYS_CTRL)
     bne	a1,a5,clock_configure_undivided_label3_  # 10000de6 <clock_configure_undivided+0x22>
+
+    #-- Por aqui NO PASA
 
     li  a5,0x3000
     add	a5,a5,a4
@@ -610,6 +629,9 @@ clock_configure_undivided_label7_:
     addi	t1,t1,1268 # 200004f4 <configured_freq>
 
 clock_configure_undivided_label5_:
+
+    #-- POR AQUI PASA
+
 # 10000e80:	
     lw a6,0(a4)          #-- Leer registro CLK_SYS_CTRL
     bset	a2,zero,a1   #-- Segunda llamada: a1 = 1, a2 = 1
@@ -625,6 +647,7 @@ clock_configure_undivided_label8_:
     lw a5,8(a4)   #-- CLK_SYS_SELECTED
     and	a5,a5,a2
     beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
+
     j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
 
 
