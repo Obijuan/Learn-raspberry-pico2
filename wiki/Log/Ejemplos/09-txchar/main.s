@@ -451,9 +451,9 @@ wait_pll_sys_reset_:
     andn a5,a4,a5
     bnez a5, wait_pll_sys_reset_  
 
-    #li a0, PLL_SYS_CR
-    #li a1, 1  #-- sin division la señal de entrada
-    sw	a1,0(a0)
+    li t0, PLL_SYS_CR
+    li t1, 1  #-- sin division la señal de entrada
+    sw t1,0(t0)
 
     li t0, PLL_SYS_FBDIV_INT
     li t1, 0x7D
