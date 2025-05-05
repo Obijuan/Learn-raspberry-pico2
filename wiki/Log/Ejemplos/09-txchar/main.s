@@ -418,36 +418,61 @@ pll_init:
     divu a2,a2,a5
     bltz a7,pll_init_label1  # 10000f0c <pll_init+0x64>
 
+     #--- PASA POR AQUI
+
 pll_init_label4:
     li a5,0x40058000
     li a4,0x4000
     beq	a0,a5,pll_init_label2  # 10000f2e <pll_init+0x86>
 
+     #--- PASA POR AQUI (la primera vez)
+
+    #-- DEBUG
+    #jal led_init
+    #jal led_blinky2
+
 pll_init_label3:
+
+    #--- Reset del PLL_SYS
     lui	a5,0x40022
     sw	a4,0(a5)
+
+     #-- Desactivar reset PLL_SYS
     lui	a3,0x40020
     lui	a5,0x40023
     sw	a4,0(a5)
     addi a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
 
+
+    #--- Esperar a que se termine el reset
 pll_init_label5:
     lw	a5,0(a3)
     andn	a5,a4,a5
     bnez	a5,pll_init_label5  # 10000ee4 <pll_init+0x3c>
 
+    #--- Configuracion
+    #-- ¿Valor de a1?
     lui	a4,0x3
     sw	a1,0(a0)
     addi a4,a4,4 # 3004 <HeapSize+0x2804>
+
+    #-- Configuracion
+    #-- ¿Valor de a2?
     sw	a2,8(a0)
     add	a4,a4,a0
+
+    #-- Configuracion
     li	a5,33
     sw	a5,0(a4)
 
 pll_init_label6:
     lw a5,0(a0)
     bgez a5,pll_init_label6  # 10000efc <pll_init+0x54>
+
+    #-- Configuracion
     sw	a6,12(a0)
+
+    #-- Configuracion
     li	a5,8
     sw	a5,0(a4)
     ret
