@@ -30,7 +30,8 @@
   .equ RESET_CTRL_CLR, 0x40023000
 
 # --- Valor del registro de reset
-.equ RESET_UART0, BIT26
+.equ RESET_UART0,   BIT26
+.equ RESET_PLL_SYS, BIT14
 
 # -----------------------------------
 # -- Registro de Status del reset
@@ -422,10 +423,11 @@ pll_init:
 
 pll_init_label4:
     li a5,0x40058000
-    li a4,0x4000
     beq	a0,a5,pll_init_label2  # 10000f2e <pll_init+0x86>
 
-     #--- PASA POR AQUI (la primera vez)
+    li a4, RESET_PLL_SYS
+
+    #--- PASA POR AQUI (la primera vez)
 
     #-- DEBUG
     #jal led_init
@@ -434,8 +436,9 @@ pll_init_label4:
 pll_init_label3:
 
     #--- Reset del PLL_SYS
+    #-- li a4,0x4000
     li a5,RESET_CTRL_SET
-    sw	a4,0(a5)
+    sw a4,0(a5)
 
      #-- Desactivar reset PLL_SYS
     lui	a3,0x40020
