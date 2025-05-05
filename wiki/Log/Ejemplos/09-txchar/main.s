@@ -539,17 +539,10 @@ clock_configure_undivided_:
 
 clock_configure_undivided_label10_:
     lw a7,0(a4)
-    slli a2,a2,0x5
-
-    li a5,0x1000
-    xor a2,a2,a7
-    andi a2,a2,224
-    add a5,a5,a4
 
     li a5, CLK_REF_CTRL_XOR
     sw a2, 0(a5)
 
-    li a2,1
     j clock_configure_undivided_label5_
 
     #-- POR AQUI NO PASA
