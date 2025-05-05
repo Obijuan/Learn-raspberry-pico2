@@ -529,15 +529,6 @@ clock_configure_undivided_:
 
     addi a6,a0,-4
     li a5,1
-    j clock_configure_undivided_label2_ 
-
-
-    #--- Por aqui NO pasa
-
-clock_configure_undivided_label3_:
-# 10000de6:	
-
-    #--- PASA POR AQUI
 
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 <configured_freq>
@@ -593,14 +584,6 @@ clock_configure_undivided_label6_:
     addi a5,a5,-2
     bgez	a5,clock_configure_undivided_label6_ # 10000e44 <clock_configure_undivided+0x80>
     j	clock_configure_undivided_label10_ # 10000e08 <clock_configure_undivided+0x44>
-
-clock_configure_undivided_label2_:
-
-    #-- PASA POR AQUI
-
-# 10000e4e:
-# Segunda llamada: a1 = 1, a5=1, a4 = 0x4001003c (CLK_SYS_CTRL)
-    bne	a1,a5,clock_configure_undivided_label3_  # 10000de6 <clock_configure_undivided+0x22>
 
     #-- Por aqui NO PASA
 
