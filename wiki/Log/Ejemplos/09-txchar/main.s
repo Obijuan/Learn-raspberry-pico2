@@ -561,7 +561,7 @@ clock_configure_undivided_label8_:
     and	a5,a5,a2
     beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
 
-    j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
+    #j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
 
 
     #-- POR AQUI NO PASA
