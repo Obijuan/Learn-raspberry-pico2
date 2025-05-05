@@ -431,10 +431,6 @@ pll_init_label4:
 
     #--- PASA POR AQUI (la primera vez)
 
-    #-- DEBUG
-    #jal led_init
-    #jal led_blinky2
-
 pll_init_label3:
 
     #--- Reset del PLL_SYS
@@ -456,11 +452,17 @@ wait_pll_sys_reset:
     #li a1, 1  #-- sin division la señal de entrada
     sw	a1,0(a0)
 
-    #-- Configuracion
-    #-- ¿Valor de a2?
+    #-- DEBUG
+    #jal led_init
+    #jal button_init15
+
+    #jal debug_led1_lsb
+    #jal led_blinky
+
     #-- li a0, PLL_SYS_FBDIV_INT
     #-- sw a2, 0(a0)
     #-- TODO: Calcular a2 y meterlo a pelo
+    li a2, 0x7D
     sw	a2,8(a0)
 
     li a4,0x3000
