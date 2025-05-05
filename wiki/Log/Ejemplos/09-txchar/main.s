@@ -312,11 +312,10 @@ wait_clk_ref_selected:
     jal	pll_usb_init 
 
     li s0,1
-    lui	a3,0xb72
-    addi a3,a3,-1280 # b71b00 <HeapSize+0xb71300>
-    li	a2,0
-    li	a1,2
-    li	a0,4
+    li a3, 0xB71B00
+    li a2,0
+    li a1,2
+    li a0,4
     jal	clock_configure_undivided_ # 10000dc4 <clock_configure_undivided>
 
     lui	a3,0x8f0d
@@ -506,14 +505,20 @@ wait_pll_usb_lock:
 
 
 
-
-#--- Primera llamada: a0 = 4, a1 = 2, a2=0
-#--- Segunda llamada: a0 = 5, a1 = 1, a2=0
 clock_configure_undivided_:
+
+    li s0,1
+    li a3, 0xB71B00
+    li a2,0
+    li a1,2
+    li a0,4
+
     li a5,CLOCK_BASE
-    sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
+    #sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
                       #-- X(rd) = X(rs2) + (X(rs1) << 1);
                       #-- a4 = a0 + a0<<1
+
+    li a4, 12
 
     #-- Primera llamada: a4 = 4 + 4<<1 = 12
     #-- Segunda llamda: a4 = 15
@@ -522,12 +527,11 @@ clock_configure_undivided_:
                       #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL)
     lw a6,4(a4) # Se lee registro (CLK_REF_DIV (1ª), CLK_SYS_DIV (2º)
     li a5,0x10000
+    sw	a5, 4(a4)
 
-    bgeu a6,a5,clock_configure_undivided_label1_  # 10000ddc <clock_configure_undivided+0x18>
-    sw	a5,4(a4)
+    #jal led_init
+    #jal led_blinky
 
-clock_configure_undivided_label1_:
-# 10000ddc:	
     addi a6,a0,-4
     li a5,1
     bgeu a5,a6, clock_configure_undivided_label2_ # 10000e4e
