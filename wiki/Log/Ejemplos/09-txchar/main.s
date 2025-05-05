@@ -443,15 +443,12 @@ pll_init_label3:
     li a5, RESET_CTRL_CLR
     sw a4,0(a5)
 
-    li a3, RESET_DONE
-    #addi a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
-
-
     #--- Esperar a que se termine el reset
-pll_init_label5:
-    lw	a5,0(a3)
-    andn	a5,a4,a5
-    bnez	a5,pll_init_label5  # 10000ee4 <pll_init+0x3c>
+    li a3, RESET_DONE
+wait_pll_sys_reset:
+    lw a5,0(a3)
+    andn a5,a4,a5
+    bnez a5, wait_pll_sys_reset  
 
     #--- Configuracion
     #-- ¿Valor de a1?
