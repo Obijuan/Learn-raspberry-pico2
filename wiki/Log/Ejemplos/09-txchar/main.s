@@ -533,7 +533,6 @@ clock_configure_undivided_:
     li a0, 16
     li a4, CLOCK_REF_CTRL
 
-clock_configure_undivided_label10_:
     lw a7,0(a4)
 
     li a5, CLK_REF_CTRL_XOR
