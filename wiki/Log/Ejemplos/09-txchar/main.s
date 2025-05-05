@@ -70,6 +70,7 @@
 .equ XOSC_STARTUP, 0x4004800C
 
 .equ PLL_SYS_BASE, 0x40050000 
+.equ PLL_SYS_CR,   0x40050000
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
@@ -452,8 +453,10 @@ wait_pll_sys_reset:
 
     #--- Configuracion
     #-- ¿Valor de a1?
-    lui	a4,0x3
+    #li a0, PLL_SYS_CR
     sw	a1,0(a0)
+
+    lui	a4,0x3
     addi a4,a4,4 # 3004 <HeapSize+0x2804>
 
     #-- Configuracion
