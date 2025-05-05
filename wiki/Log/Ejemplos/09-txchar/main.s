@@ -435,13 +435,13 @@ pll_init_label4_:
 pll_init_label3_:
 
     #--- Reset del PLL_SYS
-    li a5, RESET_CTRL_SET
-    li a4, RESET_PLL_SYS
-    sw a4, 0(a5)
+    li t0, RESET_CTRL_SET
+    li t1, RESET_PLL_SYS
+    sw t1, 0(t0)
 
     #-- Desactivar reset PLL_SYS
-    li a5, RESET_CTRL_CLR
-    sw a4,0(a5)
+    li t0, RESET_CTRL_CLR
+    sw t1, 0(t0)
 
     #--- Esperar a que se termine el reset
     li t0, RESET_DONE
