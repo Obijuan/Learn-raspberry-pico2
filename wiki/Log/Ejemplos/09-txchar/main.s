@@ -445,9 +445,9 @@ pll_init_label3_:
     sw a4,0(a5)
 
     #--- Esperar a que se termine el reset
-    li a3, RESET_DONE
+    li t0, RESET_DONE
 wait_pll_sys_reset_:
-    lw a5,0(a3)
+    lw a5, 0(t0)
     andn a5,a4,a5
     bnez a5, wait_pll_sys_reset_  
 
