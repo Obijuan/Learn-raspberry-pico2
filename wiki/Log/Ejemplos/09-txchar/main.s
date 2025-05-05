@@ -304,9 +304,9 @@ wait_clk_ref_selected:
     addi a2,a2,-256 # 59682f00 <__StackTop+0x39600f00>
     #-- a2 = 0x59682f00
 
-    li a4,2
-    li a3,5
-    li a0,PLL_SYS_BASE
+    #li a4,2
+    #li a3,5
+    #li a0,PLL_SYS_BASE
     jal pll_sys_init
 
     li	a4,5
