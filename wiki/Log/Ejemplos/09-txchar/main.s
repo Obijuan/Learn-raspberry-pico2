@@ -508,9 +508,9 @@ wait_pll_usb_reset:
     addi a4,a4,4 # 3004 <HeapSize+0x2804>
     add	a4,a4,a0
 
-    li a4, PLL_USB_PWR_CLR
-    li a5, 0x21
-    sw a5,0(a4)
+    li t0, PLL_USB_PWR_CLR
+    li t1, 0x21
+    sw t1, 0(t0)
 
     #-- Esperar a que el PLL se estabilice
     li t0, PLL_USB_CR
