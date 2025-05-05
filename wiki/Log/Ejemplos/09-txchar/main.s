@@ -430,14 +430,13 @@ pll_init_label4_:
     li a5,0x40058000
     beq	a0,a5,pll_init_label2_  # 10000f2e <pll_init+0x86>
 
-    li a4, RESET_PLL_SYS
-
     #--- PASA POR AQUI (la primera vez)
 
 pll_init_label3_:
 
     #--- Reset del PLL_SYS
     li a5, RESET_CTRL_SET
+    li a4, RESET_PLL_SYS
     sw a4, 0(a5)
 
     #-- Desactivar reset PLL_SYS
@@ -448,7 +447,8 @@ pll_init_label3_:
     li t0, RESET_DONE
 wait_pll_sys_reset_:
     lw t1, 0(t0)
-    and t1,a4,t1
+    li t2, RESET_PLL_SYS
+    and t1,t2,t1
     beq t1, zero, wait_pll_sys_reset_  
 
     li t0, PLL_SYS_CR
