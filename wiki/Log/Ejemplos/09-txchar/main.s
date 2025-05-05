@@ -555,19 +555,10 @@ clock_configure_undivided_label5_:
     sw	a1,0(a5)  #Comentada para que no pete... (¿?)
 
 clock_configure_undivided_label8_:
-#-- SE QUEDA EN BUCLE INFINITO!!!
-# 10000e90:	
     lw a5,8(a4)   #-- CLK_SYS_SELECTED
     and	a5,a5,a2
-    beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
+    beqz a5,clock_configure_undivided_label8 
 
-    #j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
-
-
-    #-- POR AQUI NO PASA
-
-clock_configure_undivided_label9_:
-# 10000e22:	
     lui a5,0x2
     add	a5,a5,a4
     bseti a2,zero,0xb
