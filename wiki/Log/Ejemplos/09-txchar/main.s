@@ -464,21 +464,12 @@ pll_usb_init:
     or a6,a3,a4
     divu a2,a2,a5
 
-pll_init_label4:
     li a5,0x40058000
-    #beq	a0,a5,pll_init_label2  # 10000f2e <pll_init+0x86>
-
-#pll_init_label2:
     li a4,0x8000
-    #j	pll_init_label3 # 10000ed2 <pll_init+0x2a>
 
     #-- DEBUG
     #jal led_init
     #jal led_blinky
-
-    #--- PASA POR AQUI (la primera vez)
-
-pll_init_label3:
 
     #--- Reset del PLL_SYS
     li a5, RESET_CTRL_SET
