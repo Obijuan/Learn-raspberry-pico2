@@ -528,7 +528,6 @@ clock_configure_undivided_:
     sw a5, 0(t0)
 
     addi a6,a0,-4
-    li a5,1
 
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 <configured_freq>
