@@ -464,22 +464,6 @@ wait_pll_sys_lock_:
 
 
 pll_usb_init:
-    li a5,0x00b72000
-    addi a5,a5,-1280 # b71b00 <HeapSize+0xb71300>
-    divu a5,a5,a1
-    lw a7,0(a0)
-
-    slli a3,a3,0x10
-    slli a4,a4,0xc
-    or a6,a3,a4
-    divu a2,a2,a5
-
-    li a5,0x40058000
-   
-
-    #-- DEBUG
-    #jal led_init
-    #jal led_blinky
 
     #--- Reset del PLL
     li t0, RESET_CTRL_SET
