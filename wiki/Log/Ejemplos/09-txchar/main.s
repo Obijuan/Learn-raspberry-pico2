@@ -436,14 +436,14 @@ pll_init_label4:
 pll_init_label3:
 
     #--- Reset del PLL_SYS
-    #-- li a4,0x4000
-    li a5,RESET_CTRL_SET
+    li a5, RESET_CTRL_SET
+    sw a4, 0(a5)
+
+    #-- Desactivar reset PLL_SYS
+    li a5, RESET_CTRL_CLR
     sw a4,0(a5)
 
-     #-- Desactivar reset PLL_SYS
     lui	a3,0x40020
-    lui	a5,0x40023
-    sw	a4,0(a5)
     addi a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
 
 
