@@ -74,6 +74,7 @@
 .equ PLL_SYS_PWR,       0x40050004
   .equ PLL_SYS_PWR_CLR, 0x40053004
 .equ PLL_SYS_FBDIV_INT, 0x40050008
+.equ PLL_SYS_PRIM,      0x4005000C
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
@@ -489,11 +490,16 @@ wait_pll_sys_lock:
     #-- 0x00052000
 
     #-- Configuracion
-    sw	a6,0x0C(a0)
+    #-- li a0, PLL_SYS_PRIM
+    #-- PostDiv1: 5
+    #-- PostDiv2: 4
+    li a6, 0x52000
+    sw a6,0x0C(a0)
 
     #-- Configuracion
-    li	a5,8
-    sw	a5,0(a4)
+    #li a4, PLL_SYS_PWR_CLR
+    li a5, 0x8
+    sw a5, 0(a4)
     ret
 
 pll_init_label1:
