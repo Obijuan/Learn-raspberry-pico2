@@ -470,14 +470,14 @@ wait_pll_sys_reset:
     addi a4,a4,4 # 3004 <HeapSize+0x2804>
     add	a4,a4,a0
 
-    #-- Configuracion
     #li a4, PLL_SYS_PWR_CLR
     li a5, 0x21
     sw a5,0(a4)
 
-pll_init_label6:
+    #-- Esperar a que el PLL se estabilice
+wait_pll_sys_lock:
     lw a5,0(a0)
-    bgez a5,pll_init_label6  # 10000efc <pll_init+0x54>
+    bge a5,zero, wait_pll_sys_lock  
 
     #-- Configuracion
     sw	a6,12(a0)
