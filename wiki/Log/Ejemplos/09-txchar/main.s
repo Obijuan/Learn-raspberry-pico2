@@ -434,7 +434,7 @@ pll_init_label4:
 pll_init_label3:
 
     #--- Reset del PLL_SYS
-    lui	a5,0x40022
+    li a5,0x40022000
     sw	a4,0(a5)
 
      #-- Desactivar reset PLL_SYS
