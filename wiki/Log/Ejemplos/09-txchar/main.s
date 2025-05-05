@@ -533,15 +533,15 @@ clock_configure_undivided_:
     li a0, 16
     li a4, CLOCK_REF_CTRL
 
-    lw a7,0(a4)
+    #lw a7,0(a4)
 
     li a5, CLK_REF_CTRL_XOR
     sw a2, 0(a5)
 
-    j clock_configure_undivided_label5_
+    #j clock_configure_undivided_label5_
 
 
-clock_configure_undivided_label5_:
+#clock_configure_undivided_label5_:
 
     #-- POR AQUI PASA
 
