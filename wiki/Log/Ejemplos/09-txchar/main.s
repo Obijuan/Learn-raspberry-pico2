@@ -32,6 +32,7 @@
 # --- Valor del registro de reset
 .equ RESET_UART0,   BIT26
 .equ RESET_PLL_SYS, BIT14
+.equ RESET_PLL_USB, BIT15
 
 # -----------------------------------
 # -- Registro de Status del reset
@@ -488,12 +489,13 @@ pll_usb_init:
     li a5, RESET_CTRL_CLR
     sw a4,0(a5)
 
-    #--- Esperar a que se termine el reset
-    li a3, RESET_DONE
+   #--- Esperar a que se termine el reset
+    li t0, RESET_DONE
 wait_pll_usb_reset:
-    lw a5,0(a3)
-    andn a5,a4,a5
-    bnez a5, wait_pll_usb_reset  
+    lw t1, 0(t0)
+    li t2, RESET_PLL_USB
+    and t1,t2,t1
+    beq t1, zero, wait_pll_usb_reset  
 
     li t0, PLL_USB_CR
     li t1, 1  #-- sin division la señal de entrada
