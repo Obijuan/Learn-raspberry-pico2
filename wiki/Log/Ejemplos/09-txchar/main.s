@@ -69,8 +69,9 @@
 .equ XOSC_STATUS,  0x40048004
 .equ XOSC_STARTUP, 0x4004800C
 
-.equ PLL_SYS_BASE, 0x40050000 
-.equ PLL_SYS_CR,   0x40050000
+.equ PLL_SYS_BASE,      0x40050000 
+.equ PLL_SYS_CR,        0x40050000
+.equ PLL_SYS_FBDIV_INT, 0x40050008
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
@@ -451,17 +452,19 @@ wait_pll_sys_reset:
     andn a5,a4,a5
     bnez a5, wait_pll_sys_reset  
 
-    #--- Configuracion
-    #-- ¿Valor de a1?
     #li a0, PLL_SYS_CR
+    #li a1, 1  #-- sin division la señal de entrada
     sw	a1,0(a0)
-
-    lui	a4,0x3
-    addi a4,a4,4 # 3004 <HeapSize+0x2804>
 
     #-- Configuracion
     #-- ¿Valor de a2?
+    #-- li a0, PLL_SYS_FBDIV_INT
+    #-- sw a2, 0(a0)
+    #-- TODO: Calcular a2 y meterlo a pelo
     sw	a2,8(a0)
+
+    li a4,0x3000
+    addi a4,a4,4 # 3004 <HeapSize+0x2804>
     add	a4,a4,a0
 
     #-- Configuracion
