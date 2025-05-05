@@ -318,7 +318,7 @@ wait_clk_ref_selected:
     li a2,0
     li a1,2
     li a0,4
-    jal	clock_configure_undivided_ # 10000dc4 <clock_configure_undivided>
+    jal	configure_clk_ref
 
     lui	a3,0x8f0d
     mv	a1,s0
@@ -507,7 +507,7 @@ wait_pll_usb_lock:
 
 
 
-clock_configure_undivided_:
+configure_clk_ref:
 
     addi sp,sp,-16
     sw ra, 12(sp)
