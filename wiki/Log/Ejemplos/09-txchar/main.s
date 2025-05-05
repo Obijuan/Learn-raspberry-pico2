@@ -540,22 +540,6 @@ clock_configure_undivided_:
 
     j clock_configure_undivided_label5_
 
-    #-- POR AQUI NO PASA
-
-clock_configure_undivided_label9_:
-# 10000e22:	
-    lui a5,0x2
-    add	a5,a5,a4
-    bseti a2,zero,0xb
-    sw	a2,0(a5)
-    add	a0,a0,t1
-    lui	a5,0x10
-    sw	a3,0(a0)
-    sw	a5,4(a4)
-
-    lw ra, 12(sp)
-    addi sp,sp,16
-    ret
 
 clock_configure_undivided_label5_:
 
@@ -578,6 +562,26 @@ clock_configure_undivided_label8_:
     beqz	a5,clock_configure_undivided_label8  # 10000e90 <clock_configure_undivided+0xcc>
 
     j	clock_configure_undivided_label9  #  10000e22 <clock_configure_undivided+0x5e>
+
+
+    #-- POR AQUI NO PASA
+
+clock_configure_undivided_label9_:
+# 10000e22:	
+    lui a5,0x2
+    add	a5,a5,a4
+    bseti a2,zero,0xb
+    sw	a2,0(a5)
+    add	a0,a0,t1
+    lui	a5,0x10
+    sw	a3,0(a0)
+    sw	a5,4(a4)
+
+    lw ra, 12(sp)
+    addi sp,sp,16
+    ret
+
+
 
 
 
