@@ -455,14 +455,9 @@ wait_pll_sys_reset_:
     #li a1, 1  #-- sin division la señal de entrada
     sw	a1,0(a0)
 
-    #-- li a0, PLL_SYS_FBDIV_INT
-    #-- TODO: Calcular a2 y meterlo a pelo
-    li a2, 0x7D
-    sw	a2,8(a0)
-
-    li a4,0x3000
-    addi a4,a4,4 # 3004 <HeapSize+0x2804>
-    add	a4,a4,a0
+    li t0, PLL_SYS_FBDIV_INT
+    li t1, 0x7D
+    sw t1, 0(t0)
 
     li t0, PLL_SYS_PWR_CLR
     li t1, 0x21
