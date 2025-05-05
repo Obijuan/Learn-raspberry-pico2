@@ -499,10 +499,9 @@ wait_pll_usb_reset:
     #li a1, 1  #-- sin division la señal de entrada
     sw	a1,0(a0)
 
-    #-- li a0, PLL_SYS_FBDIV_INT
-    #-- TODO: Calcular a2 y meterlo a pelo
+    li a0, PLL_USB_FBDIV_INT
     li a2, 0x7D
-    sw	a2,8(a0)
+    sw a2, 0(a0)
 
     li t0, PLL_USB_PWR_CLR
     li t1, 0x21
