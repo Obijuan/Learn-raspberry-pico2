@@ -71,6 +71,8 @@
 
 .equ PLL_SYS_BASE,      0x40050000 
 .equ PLL_SYS_CR,        0x40050000
+.equ PLL_SYS_PWR,       0x40050004
+  .equ PLL_SYS_PWR_CLR, 0x40053004
 .equ PLL_SYS_FBDIV_INT, 0x40050008
 
 .equ USBCTRL_REGS_BASE, 0x50110000
@@ -460,7 +462,6 @@ wait_pll_sys_reset:
     #jal led_blinky
 
     #-- li a0, PLL_SYS_FBDIV_INT
-    #-- sw a2, 0(a0)
     #-- TODO: Calcular a2 y meterlo a pelo
     li a2, 0x7D
     sw	a2,8(a0)
@@ -470,8 +471,9 @@ wait_pll_sys_reset:
     add	a4,a4,a0
 
     #-- Configuracion
-    li	a5,33
-    sw	a5,0(a4)
+    #li a4, PLL_SYS_PWR_CLR
+    li a5, 0x21
+    sw a5,0(a4)
 
 pll_init_label6:
     lw a5,0(a0)
