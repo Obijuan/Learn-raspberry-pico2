@@ -9,6 +9,7 @@
 
 .equ CLOCK_REF_CTRL,     0x40010030
   .equ CLK_REF_CTRL_CLR, 0x40013030
+.equ CLK_REF_DIV,        0x40013034 
 
 .equ CLK_SYS_CTRL,       0x4001003C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
@@ -515,9 +516,12 @@ clock_configure_undivided_:
 
     li a5, CLOCK_BASE
     li a4, CLOCK_REF_CTRL
-    lw a6,4(a4) # Se lee registro (CLK_REF_DIV (1ª), CLK_SYS_DIV (2º)
+
+    li t0, CLK_REF_DIV
+    lw a6, 0(t0)
+
     li a5,0x10000
-    sw	a5, 4(a4)
+    sw a5, 0(t0)
 
     #jal led_init
     #jal led_blinky
