@@ -422,9 +422,6 @@ pll_init_:
     slli a4,a4,0xc
     or a6,a3,a4
     divu a2,a2,a5
-    bltz a7,pll_init_label1_  # 10000f0c <pll_init+0x64>
-
-     #--- PASA POR AQUI
 
 pll_init_label4_:
     li a5,0x40058000
@@ -480,35 +477,14 @@ wait_pll_sys_lock_:
     sw t1, 0(t0)
     ret
 
-pll_init_label1_:
-
-
-    #-- DEBUG
-    #jal led_init
-    #jal button_init15
-
-    #jal debug_led1_lsb
-    #jal led_blinky
-
-
-    lw a5,0(a0)
-    andi a5,a5,63
-    bne	a5,a1,pll_init_label4_ # 10000ec8 <pll_init+0x20>
-
-    lw a5,8(a0)
-    slli a5,a5,0x14
-    srli a5,a5,0x14
-    bne a5,a2,pll_init_label4_ # 10000ec8 <pll_init+0x20>
-
-    lw	a5,12(a0)
-    lui	a4,0x77
-    and	a5,a5,a4
-    bne	a5,a6,pll_init_label4_ # 10000ec8 <pll_init+0x20>
-    ret
-
 pll_init_label2_:
     li a4,0x8000
     j pll_init_label3_ # 10000ed2 <pll_init+0x2a>
+
+
+
+
+
 
 pll_init:
     li a5,0x00b72000
