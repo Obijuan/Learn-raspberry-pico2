@@ -6,6 +6,8 @@
 .include "gpio.h"
 
 .equ CLOCK_BASE,         0x40010000
+.equ CLOCK_REF_CTRL,     0x40010030
+  .equ CLK_REF_CTRL_CLR, 0x40013030
 .equ CLK_SYS_CTRL,       0x4001003C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
 .equ CLK_SYS_SELECTED,   0x40010044
@@ -270,9 +272,14 @@ wait_selected:
     li t2,1
     bne	t1,t2, wait_selected
 
-    li a4,3
-    li a5,0x40013000 #-- CLOCK_BASE + 0x3000
-    sw	a4,0x30(a5)  #-- CLK_REF_CTRL
+    #-- Configurara CLK_REF. Fuente: Ring-oscillator
+    li t0, CLK_REF_CTRL_CLR
+    li t1, 3
+    sw t1, 0(t0)
+
+    #li a4,3
+    #li a5,0x40013000 #-- CLOCK_BASE + 0x3000
+    #sw	a4,0x30(a5)  #-- CLK_REF_CTRL
 
     li	s0,1
     li	a4,CLOCK_BASE
