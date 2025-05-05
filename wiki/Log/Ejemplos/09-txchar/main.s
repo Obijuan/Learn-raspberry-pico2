@@ -525,12 +525,9 @@ clock_configure_undivided_:
     li a5,0x10000
     sw a5, 0(t0)
 
-    addi a6,a0,-4
-
     li a5, CLK_REF_CTRL_CLR
     li t3, 0x0B
     sw t3, 0(a5)
-
 
     slli a0,a0,0x2
     li a4, CLOCK_REF_CTRL
