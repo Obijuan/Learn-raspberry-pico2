@@ -454,13 +454,6 @@ wait_pll_sys_reset:
     #li a1, 1  #-- sin division la señal de entrada
     sw	a1,0(a0)
 
-    #-- DEBUG
-    #jal led_init
-    #jal button_init15
-
-    #jal debug_led1_lsb
-    #jal led_blinky
-
     #-- li a0, PLL_SYS_FBDIV_INT
     #-- TODO: Calcular a2 y meterlo a pelo
     li a2, 0x7D
@@ -479,8 +472,24 @@ wait_pll_sys_lock:
     lw a5,0(a0)
     bge a5,zero, wait_pll_sys_lock  
 
+    #-- ¿Cuanto vale a6?
+
+    #mv s6,a6
+
+    #-- DEBUG
+    #jal led_init
+    #jal button_init15
+
+    #mv a0,s6
+    #jal debug_led1_lsb
+    #jal led_blinky
+
+    #-- 00000000000001001010000000000000
+    #-- 0000_0000_0000_0101_0010_0000_0000_0000
+    #-- 0x00052000
+
     #-- Configuracion
-    sw	a6,12(a0)
+    sw	a6,0x0C(a0)
 
     #-- Configuracion
     li	a5,8
