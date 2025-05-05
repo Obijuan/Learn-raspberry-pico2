@@ -475,7 +475,7 @@ pll_usb_init:
     divu a2,a2,a5
 
     li a5,0x40058000
-    li a4,0x8000
+   
 
     #-- DEBUG
     #jal led_init
@@ -483,11 +483,12 @@ pll_usb_init:
 
     #--- Reset del PLL
     li t0, RESET_CTRL_SET
-    sw a4, 0(t0)
+    li t1, RESET_PLL_USB
+    sw t1, 0(t0)
 
     #-- Desactivar reset PLL
     li t0, RESET_CTRL_CLR
-    sw a4, 0(t0)
+    sw t1, 0(t0)
 
    #--- Esperar a que se termine el reset
     li t0, RESET_DONE
