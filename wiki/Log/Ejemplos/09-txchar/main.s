@@ -529,7 +529,8 @@ clock_configure_undivided_:
     li t3, 0x0B
     sw t3, 0(a5)
 
-    slli a0,a0,0x2
+    #slli a0,a0,0x2
+    li a0, 16
     li a4, CLOCK_REF_CTRL
 
 clock_configure_undivided_label10_:
@@ -556,45 +557,6 @@ clock_configure_undivided_label9_:
     lw ra, 12(sp)
     addi sp,sp,16
     ret
-
-clock_configure_undivided_label4_:
-# 10000e36:	 
-    lw a5,20(t1)
-    divu a5,a5,a7
-    addi a5,a5,1 # 10001 <HeapSize+0xf801>
-    sh1add a5,a5,a5
-
-clock_configure_undivided_label6_:
-# 10000e44:	
-    addi a5,a5,-2
-    bgez	a5,clock_configure_undivided_label6_ # 10000e44 <clock_configure_undivided+0x80>
-    j	clock_configure_undivided_label10_ # 10000e08 <clock_configure_undivided+0x44>
-
-    #-- Por aqui NO PASA
-
-    li  a5,0x3000
-    add	a5,a5,a4
-    #-- Segunda llamada: a5 = 0x4001003c + 0x3000 = 0x4001303c (CLK_SYS_CTRL_XOR?)
-
-    li	a6,3
-    sw	a6,0(a5) # 3000 <HeapSize+0x2800>
-
-clock_configure_undivided_label7_:
-# 10000e5c:	
-    lw a5,8(a4)    #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL) Se lee: CLK_SYS_SELECTED
-    andi a5,a5,1
-    beqz a5,clock_configure_undivided_label7_ # 10000e5c <clock_configure_undivided+0x98>
-
-    lw	a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
-    slli a2,a2,0x5  #-- Segunda llamada: a2 = 0 + 5 = 5
-    li a5,0x1000
-    xor	a2,a2,a6    #-- Segunda llamada: a2 = a2 xor a6 = 3
-    andi a2,a2,0xe0  #-- Segunda llamada: a2 = 0 
-    add	a5,a5,a4     #-- Segunda llamada: CLK_SYS_CTRL + 0x1000
-    lui	t1,0x20000
-    slli a0,a0,0x2   #-- Segunda llamada: a0 = 5, a0 = 5 << 2 = 20
-    sw	a2,0(a5)     #-- Segunda llamada: Escritura en CLK_SYS_CTRL + 0x1000
-    addi	t1,t1,1268 # 200004f4 <configured_freq>
 
 clock_configure_undivided_label5_:
 
