@@ -443,8 +443,8 @@ pll_init_label3:
     li a5, RESET_CTRL_CLR
     sw a4,0(a5)
 
-    lui	a3,0x40020
-    addi a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
+    li a3, RESET_DONE
+    #addi a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
 
 
     #--- Esperar a que se termine el reset
