@@ -447,9 +447,9 @@ pll_init_label3_:
     #--- Esperar a que se termine el reset
     li t0, RESET_DONE
 wait_pll_sys_reset_:
-    lw a5, 0(t0)
-    andn a5,a4,a5
-    bnez a5, wait_pll_sys_reset_  
+    lw t1, 0(t0)
+    and t1,a4,t1
+    beq t1, zero, wait_pll_sys_reset_  
 
     li t0, PLL_SYS_CR
     li t1, 1  #-- sin division la señal de entrada
