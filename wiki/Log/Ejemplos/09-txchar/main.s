@@ -473,21 +473,12 @@ wait_pll_sys_lock_:
     lw a5,0(a0)
     bge a5,zero, wait_pll_sys_lock_  
 
-    #-- ¿Cuanto vale a6?
-
-    #mv s6,a6
-
     #-- DEBUG
     #jal led_init
     #jal button_init15
 
-    #mv a0,s6
     #jal debug_led1_lsb
     #jal led_blinky
-
-    #-- 00000000000001001010000000000000
-    #-- 0000_0000_0000_0101_0010_0000_0000_0000
-    #-- 0x00052000
 
     #-- Configuracion
     #-- li a0, PLL_SYS_PRIM
@@ -496,8 +487,7 @@ wait_pll_sys_lock_:
     li a6, 0x52000
     sw a6,0x0C(a0)
 
-    #-- Configuracion
-    #li a4, PLL_SYS_PWR_CLR
+    li a4, PLL_SYS_PWR_CLR
     li a5, 0x8
     sw a5, 0(a4)
     ret
@@ -520,7 +510,7 @@ pll_init_label1_:
 
 pll_init_label2_:
     li a4,0x8000
-    j	pll_init_label3_ # 10000ed2 <pll_init+0x2a>
+    j pll_init_label3_ # 10000ed2 <pll_init+0x2a>
 
 pll_init:
     li a5,0x00b72000
