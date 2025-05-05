@@ -309,16 +309,9 @@ wait_clk_ref_selected:
     bne t1,t2, wait_clk_ref_selected
 
     jal pll_sys_init
+    jal	pll_usb_init 
 
     li s0,1
-    li	a4,5
-    lui	a2,0x47869
-    mv	a3,a4
-    mv	a1,s0
-    addi a2,a2,-1024 # 47868c00 <__StackTop+0x277e6c00>
-    li a0, PLL_USB_BASE
-    jal	pll_usb_init # 10000ea8 <pll_init>
-
     lui	a3,0xb72
     addi a3,a3,-1280 # b71b00 <HeapSize+0xb71300>
     li	a2,0
