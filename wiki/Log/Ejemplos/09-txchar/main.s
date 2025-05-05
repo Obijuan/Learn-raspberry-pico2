@@ -513,18 +513,8 @@ clock_configure_undivided_:
     li a1,2
     li a0,4
 
-    li a5,CLOCK_BASE
-    #sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
-                      #-- X(rd) = X(rs2) + (X(rs1) << 1);
-                      #-- a4 = a0 + a0<<1
-
-    li a4, 12
-
-    #-- Primera llamada: a4 = 4 + 4<<1 = 12
-    #-- Segunda llamda: a4 = 15
-    sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
-                      #-- Primera llamada: a4 = 0x40010030 (CLK_REF_CTRL)
-                      #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL)
+    li a5, CLOCK_BASE
+    li a4, CLOCK_REF_CTRL
     lw a6,4(a4) # Se lee registro (CLK_REF_DIV (1ª), CLK_SYS_DIV (2º)
     li a5,0x10000
     sw	a5, 4(a4)
