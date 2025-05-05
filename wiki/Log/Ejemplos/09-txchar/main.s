@@ -518,9 +518,6 @@ clock_configure_undivided_:
     li a1,2
     li a0,4
 
-    li a5, CLOCK_BASE
-    li a4, CLOCK_REF_CTRL
-
     li t0, CLK_REF_DIV
     lw a6, 0(t0)
 
@@ -536,6 +533,7 @@ clock_configure_undivided_:
 
 
     slli a0,a0,0x2
+    li a4, CLOCK_REF_CTRL
 
 clock_configure_undivided_label10_:
     lw a7,0(a4)
