@@ -639,7 +639,6 @@ configure_clk_peri:
 
 clock_configure_undivided:
     li a3, 0x8f0d180
-    li a2, 0
     li a1, 0
     li a0, 7
 
@@ -650,15 +649,19 @@ clock_configure_undivided:
     li t1, 0x200004f4 
    
     li a5, CLK_HSTX_CTRL_SET
-
     li a0, 0x1C
 
     lw a7,0(a4)
-    slli a2,a2,0x5
-    lui a5,0x1
-    xor a2,a2,a7
-    andi a2,a2,224
-    add a5,a5,a4
+
+    #li a2, 0
+
+    #xor a2,a2,a7
+    andi a2,a7, 0xE0
+
+    #li a5,0x1000
+    #add a5,a5,a4
+    li a5, CLK_HSTX_CTRL_XOR
+
     sw a2,0(a5)
     li a2,1
     bgeu a2,a6,clock_configure_undivided_label5
