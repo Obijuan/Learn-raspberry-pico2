@@ -521,13 +521,12 @@ configure_clk_ref:
     li a0,4
 
     li t0, CLK_REF_DIV
-    lw a6, 0(t0)
+    #lw a6, 0(t0)
 
     #-- Divisor: 1
-    li a5,0x10000
-    sw a5, 0(t0)
+    li t1,0x10000
+    sw t1, 0(t0)
 
-    li a0, 16
 
     #-- Seleccionar la fuente para CLK_REF
     #-- Oscilador interno
