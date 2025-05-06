@@ -553,9 +553,7 @@ wait_clk_ref_selected2:
     li a5, CLK_REF_CTRL_SET
     sw zero, 0(a5)
 
-    add	a0,a0,t1
-    lui	a5,0x10
-    sw	a3,0(a0)
+    li a5,0x10000
     sw	a5,4(a4)
 
     lw ra, 12(sp)
