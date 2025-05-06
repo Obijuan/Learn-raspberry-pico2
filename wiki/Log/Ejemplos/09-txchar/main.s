@@ -643,11 +643,10 @@ wait_clk_sys_selected:
 
     li a4, CLK_SYS_CTRL
     lw a6,0(a4)         
-    xor	a1,a6,a1         
-    andi	a1,a1,3      
+    xori a1,a6, 1         
+    andi a1,a1,3      
 
-    #-- AQUI PETA!!!!!!
-    sw	a1,0(a5)  #Comentada para que no pete... (¿?)
+    sw	a1,0(a5) 
 
     bset	a2,zero,a1  
 
