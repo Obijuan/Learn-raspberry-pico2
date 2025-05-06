@@ -16,6 +16,7 @@
 
 .equ CLK_SYS_CTRL,       0x4001003C
   .equ CLK_SYS_CTRL_XOR, 0x4001103C
+  .equ CLK_SYS_CTRL_SET, 0x4001203C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
 .equ CLK_SYS_DIV,        0x40010040
 .equ CLK_SYS_SELECTED,   0x40010044
@@ -639,14 +640,15 @@ wait_clk_sys_selected2:
     andi t2,t2, 0x2
     beq t2, zero, wait_clk_ref_selected2
 
-    #j	clock_configure_undivided_label9_ 
+    li a4, CLK_SYS_CTRL
+    li a5, CLK_SYS_CTRL_SET
 
-#clock_configure_undivided_label9_:
-# 10000e22:	
-    lui a5,0x2
-    add	a5,a5,a4
+
     bseti a2,zero,0xb
-    sw	a2,0(a5)
+
+    li a2, BIT11
+
+    sw	a2, 0(a5)
     add	a0,a0,t1
     lui	a5,0x10
     sw	a3,0(a0)
