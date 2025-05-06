@@ -641,9 +641,6 @@ wait_clk_sys_selected2:
     beq t2, zero, wait_clk_ref_selected2
 
     li a4, CLK_SYS_CTRL
-    li a5, CLK_SYS_CTRL_SET
-    li a2, BIT11
-    sw a2, 0(a5)
 
     #⨪- TODO
     add	a0,a0,t1
