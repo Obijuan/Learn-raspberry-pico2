@@ -318,11 +318,10 @@ wait_clk_ref_selected:
     #-- Configurar CLK_REF
     jal	configure_clk_ref
 
-
-
+    #-- Configurar CLK_SYS
     jal	configure_clk_sys
 
-    li s0,1
+
     lui	a3,0x2dc7
     addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
     li	a2,0
