@@ -647,19 +647,20 @@ clock_configure_undivided:
     li a4, CLK_HSTX_CTRL
     li a6, 3
 
-
-    lui t1,0x20000
-    addi t1,t1,1268 # 200004f4 
+    li t1, 0x200004f4 
     sh2add a5,a0,t1
-    lw a7,0(a5) # 10000 
+    lw a7,0(a5) # 10000
+
+
     lui	a5,0x3
     add	a5,a5,a4
     bseti t3,zero,0xb
     sw t3,0(a5) # 3000 
     slli a0,a0,0x2
-    bnez a7,clock_configure_undivided_label4
+    #bnez a7,clock_configure_undivided_label4
 
-clock_configure_undivided_label10:
+
+#clock_configure_undivided_label10:
     lw a7,0(a4)
     slli a2,a2,0x5
     lui a5,0x1
@@ -690,7 +691,7 @@ clock_configure_undivided_label4:
 clock_configure_undivided_label6:
     addi a5,a5,-2
     bgez	a5,clock_configure_undivided_label6
-    j	clock_configure_undivided_label10
+    #j	clock_configure_undivided_label10
 
 clock_configure_undivided_label2:
     #bne	a1,a5,clock_configure_undivided_label3
