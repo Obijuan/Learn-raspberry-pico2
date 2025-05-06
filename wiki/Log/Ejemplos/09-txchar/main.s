@@ -582,17 +582,12 @@ clock_configure_undivided_:
 
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 
-    sh2add a5,a0,t1
-    lw a7,0(a5) # 10000 
 
     li a5, CLK_USB_CTRL_CLR
-
-    bseti t3,zero,0xb
     li t3, BIT11
-    sw t3, 0(a5) # 3000 
+    sw t3, 0(a5) 
 
     slli a0,a0,0x2
-    bnez a7,clock_configure_undivided_label4_
 
 clock_configure_undivided_label10_:
     lw a7,0(a4)
