@@ -28,6 +28,13 @@
 .equ CLK_PERI_DIV,        0x4001004C
 .equ CLK_PERI_SELECTED,   0x40010050
 
+.equ CLK_HSTX_CTRL,       0x40010054
+  .equ CLK_HSTX_CTRL_XOR, 0x40011054
+  .equ CLK_HSTX_CTRL_SET, 0x40012054
+  .equ CLK_HSTX_CTRL_CLR, 0x40013054
+.equ CLK_HSTX_DIV,        0x40010058
+.equ CLK_HSTX_SELECTED,   0x4001005C   
+
 .equ CLK_USB_CTRL,       0x40010060
   .equ CLK_USB_CTRL_XOR, 0x40011060
   .equ CLK_USB_CTRL_SET, 0x40012060
@@ -347,13 +354,10 @@ wait_clk_ref_selected:
     #-- Configurar CLK_ADC
     jal	configure_clk_adc 
 
-
+    #-- Configurar CLK_PERI
     jal	configure_clk_peri
 
-    li a3, 0x8f0d180
-    li	a2,0
-    li	a1,0
-    li	a0,7
+
     jal	clock_configure_undivided
 
     li	a0,4
@@ -634,18 +638,19 @@ configure_clk_peri:
 
 
 clock_configure_undivided:
-    li a5,CLOCK_BASE
-    sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
-                      #-- X(rd) = X(rs2) + (X(rs1) << 1);
-                      #-- a4 = a0 + a0<<1
-    sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
-    lw a6,4(a4) 
-    li a5,0x10000
+    li a3, 0x8f0d180
+    li a2, 0
+    li a1, 0
+    li a0, 7
 
-    bgeu a6,a5,clock_configure_undivided_label1
-    sw	a5,4(a4)
 
-clock_configure_undivided_label1:
+    li a4, CLK_HSTX_CTRL
+
+    li t0, CLK_HSTX_DIV
+    lw a6, 0(t0)
+
+    li a5, 0x10000
+
     addi a6,a0,-4
     li a5,1
     bgeu a5,a6, clock_configure_undivided_label2
