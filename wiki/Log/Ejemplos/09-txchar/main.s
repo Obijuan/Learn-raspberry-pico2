@@ -317,16 +317,9 @@ wait_clk_ref_selected:
 
 
 
-
-
-    li s0,1
-    lui	a3,0x8f0d
-    mv	a1,s0
-    addi a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
-    li a2,0
-    li a0,5
     jal	clock_configure_undivided_ # 10000dc4 <clock_configure_undivided>
 
+    li s0,1
     lui	a3,0x2dc7
     addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
     li	a2,0
@@ -538,13 +531,20 @@ wait_clk_ref_selected2:
     ret
 
 
-#--- Primera llamada: a0 = 4, a1 = 2, a2=0
+
 #--- Segunda llamada: a0 = 5, a1 = 1, a2=0
 clock_configure_undivided_:
+
+    li a3, 0x8f0d180
+    li a2,0
+    li a1, 1
+    li a0,5
+
+
+
+
     li a5,CLOCK_BASE
-    sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
-                      #-- X(rd) = X(rs2) + (X(rs1) << 1);
-                      #-- a4 = a0 + a0<<1
+    li a4, 0xF
 
     #-- Primera llamada: a4 = 4 + 4<<1 = 12
     #-- Segunda llamda: a4 = 15
