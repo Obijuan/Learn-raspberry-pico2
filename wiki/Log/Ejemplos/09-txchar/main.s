@@ -640,10 +640,7 @@ wait_clk_sys_selected:
     li a0, 0x14
     lui	t1,0x20000
     li t1, 0x200004f4
-    #addi	t1,t1,1268 # 200004f4 <configured_freq>
 
-#clock_configure_undivided_label5_:
-# 10000e80:	
     lw a6,0(a4)          #-- Leer registro CLK_SYS_CTRL
     bset	a2,zero,a1   #-- Segunda llamada: a1 = 1, a2 = 1
     xor	a1,a1,a6         #-- Segunda llamada: a1 = 1 xor x6 = 01 xor 11 = 10
