@@ -20,8 +20,11 @@
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
 .equ CLK_SYS_DIV,        0x40010040
 .equ CLK_SYS_SELECTED,   0x40010044
+
+.equ CLK_USB_CTRL,       0x40010060 
+
 .equ CLK_SYS_RESUS_CTRL, 0x40010084
-.equ CLK_REF_SELECTED,   0x40010038
+
 
 
 # -----------------------------------
@@ -567,10 +570,10 @@ clock_configure_undivided_:
     li a2,0
     li a1,0
     li a0,8
-    
-    li a4, 0x40010060
-    lw a6,4(a4) 
-    li a5,0x10000
+
+    li a4, CLK_USB_CTRL
+    lw a6, 4(a4) 
+    li a5, 0x10000
 
     bgeu a6,a5,clock_configure_undivided_label1_
     sw	a5,4(a4)
