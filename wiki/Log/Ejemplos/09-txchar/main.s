@@ -618,12 +618,12 @@ configure_clk_peri:
     li t1, 0x200004f4
     li a0, 0x18
 
-    li a4, CLK_PERI_CTRL
-    lw a7,0(a4)
+    li t0, CLK_PERI_CTRL
+    lw t2,0(t0)
 
-    li a5, CLK_PERI_CTRL_XOR
-    andi a2,a7,0xE0
-    sw a2, 0(a5)
+    li t0, CLK_PERI_CTRL_XOR
+    andi t1,t2,0xE0
+    sw t1, 0(t0)
 
     li t0, CLK_PERI_CTRL_SET
     li t1, BIT11
