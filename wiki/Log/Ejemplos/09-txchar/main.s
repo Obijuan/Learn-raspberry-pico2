@@ -618,19 +618,9 @@ clock_configure_undivided_:
     li a0,6
 
     li a4, CLK_PERI_CTRL
-
-    li t0, CLK_PERI_DIV
-    lw a6, 0(t0) 
-    li a5, 0x10000
-    bgeu a6,a5,clock_configure_undivided_label1_
-
-    jal .
-
-    sw	a5,4(a4)
-
-clock_configure_undivided_label1_:
-    addi a6,a0,-4
-    li a5,1
+   
+    li a6, 2
+    li a5, 1
     bgeu a5,a6, clock_configure_undivided_label2_
 
 clock_configure_undivided_label3_:
