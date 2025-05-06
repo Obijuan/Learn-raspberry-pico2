@@ -603,14 +603,13 @@ configure_clk_adc:
     li a1,0
     li a0,9
     
-    li a4, 0x4001006C
+    li a4, CLK_ADC_CTRL
     li a6, 5
     li a5,1
 
    
     li t1, 0x200004f4
-    sh2add a5,a0,t1
-
+   
     slli a0,a0,0x2
 
     slli a2,a2,0x5
