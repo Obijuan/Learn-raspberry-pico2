@@ -625,30 +625,18 @@ wait_clk_sys_selected:
     andi t1,t1,1
     beq t1, zero, wait_clk_sys_selected
 
-    lw a2, 0(a4)  
-    andi a2,a2,0xe0  
-    li a5, CLK_SYS_CTRL_XOR
-
-    #-- Cuanto vale a2?
-    li a3, 0x8f0d180
-    li a1, 1
-
-    mv s1, a1
-    mv s2, a2
-    mv s3, a3
-
+    #-- Fuente auxiliar de reloj: PLL_SYS
+    sw zero, 0(a4)
+   
     #jal led_init
     #jal button_init15
-
-    mv a0, s2
 
     #jal debug_led1_lsb
     #jal led_blinky
 
-    #-- a2-->  0000000000000000000000000000
-
-    #sw a2,0(a5) 
-
+    li a5, CLK_SYS_CTRL_XOR
+    li a3, 0x8f0d180
+    li a1, 1
     li a0, 0x14
     lui	t1,0x20000
     addi	t1,t1,1268 # 200004f4 <configured_freq>
