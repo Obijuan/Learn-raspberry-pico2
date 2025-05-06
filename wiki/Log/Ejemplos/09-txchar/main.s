@@ -612,12 +612,13 @@ clock_configure_undivided_label2_:
     #jal led_blinky2
 
     li a4, CLK_SYS_CTRL
+    li t0, CLK_SYS_CTRL_CLR
     li  a5,0x3000
     add	a5,a5,a4
     #-- Segunda llamada: a5 = 0x4001003c + 0x3000 = 0x4001303c (CLK_SYS_CTRL_XOR?)
 
-    li	a6,3
-    sw	a6,0(a5) # 3000 <HeapSize+0x2800>
+    li a6, 3
+    sw a6, 0(t0)
 
 clock_configure_undivided_label7_:
 # 10000e5c:	
