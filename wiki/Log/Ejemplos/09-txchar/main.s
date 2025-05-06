@@ -642,13 +642,10 @@ wait_clk_sys_selected2:
 
     li a4, CLK_SYS_CTRL
     li a5, CLK_SYS_CTRL_SET
-
-
-    bseti a2,zero,0xb
-
     li a2, BIT11
+    sw a2, 0(a5)
 
-    sw	a2, 0(a5)
+    #⨪- TODO
     add	a0,a0,t1
     lui	a5,0x10
     sw	a3,0(a0)
