@@ -624,12 +624,13 @@ clock_configure_undivided_:
 
     sh2add a5,a0,t1
     lw a7,0(a5) # 10000 
+
+
     lui	a5,0x3
     add	a5,a5,a4
     bseti t3,zero,0xb
     sw t3,0(a5) # 3000 
     slli a0,a0,0x2
-    bnez a7,clock_configure_undivided_label4_
 
 clock_configure_undivided_label10_:
     lw a7,0(a4)
