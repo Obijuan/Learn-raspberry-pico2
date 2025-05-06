@@ -618,19 +618,14 @@ clock_configure_undivided_:
     li t1, 0x200004f4
     li a0, 0x18
 
-#clock_configure_undivided_label10_:
-
     li a4, CLK_PERI_CTRL
     lw a7,0(a4)
 
-    li a5,0x1000
-    add a5,a5,a4
     li a5, CLK_PERI_CTRL_XOR
-
     li a2, 0
    
     xor a2,a2,a7
-    andi a2,a2,224
+    andi a2,a7,0xE0
     
     sw a2,0(a5)
     li a2,1
