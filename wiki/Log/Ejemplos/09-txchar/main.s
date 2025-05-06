@@ -363,9 +363,6 @@ wait_clk_ref_selected:
     li	a0,4
     jal	clock_get_hz  # 10000e98 <clock_get_hz>
 
-    lui	a5,0x431be
-    addi a5,a5,-381 # 431bde83 <__StackTop+0x2313be83>
-
     li a5, 0x431bde83
     mulhu s1,a0,a5
     li s0,0
