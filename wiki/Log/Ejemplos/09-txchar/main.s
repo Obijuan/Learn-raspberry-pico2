@@ -651,11 +651,9 @@ clock_configure_undivided:
 
     li a5, 0x10000
 
-    addi a6,a0,-4
-    li a5,1
-    bgeu a5,a6, clock_configure_undivided_label2
+    li a6, 3
+    li a5, 1
 
-clock_configure_undivided_label3:
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 
     sh2add a5,a0,t1
@@ -701,7 +699,7 @@ clock_configure_undivided_label6:
     j	clock_configure_undivided_label10
 
 clock_configure_undivided_label2:
-    bne	a1,a5,clock_configure_undivided_label3
+    #bne	a1,a5,clock_configure_undivided_label3
 
     li  a5,0x3000
     add	a5,a5,a4
