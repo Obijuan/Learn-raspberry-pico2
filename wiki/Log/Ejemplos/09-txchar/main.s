@@ -549,13 +549,10 @@ wait_clk_ref_selected2:
     andi a5,a5, 0xF
     beq a5, zero, wait_clk_ref_selected2 
 
-    #-- TODO
-    li a5,0x2000
-    add	a5,a5,a4
+    #-- ¿Se puede eliminar?
     li a5, CLK_REF_CTRL_SET
-    li a2, 0x800
+    sw zero, 0(a5)
 
-    sw	a2,0(a5)
     add	a0,a0,t1
     lui	a5,0x10
     sw	a3,0(a0)
