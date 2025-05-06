@@ -641,13 +641,15 @@ wait_clk_sys_selected:
     lui	t1,0x20000
     li t1, 0x200004f4
 
-    lw a6,0(a4)          #-- Leer registro CLK_SYS_CTRL
-    bset	a2,zero,a1   #-- Segunda llamada: a1 = 1, a2 = 1
-    xor	a1,a1,a6         #-- Segunda llamada: a1 = 1 xor x6 = 01 xor 11 = 10
-    andi	a1,a1,3      #-- Segunda llamada: a1 = 1 and 11 = 1
+    li a4, CLK_SYS_CTRL
+    lw a6,0(a4)         
+    xor	a1,a6,a1         
+    andi	a1,a1,3      
 
     #-- AQUI PETA!!!!!!
     sw	a1,0(a5)  #Comentada para que no pete... (¿?)
+
+    bset	a2,zero,a1  
 
 clock_configure_undivided_label8_:
 #-- SE QUEDA EN BUCLE INFINITO!!!
