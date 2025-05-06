@@ -656,13 +656,13 @@ clock_configure_undivided:
     li a6, 3
     li a2, 1
  
-    li a5, CLK_HSTX_CTRL_SET
-    li a2, BIT11
-    sw a2, 0(a5)
+    li t0, CLK_HSTX_CTRL_SET
+    li t1, BIT11
+    sw t1, 0(t0)
 
     li t0, CLK_HSTX_DIV
-    li a5, BIT16
-    sw a5, 0(t0)
+    li t1, BIT16
+    sw t1, 0(t0)
     ret
 
 
