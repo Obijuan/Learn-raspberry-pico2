@@ -547,17 +547,11 @@ configure_clk_sys:
     li t0, CLK_SYS_DIV
     lw a6, 0(t0)
 
-
-    li a5,0x10000
-
-    bgeu a6,a5,clock_configure_undivided_label1_  # 10000ddc <clock_configure_undivided+0x18>
-    sw	a5,4(a4)
-
-clock_configure_undivided_label1_:
-# 10000ddc:	
-    addi a6,a0,-4
+    li a6, 1
     li a5,1
-    bgeu a5,a6, clock_configure_undivided_label2 # 10000e4e
+    bgeu a5,a6, clock_configure_undivided_label2_ # 10000e4e
+
+    #-- NO PASA POR AQUI
 
 clock_configure_undivided_label3_:
 # 10000de6:	
@@ -610,9 +604,12 @@ clock_configure_undivided_label6_:
     j	clock_configure_undivided_label10_ # 10000e08 <clock_configure_undivided+0x44>
 
 clock_configure_undivided_label2_:
-# 10000e4e:
-# Segunda llamada: a1 = 1, a5=1, a4 = 0x4001003c (CLK_SYS_CTRL)
     bne	a1,a5,clock_configure_undivided_label3_  # 10000de6 <clock_configure_undivided+0x22>
+
+    #-- PASA POR AQUI
+
+    #jal led_init
+    #jal led_blinky2
 
     li  a5,0x3000
     add	a5,a5,a4
