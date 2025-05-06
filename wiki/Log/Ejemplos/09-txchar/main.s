@@ -652,15 +652,15 @@ clock_configure_undivided:
     lw a7,0(a5) # 10000
 
 
-    lui	a5,0x3
-    add	a5,a5,a4
+    #li a5,0x3000
+    #add	a5,a5,a4
+
+    li a5, CLK_HSTX_CTRL_SET
+
     bseti t3,zero,0xb
     sw t3,0(a5) # 3000 
     slli a0,a0,0x2
-    #bnez a7,clock_configure_undivided_label4
 
-
-#clock_configure_undivided_label10:
     lw a7,0(a4)
     slli a2,a2,0x5
     lui a5,0x1
