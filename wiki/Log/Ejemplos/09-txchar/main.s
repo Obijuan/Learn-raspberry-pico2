@@ -326,7 +326,7 @@ wait_clk_ref_selected:
     li a2,0
     li a0,5
     #-- Comentada... la segunda pasada peta :-(
-    #jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
+    jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
 
     lui	a3,0x2dc7
     addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
