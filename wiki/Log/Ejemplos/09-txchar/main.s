@@ -644,26 +644,20 @@ clock_configure_undivided:
 
 
     li a4, CLK_HSTX_CTRL
-    li a6, 3
 
     li t1, 0x200004f4 
    
-    li a5, CLK_HSTX_CTRL_SET
     li a0, 0x1C
 
     lw a7,0(a4)
 
-    #li a2, 0
-
-    #xor a2,a2,a7
-    andi a2,a7, 0xE0
-
-    #li a5,0x1000
-    #add a5,a5,a4
+   
     li a5, CLK_HSTX_CTRL_XOR
+    andi a2,a7, 0xE0
+    sw a2, 0(a5)
 
-    sw a2,0(a5)
-    li a2,1
+    li a6, 3
+    li a2, 1
     bgeu a2,a6,clock_configure_undivided_label5
 
 clock_configure_undivided_label9:
