@@ -335,10 +335,10 @@ wait_clk_ref_selected:
     jal	configure_clk_sys
 
     #-- Configurar CLK_USB
-    jal	clock_clk_usb
+    jal	configure_clk_usb
 
 
-    jal	clock_configure_undivided_ 
+    jal	configure_clk_adc 
 
     li a3, 0x8f0d180
     li	a2,0
@@ -571,7 +571,7 @@ wait_clk_sys_selected2:
     ret
 
 
-clock_clk_usb:
+configure_clk_usb:
     li t0, CLK_USB_CTRL_CLR
     li t1, BIT11
     sw t1, 0(t0) 
@@ -597,7 +597,7 @@ clock_clk_usb:
 
 
 
-clock_configure_undivided_:
+configure_clk_adc:
     li a3, 0x2dc6c00
     li a2,0
     li a1,0
