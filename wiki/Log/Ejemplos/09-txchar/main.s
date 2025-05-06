@@ -578,10 +578,6 @@ clock_configure_undivided_:
     li a1,0
     li a0,8
 
-    #j .
-    #jal led_init
-    #jal led_blinky
-
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 
 
@@ -599,11 +595,13 @@ clock_configure_undivided_label10_:
     li a5, CLK_USB_CTRL_XOR
     andi a2,a7,0xe0
     sw a2,0(a5)
-    
-    li a2,1
-    bgeu a2,a6,clock_configure_undivided_label5_
 
-clock_configure_undivided_label9_:
+    li a2,1
+
+    #j .
+    #jal led_init
+    #jal led_blinky
+
     lui a5,0x2
     add	a5,a5,a4
     bseti a2,zero,0xb
@@ -661,7 +659,7 @@ clock_configure_undivided_label8_:
     lw a5,8(a4)  
     and	a5,a5,a2
     beqz	a5,clock_configure_undivided_label8_ 
-    j	clock_configure_undivided_label9_ 
+    #j	clock_configure_undivided_label9_ 
 
 
 
