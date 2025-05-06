@@ -611,13 +611,12 @@ configure_clk_adc:
     li t1, 0x200004f4
     li a2, 0
     li a2,1
-
-
-clock_configure_undivided_label9_:
-    lui a5,0x2
-    add	a5,a5,a4
-    bseti a2,zero,0xb
+    
+    li a5, CLK_ADC_CTRL_SET
+    li a2, BIT11
     sw	a2,0(a5)
+
+
     li a0, 0
     add	a0,a0,t1
     lui	a5,0x10
