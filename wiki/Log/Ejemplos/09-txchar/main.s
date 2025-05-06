@@ -567,20 +567,13 @@ wait_clk_sys_selected2:
 
 
 clock_configure_undivided_:
+
+    li a6, 4
+    li a4, CLK_USB_CTRL
     li a3, 0x2dc6c00
     li a2,0
     li a1,0
     li a0,8
-
-    li a4, CLK_USB_CTRL
-    li t0, CLK_USB_DIV
-    lw a6, 0(t0)
-
-    addi a6,a0,-4
-    li a6, 4
-
-
-clock_configure_undivided_label3_:
 
     #j .
     #jal led_init
@@ -631,7 +624,7 @@ clock_configure_undivided_label6_:
     j	clock_configure_undivided_label10_
 
 clock_configure_undivided_label2_:
-    bne	a1,a5,clock_configure_undivided_label3_
+    #bne	a1,a5,clock_configure_undivided_label3_
 
     li  a5,0x3000
     add	a5,a5,a4
