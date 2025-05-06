@@ -613,18 +613,14 @@ clock_configure_undivided_label2_:
 
     li a4, CLK_SYS_CTRL
     li t0, CLK_SYS_CTRL_CLR
-    li  a5,0x3000
-    add	a5,a5,a4
-    #-- Segunda llamada: a5 = 0x4001003c + 0x3000 = 0x4001303c (CLK_SYS_CTRL_XOR?)
-
     li a6, 3
     sw a6, 0(t0)
 
+    li t0, CLK_SYS_SELECTED
 clock_configure_undivided_label7_:
-# 10000e5c:	
-    lw a5,8(a4)    #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL) Se lee: CLK_SYS_SELECTED
-    andi a5,a5,1
-    beqz a5,clock_configure_undivided_label7_ # 10000e5c <clock_configure_undivided+0x98>
+    lw t1, 0(t0)
+    andi t1,t1,1
+    beq t1, zero, clock_configure_undivided_label7_
 
     lw	a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
     slli a2,a2,0x5  #-- Segunda llamada: a2 = 0 + 5 = 5
