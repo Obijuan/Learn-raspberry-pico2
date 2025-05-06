@@ -357,8 +357,8 @@ wait_clk_ref_selected:
     #-- Configurar CLK_PERI
     jal	configure_clk_peri
 
-
-    jal	clock_configure_undivided
+    #-- Configurar CLK_HSTX
+    jal	configure_clk_hstx
 
     li	a0,4
     jal	clock_get_hz  # 10000e98 <clock_get_hz>
@@ -631,31 +631,7 @@ configure_clk_peri:
     sw t1, 4(t0)
     ret
 
-
-
-
-
-
-
-clock_configure_undivided:
-    li a3, 0x8f0d180
-    li a1, 0
-    li a0, 7
-
-
-    li a4, CLK_HSTX_CTRL
-
-    li t1, 0x200004f4 
-   
-    li a0, 0x1C
-
-    li a5, CLK_HSTX_CTRL_XOR
-    andi a2,a7, 0xE0
-    sw a2, 0(a5)
-
-    li a6, 3
-    li a2, 1
- 
+configure_clk_hstx:
     li t0, CLK_HSTX_CTRL_SET
     li t1, BIT11
     sw t1, 0(t0)
