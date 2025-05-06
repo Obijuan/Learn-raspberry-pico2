@@ -626,13 +626,14 @@ clock_configure_undivided_:
     lw a7,0(a5) # 10000 
 
 
-    lui	a5,0x3
-    add	a5,a5,a4
-    bseti t3,zero,0xb
-    sw t3,0(a5) # 3000 
-    slli a0,a0,0x2
+    #lui	a5,0x3
+    #add	a5,a5,a4
+    #bseti t3,zero,0xb
+    #sw t3,0(a5) # 3000 
+    li a0, 0x18
+    #slli a0,a0,0x2
 
-clock_configure_undivided_label10_:
+#clock_configure_undivided_label10_:
     lw a7,0(a4)
     slli a2,a2,0x5
     lui a5,0x1
@@ -663,7 +664,7 @@ clock_configure_undivided_label4_:
 clock_configure_undivided_label6_:
     addi a5,a5,-2
     bgez	a5,clock_configure_undivided_label6_
-    j	clock_configure_undivided_label10_
+    #j	clock_configure_undivided_label10_
 
 clock_configure_undivided_label2_:
     #bne	a1,a5,clock_configure_undivided_label3_
