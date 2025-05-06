@@ -533,9 +533,6 @@ configure_clk_ref:
 
     li a0, 16
 
-    li a5, CLK_REF_CTRL_XOR
-    sw a2, 0(a5)
-
     #-- Seleccionar la fuente para CLK_REF
     #-- Oscilador interno
     li t0, CLOCK_REF_CTRL
