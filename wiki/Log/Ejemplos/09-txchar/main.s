@@ -348,7 +348,7 @@ wait_clk_ref_selected:
     jal	configure_clk_adc 
 
 
-    jal	clock_configure_undivided_
+    jal	configure_clk_peri
 
     li a3, 0x8f0d180
     li	a2,0
@@ -610,7 +610,7 @@ configure_clk_adc:
 
 
 
-clock_configure_undivided_:
+configure_clk_peri:
 
     li a3, 0x8f0d180
     li a1,0
