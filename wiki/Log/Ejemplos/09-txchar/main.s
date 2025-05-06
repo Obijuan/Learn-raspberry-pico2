@@ -613,7 +613,6 @@ configure_clk_adc:
 clock_configure_undivided_:
 
     li a3, 0x8f0d180
-    li a2,0
     li a1,0
     li a6, 2
     li t1, 0x200004f4
@@ -624,12 +623,15 @@ clock_configure_undivided_:
     li a4, CLK_PERI_CTRL
     lw a7,0(a4)
 
+    li a5,0x1000
+    add a5,a5,a4
+    li a5, CLK_PERI_CTRL_XOR
 
-    slli a2,a2,0x5
-    lui a5,0x1
+    li a2, 0
+   
     xor a2,a2,a7
     andi a2,a2,224
-    add a5,a5,a4
+    
     sw a2,0(a5)
     li a2,1
     bgeu a2,a6,clock_configure_undivided_label5_
