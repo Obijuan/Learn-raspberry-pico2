@@ -301,11 +301,8 @@ runtime_run_initializers:
 runtime_init_clocks:
     addi sp,sp,-16
     sw ra,12(sp)
-    sw s0,8(sp)
-    sw s1,4(sp)
-    sw s2,0(sp)
 
-    li s0, CLOCK_BASE
+    #li s0, CLOCK_BASE
 
     #-- Inicializar RESUS
     li t0, CLK_SYS_RESUS_CTRL
@@ -363,9 +360,6 @@ wait_clk_ref_selected:
 
 runtime_init_clocks_end:
     lw ra,12(sp)
-    lw s0,8(sp)
-    lw s1,4(sp)
-    lw s2,0(sp)
     addi sp,sp,16
     ret
 
