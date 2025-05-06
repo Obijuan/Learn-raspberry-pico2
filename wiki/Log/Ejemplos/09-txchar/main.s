@@ -640,10 +640,11 @@ wait_clk_sys_selected2:
     andi t2,t2, 0x2
     beq t2, zero, wait_clk_ref_selected2
 
-    li a4, CLK_SYS_CTRL
+    #-- Establecer el divisor a 1
     li t0, CLK_SYS_DIV
-    li a5,0x10000   
-    sw a5,0(t0)
+    li t1,0x10000   
+    sw t1,0(t0)
+    
     ret
 
 
