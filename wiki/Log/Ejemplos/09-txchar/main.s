@@ -567,12 +567,7 @@ clock_configure_undivided_:
     li a2,0
     li a1,0
     li a0,8
-    li a5,CLOCK_BASE
-    li a4, 0x18
-    #sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
-                      #-- X(rd) = X(rs2) + (X(rs1) << 1);
-                      #-- a4 = a0 + a0<<1
-    #sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
+    
     li a4, 0x40010060
     lw a6,4(a4) 
     li a5,0x10000
