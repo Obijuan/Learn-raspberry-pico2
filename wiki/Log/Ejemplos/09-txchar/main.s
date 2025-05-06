@@ -634,19 +634,14 @@ wait_clk_sys_selected:
     #jal debug_led1_lsb
     #jal led_blinky
 
-    li a5, CLK_SYS_CTRL_XOR
+    
     li a3, 0x8f0d180
-    li a1, 1
     li a0, 0x14
-    lui	t1,0x20000
     li t1, 0x200004f4
-
-    li a4, CLK_SYS_CTRL
-    lw a6,0(a4)         
-    xori a1,a6, 1         
-    andi a1,a1,3      
-
-    sw	a1,0(a5) 
+   
+    li a5, CLK_SYS_CTRL_XOR
+    li a1, 1
+    sw a1,0(a5) 
 
     bset	a2,zero,a1  
 
