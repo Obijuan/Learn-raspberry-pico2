@@ -360,21 +360,6 @@ wait_clk_ref_selected:
     #-- Configurar CLK_HSTX
     jal	configure_clk_hstx
 
-    li	a0,4
-    jal	clock_get_hz  # 10000e98 <clock_get_hz>
-
-    li a5, 0x431bde83
-    mulhu s1,a0,a5
-    li s0,0
-    li s2,6
-    srli s1,s1,0x12
-
-label_rt_7:
-    mv	a0,s0
-    mv	a1,s1
-    addi s0,s0,1
-    jal	tick_start  # 10000f32 <tick_start>
-    bne s0,s2,label_rt_7  # 10001152 <runtime_init_clocks+0xd4>
 
 runtime_init_clocks_end:
     lw ra,12(sp)
