@@ -21,7 +21,8 @@
 .equ CLK_SYS_DIV,        0x40010040
 .equ CLK_SYS_SELECTED,   0x40010044
 
-.equ CLK_USB_CTRL,       0x40010060 
+.equ CLK_USB_CTRL,       0x40010060
+.equ CLK_USB_DIV,        0x40010064
 
 .equ CLK_SYS_RESUS_CTRL, 0x40010084
 
@@ -572,13 +573,12 @@ clock_configure_undivided_:
     li a0,8
 
     li a4, CLK_USB_CTRL
-    lw a6, 4(a4) 
-    li a5, 0x10000
+    li t0, CLK_USB_DIV
+    lw a6, 0(t0)
 
-    bgeu a6,a5,clock_configure_undivided_label1_
-    sw	a5,4(a4)
+    #jal led_init
+    #jal led_blinky
 
-clock_configure_undivided_label1_:
     addi a6,a0,-4
     li a5,1
     bgeu a5,a6, clock_configure_undivided_label2_
