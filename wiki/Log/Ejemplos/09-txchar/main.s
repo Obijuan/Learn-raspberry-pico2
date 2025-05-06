@@ -16,6 +16,7 @@
 
 .equ CLK_SYS_CTRL,       0x4001003C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
+.equ CLK_SYS_DIV,        0x40010040
 .equ CLK_SYS_SELECTED,   0x40010044
 .equ CLK_SYS_RESUS_CTRL, 0x40010084
 .equ CLK_REF_SELECTED,   0x40010038
@@ -545,7 +546,10 @@ clock_configure_undivided_:
     li a5,CLOCK_BASE
     li a4, CLK_SYS_CTRL
 
-    lw a6,4(a4) # Se lee registro CLK_SYS_DIV (2º)
+    li t0, CLK_SYS_DIV
+    lw a6, 0(t0)
+
+    
     li a5,0x10000
 
     bgeu a6,a5,clock_configure_undivided_label1_  # 10000ddc <clock_configure_undivided+0x18>
