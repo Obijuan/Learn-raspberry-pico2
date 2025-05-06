@@ -622,22 +622,20 @@ configure_clk_peri:
     lw a7,0(a4)
 
     li a5, CLK_PERI_CTRL_XOR
-    #li a2, 0
-   
-    #xor a2,a2,a7
     andi a2,a7,0xE0
-    
     sw a2, 0(a5)
-    li a2,1
 
-    li a5,0x2000
-    add	a5,a5,a4
+
+    #li a2,1
+
+    #li a5,0x2000
+    #add	a5,a5,a4
     li a5, CLK_PERI_CTRL_SET
-
-
-
     bseti a2,zero,0xb
+    li a2, BIT11
     sw	a2,0(a5)
+
+    
     add	a0,a0,t1
     lui	a5,0x10
     sw	a3,0(a0)
