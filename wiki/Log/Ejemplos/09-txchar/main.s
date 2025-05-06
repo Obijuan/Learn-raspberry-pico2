@@ -323,12 +323,7 @@ wait_clk_ref_selected:
 
 
     
-
-    li a3, 0x2dc6c00
-    li a2,0
-    li a1,0
-    li a0,8
-    jal	clock_configure_undivided 
+    jal	clock_configure_undivided_ 
 
     li a3, 0x2dc6c00
     li a2,0
@@ -568,11 +563,17 @@ wait_clk_sys_selected2:
 
 
 clock_configure_undivided_:
+    li a3, 0x2dc6c00
+    li a2,0
+    li a1,0
+    li a0,8
     li a5,CLOCK_BASE
-    sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
+    li a4, 0x18
+    #sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
                       #-- X(rd) = X(rs2) + (X(rs1) << 1);
                       #-- a4 = a0 + a0<<1
-    sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
+    #sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
+    li a4, 0x40010060
     lw a6,4(a4) 
     li a5,0x10000
 
