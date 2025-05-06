@@ -553,8 +553,11 @@ wait_clk_ref_selected2:
     li a5, CLK_REF_CTRL_SET
     sw zero, 0(a5)
 
+    #-- Divisor a 1
+    li t0, CLK_REF_DIV
     li a5,0x10000
-    sw	a5,4(a4)
+    sw a5, 0(t0)
+    #sw	a5,4(a4)
 
     lw ra, 12(sp)
     addi sp,sp,16
