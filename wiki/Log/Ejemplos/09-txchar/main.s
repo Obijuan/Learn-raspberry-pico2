@@ -22,6 +22,8 @@
 .equ CLK_SYS_SELECTED,   0x40010044
 
 .equ CLK_USB_CTRL,       0x40010060
+  .equ CLK_USB_CTRL_XOR, 0x40011060
+  .equ CLK_USB_CTRL_SET, 0x40012060
   .equ CLK_USB_CTRL_CLR, 0x40013060
 .equ CLK_USB_DIV,        0x40010064
 
@@ -590,12 +592,18 @@ clock_configure_undivided_:
     slli a0,a0,0x2
 
 clock_configure_undivided_label10_:
+
+    li a4, CLK_USB_CTRL
     lw a7,0(a4)
-    slli a2,a2,0x5
-    lui a5,0x1
-    xor a2,a2,a7
-    andi a2,a2,224
+
+    li a5,0x1000
     add a5,a5,a4
+    li a5, CLK_USB_CTRL_XOR
+    
+    slli a2,a2,0x5
+    xor a2,a2,a7
+    andi a2,a2,0xe0
+   
     sw a2,0(a5)
     li a2,1
     bgeu a2,a6,clock_configure_undivided_label5_
