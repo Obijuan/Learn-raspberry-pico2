@@ -580,17 +580,6 @@ clock_configure_undivided_label10_:
     li a2,1
     bgeu a2,a6,clock_configure_undivided_label5  #  10000e80 <clock_configure_undivided+0xbc>
 
-clock_configure_undivided_label9_:
-# 10000e22:	
-    lui a5,0x2
-    add	a5,a5,a4
-    bseti a2,zero,0xb
-    sw	a2,0(a5)
-    add	a0,a0,t1
-    lui	a5,0x10
-    sw	a3,0(a0)
-    sw	a5,4(a4)
-    ret
 clock_configure_undivided_label4_:
 # 10000e36:	 
     lw a5,20(t1)
@@ -649,10 +638,20 @@ wait_clk_sys_selected2:
     lw t2, 0(t0)
     andi t2,t2, 0x2
     beq t2, zero, wait_clk_ref_selected2
-    
-    j	clock_configure_undivided_label9_  #  10000e22 <clock_configure_undivided+0x5e>
 
+    #j	clock_configure_undivided_label9_ 
 
+#clock_configure_undivided_label9_:
+# 10000e22:	
+    lui a5,0x2
+    add	a5,a5,a4
+    bseti a2,zero,0xb
+    sw	a2,0(a5)
+    add	a0,a0,t1
+    lui	a5,0x10
+    sw	a3,0(a0)
+    sw	a5,4(a4)
+    ret
 
 
 
