@@ -527,10 +527,6 @@ configure_clk_ref:
     li a5,0x10000
     sw a5, 0(t0)
 
-    li a5, CLK_REF_CTRL_CLR
-    li t3, 0x0B
-    sw t3, 0(a5)
-
     li a0, 16
 
     #-- Seleccionar la fuente para CLK_REF
