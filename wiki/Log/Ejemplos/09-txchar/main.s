@@ -341,9 +341,9 @@ wait_clk_ref_selected:
     jal	configure_clk_adc 
 
     li a3, 0x8f0d180
-    li	a2,0
-    li	a1,0
-    li	a0,6
+    li a2,0
+    li a1,0
+    li a0,6
     jal	clock_configure_undivided_
 
     li a3, 0x8f0d180
