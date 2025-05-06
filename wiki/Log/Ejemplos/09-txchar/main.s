@@ -537,9 +537,6 @@ configure_clk_ref:
     li a5, CLK_REF_CTRL_XOR
     sw a2, 0(a5)
 
-    #---- TODO
-    bset a2,zero,a1   
-
     #-- Seleccionar la fuente para CLK_REF
     #-- Oscilador interno
     li a1, 2
@@ -550,17 +547,14 @@ configure_clk_ref:
 wait_clk_ref_selected2:
     lw a5, 0(t0)
     andi a5,a5, 0xF
-    beq a5, zero, wait_clk_ref_selected2
-
+    beq a5, zero, wait_clk_ref_selected2 
 
     #-- TODO
     li a5,0x2000
     add	a5,a5,a4
-
     li a5, CLK_REF_CTRL_SET
-    li a2, 0xB
+    li a2, 0x800
 
-    bseti a2,zero,0xb
     sw	a2,0(a5)
     add	a0,a0,t1
     lui	a5,0x10
