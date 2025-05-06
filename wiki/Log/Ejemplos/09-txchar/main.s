@@ -615,25 +615,12 @@ clock_configure_undivided_:
     li a3, 0x8f0d180
     li a2,0
     li a1,0
-    #li a0,6
-
-   
     li a6, 2
-
     li t1, 0x200004f4
-
-    #sh2add a5,a0,t1
-    #lw a7,0(a5) # 10000 
-
-
-    #lui	a5,0x3
-    #add	a5,a5,a4
-    #bseti t3,zero,0xb
-    #sw t3,0(a5) # 3000 
     li a0, 0x18
-    #slli a0,a0,0x2
 
 #clock_configure_undivided_label10_:
+
     li a4, CLK_PERI_CTRL
     lw a7,0(a4)
 
