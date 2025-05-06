@@ -549,7 +549,7 @@ configure_clk_sys:
 
     li a6, 1
     li a5,1
-    bgeu a5,a6, clock_configure_undivided_label2_ # 10000e4e
+    j clock_configure_undivided_label2_ 
 
     #-- NO PASA POR AQUI
 
@@ -611,6 +611,7 @@ clock_configure_undivided_label2_:
     #jal led_init
     #jal led_blinky2
 
+    li a4, CLK_SYS_CTRL
     li  a5,0x3000
     add	a5,a5,a4
     #-- Segunda llamada: a5 = 0x4001003c + 0x3000 = 0x4001303c (CLK_SYS_CTRL_XOR?)
