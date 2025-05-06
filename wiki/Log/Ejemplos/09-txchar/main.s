@@ -620,9 +620,8 @@ clock_configure_undivided_:
     li a4, CLK_PERI_CTRL
     li a6, 2
 
-clock_configure_undivided_label3_:
-    lui t1,0x20000
-    addi t1,t1,1268 # 200004f4 
+    li t1, 0x200004f4
+
     sh2add a5,a0,t1
     lw a7,0(a5) # 10000 
     lui	a5,0x3
@@ -666,7 +665,7 @@ clock_configure_undivided_label6_:
     j	clock_configure_undivided_label10_
 
 clock_configure_undivided_label2_:
-    bne	a1,a5,clock_configure_undivided_label3_
+    #bne	a1,a5,clock_configure_undivided_label3_
 
     li  a5,0x3000
     add	a5,a5,a4
