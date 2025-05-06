@@ -622,19 +622,20 @@ configure_clk_peri:
     lw a7,0(a4)
 
     li a5, CLK_PERI_CTRL_XOR
-    li a2, 0
+    #li a2, 0
    
-    xor a2,a2,a7
+    #xor a2,a2,a7
     andi a2,a7,0xE0
     
-    sw a2,0(a5)
+    sw a2, 0(a5)
     li a2,1
-    #bgeu a2,a6,clock_configure_undivided_label5_
 
-#clock_configure_undivided_label9_:
-
-    lui a5,0x2
+    li a5,0x2000
     add	a5,a5,a4
+    li a5, CLK_PERI_CTRL_SET
+
+
+
     bseti a2,zero,0xb
     sw	a2,0(a5)
     add	a0,a0,t1
