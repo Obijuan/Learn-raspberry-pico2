@@ -15,6 +15,7 @@
 .equ CLK_REF_SELECTED,   0x40010038 
 
 .equ CLK_SYS_CTRL,       0x4001003C
+  .equ CLK_SYS_CTRL_XOR, 0x4001103C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
 .equ CLK_SYS_DIV,        0x40010040
 .equ CLK_SYS_SELECTED,   0x40010044
@@ -624,12 +625,17 @@ wait_clk_sys_selected:
     andi t1,t1,1
     beq t1, zero, wait_clk_sys_selected
 
-    lw	a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
-    slli a2,a2,0x5  #-- Segunda llamada: a2 = 0 + 5 = 5
+    lw a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
+    li a2, 0
+
     li a5,0x1000
-    xor	a2,a2,a6    #-- Segunda llamada: a2 = a2 xor a6 = 3
+    mv a2, a6
+    #xor	a2,a2,a6    #-- Segunda llamada: a2 = a2 xor a6 = 3
     andi a2,a2,0xe0  #-- Segunda llamada: a2 = 0 
-    add	a5,a5,a4     #-- Segunda llamada: CLK_SYS_CTRL + 0x1000
+    #add	a5,a5,a4     #-- Segunda llamada: CLK_SYS_CTRL + 0x1000
+
+    li a5, CLK_SYS_CTRL_XOR
+
     lui	t1,0x20000
     slli a0,a0,0x2   #-- Segunda llamada: a0 = 5, a0 = 5 << 2 = 20
     sw	a2,0(a5)     #-- Segunda llamada: Escritura en CLK_SYS_CTRL + 0x1000
