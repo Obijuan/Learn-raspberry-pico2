@@ -645,14 +645,8 @@ clock_configure_undivided:
 
 
     li a4, CLK_HSTX_CTRL
-
-    li t0, CLK_HSTX_DIV
-    lw a6, 0(t0)
-
-    li a5, 0x10000
-
     li a6, 3
-    li a5, 1
+
 
     lui t1,0x20000
     addi t1,t1,1268 # 200004f4 
