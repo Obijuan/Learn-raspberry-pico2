@@ -318,7 +318,7 @@ wait_clk_ref_selected:
 
 
 
-    jal	clock_configure_undivided_ # 10000dc4 <clock_configure_undivided>
+    jal	configure_clk_sys
 
     li s0,1
     lui	a3,0x2dc7
@@ -532,9 +532,7 @@ wait_clk_ref_selected2:
     ret
 
 
-
-#--- Segunda llamada: a0 = 5, a1 = 1, a2=0
-clock_configure_undivided_:
+configure_clk_sys:
 
     li a3, 0x8f0d180
     li a2,0
@@ -549,7 +547,7 @@ clock_configure_undivided_:
     li t0, CLK_SYS_DIV
     lw a6, 0(t0)
 
-    
+
     li a5,0x10000
 
     bgeu a6,a5,clock_configure_undivided_label1_  # 10000ddc <clock_configure_undivided+0x18>
