@@ -589,27 +589,25 @@ clock_configure_undivided_:
 
 clock_configure_undivided_label10_:
 
-    li a4, CLK_USB_CTRL
-    lw a7,0(a4)
+    li t0, CLK_USB_CTRL
+    lw t2, 0(t0)
 
     #-- Establecer la fuente de reloj auxiliar
-    li a5, CLK_USB_CTRL_XOR
-    andi a2,a7,0xe0
-    sw a2,0(a5)
+    li t0, CLK_USB_CTRL_XOR
+    andi t1, t2, 0xe0
+    sw t1, 0(t0)
 
-    li a5,0x2000
-    add	a5,a5,a4
+    li t0, CLK_USB_CTRL_SET
+    li t1, BIT11
+    sw t1, 0(t0)
 
-    li a5, CLK_USB_CTRL_SET
-    li a2, BIT11
-    sw a2, 0(a5)
-
-
-    add	a0,a0,t1
-    lui	a5,0x10
-    sw	a3,0(a0)
-    sw	a5,4(a4)
+    #-- Divisor a 1
+    li t0, CLK_USB_DIV
+    li t1, BIT16
+    sw t1, 0(t0)
     ret
+
+
 
 clock_configure_undivided_label4_:
     lw a5,20(t1)
