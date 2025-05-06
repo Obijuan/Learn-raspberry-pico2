@@ -547,11 +547,12 @@ configure_clk_ref:
     li a1, 2
     sw	a1,0(a4) 
 
+    #-- Esperar a que se seleccione la fuente
     li t0, CLK_REF_SELECTED
-clock_configure_undivided_label8_:
+wait_clk_ref_selected2:
     lw a5, 0(t0)
-    and	a5,a5,a2
-    beqz a5,clock_configure_undivided_label8_ 
+    andi a5,a5, 0xF
+    beq a5, zero, wait_clk_ref_selected2
 
     lui a5,0x2
     add	a5,a5,a4
