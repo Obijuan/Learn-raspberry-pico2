@@ -536,77 +536,10 @@ wait_clk_ref_selected2:
 
 configure_clk_sys:
 
-    li a3, 0x8f0d180
-    li a2,0
-    li a1, 1
-    li a0,5
-
-
-
-    li a5,CLOCK_BASE
-    li a4, CLK_SYS_CTRL
-
-    li t0, CLK_SYS_DIV
-    lw a6, 0(t0)
-
-    li a6, 1
-    li a5,1
-    j clock_configure_undivided_label2_ 
-
-    #-- NO PASA POR AQUI
-
-clock_configure_undivided_label3_:
-# 10000de6:	
-
-    lui t1,0x20000
-    addi t1,t1,1268 # 200004f4 <configured_freq>
-    sh2add a5,a0,t1
-    lw a7,0(a5) # 10000 <HeapSize+0xf800>
-    lui	a5,0x3
-    add	a5,a5,a4
-    bseti t3,zero,0xb
-    sw t3,0(a5) # 3000 <HeapSize+0x2800>
-    slli a0,a0,0x2
-    bnez a7,clock_configure_undivided_label4_ # 10000e36 <clock_configure_undivided+0x72>
-
-clock_configure_undivided_label10_:
-# 10000e08
-    lw a7,0(a4)
-    slli a2,a2,0x5
-    lui a5,0x1
-    xor a2,a2,a7
-    andi a2,a2,224
-    add a5,a5,a4
-    sw a2,0(a5)
-    li a2,1
-    bgeu a2,a6,clock_configure_undivided_label5  #  10000e80 <clock_configure_undivided+0xbc>
-
-clock_configure_undivided_label4_:
-# 10000e36:	 
-    lw a5,20(t1)
-    divu a5,a5,a7
-    addi a5,a5,1 # 10001 <HeapSize+0xf801>
-    sh1add a5,a5,a5
-
-clock_configure_undivided_label6_:
-# 10000e44:	
-    addi a5,a5,-2
-    bgez	a5,clock_configure_undivided_label6_ # 10000e44 <clock_configure_undivided+0x80>
-    j	clock_configure_undivided_label10_ # 10000e08 <clock_configure_undivided+0x44>
-
-clock_configure_undivided_label2_:
-    bne	a1,a5,clock_configure_undivided_label3_  # 10000de6 <clock_configure_undivided+0x22>
-
-    #-- PASA POR AQUI
-
-    #jal led_init
-    #jal led_blinky2
-
     #-- Seleccionar la fuente: CLK_REF
-    li a4, CLK_SYS_CTRL
     li t0, CLK_SYS_CTRL_CLR
-    li a6, 3
-    sw a6, 0(t0)
+    li t1, 3
+    sw t1, 0(t0)
 
     #-- Esperar a que se seleccione la fuente
     li t0, CLK_SYS_SELECTED
