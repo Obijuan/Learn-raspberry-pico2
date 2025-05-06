@@ -625,9 +625,9 @@ configure_clk_peri:
     andi a2,a7,0xE0
     sw a2, 0(a5)
 
-    li a5, CLK_PERI_CTRL_SET
-    li a2, BIT11
-    sw a2,0(a5)
+    li t0, CLK_PERI_CTRL_SET
+    li t1, BIT11
+    sw t1, 0(t0)
 
     li t0, CLK_PERI_DIV
     li t1, BIT16
