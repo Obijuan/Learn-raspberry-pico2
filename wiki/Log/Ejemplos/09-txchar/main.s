@@ -312,9 +312,11 @@ wait_clk_ref_selected:
     li t2,1
     bne t1,t2, wait_clk_ref_selected
 
+    #-- Inicializar plls
     jal pll_sys_init
     jal	pll_usb_init 
 
+    #-- Configurar CLK_REF
     jal	configure_clk_ref
 
     li s0,1
@@ -507,16 +509,6 @@ wait_pll_usb_lock:
 
 configure_clk_ref:
 
-    addi sp,sp,-16
-    sw ra, 12(sp)
-
-    li s0,1
-    li a3, 0xB71B00
-    li a2,0
-    li a1,2
-    li a0,4
-
-
     #-- Divisor: 1
     li t0, CLK_REF_DIV
     li t1, BIT16  # 0x10000
@@ -544,8 +536,6 @@ wait_clk_ref_selected2:
     li t1, BIT16 
     sw t1, 0(t0)
 
-    lw ra, 12(sp)
-    addi sp,sp,16
     ret
 
 
