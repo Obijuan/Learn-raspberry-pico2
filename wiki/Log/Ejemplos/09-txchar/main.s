@@ -643,7 +643,7 @@ wait_clk_sys_selected:
     li a1, 1
     sw a1,0(a5) 
 
-    bset	a2,zero,a1  
+    li a2, 2
 
 clock_configure_undivided_label8_:
 #-- SE QUEDA EN BUCLE INFINITO!!!
