@@ -629,10 +629,9 @@ configure_clk_peri:
     li a2, BIT11
     sw a2,0(a5)
 
-    #add	a0,a0,t1
-    lui	a5,0x10
-    #sw	a3,0(a0)
-    sw	a5,4(a4)
+    li t0, CLK_PERI_DIV
+    li t1, BIT16
+    sw t1, 4(t0)
     ret
 
 
