@@ -10,7 +10,8 @@
 .equ CLOCK_REF_CTRL,     0x40010030
   .equ CLK_REF_CTRL_XOR, 0x40011030
   .equ CLK_REF_CTRL_CLR, 0x40013030
-.equ CLK_REF_DIV,        0x40013034 
+.equ CLK_REF_DIV,        0x40013034
+.equ CLK_REF_SELECTED,   0x40013038 
 
 .equ CLK_SYS_CTRL,       0x4001003C
   .equ CLK_SYS_CTRL_CLR, 0x4001303C
@@ -546,9 +547,9 @@ configure_clk_ref:
     li a1, 2
     sw	a1,0(a4) 
 
-    #-- TODO
+    li t0, CLK_REF_SELECTED
 clock_configure_undivided_label8_:
-    lw a5,8(a4)   #-- CLK_SYS_SELECTED
+    lw a5, 0(t0)
     and	a5,a5,a2
     beqz a5,clock_configure_undivided_label8_ 
 
