@@ -337,7 +337,7 @@ wait_clk_ref_selected:
     #-- Configurar CLK_USB
     jal	configure_clk_usb
 
-
+    #-- Configurar CLK_ADC
     jal	configure_clk_adc 
 
     li a3, 0x8f0d180
