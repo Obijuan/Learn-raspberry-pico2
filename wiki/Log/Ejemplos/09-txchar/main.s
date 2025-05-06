@@ -611,16 +611,18 @@ clock_configure_undivided_label2_:
     #jal led_init
     #jal led_blinky2
 
+    #-- Seleccionar la fuente: CLK_REF
     li a4, CLK_SYS_CTRL
     li t0, CLK_SYS_CTRL_CLR
     li a6, 3
     sw a6, 0(t0)
 
+    #-- Esperar a que se seleccione la fuente
     li t0, CLK_SYS_SELECTED
-clock_configure_undivided_label7_:
+wait_clk_sys_selected:
     lw t1, 0(t0)
     andi t1,t1,1
-    beq t1, zero, clock_configure_undivided_label7_
+    beq t1, zero, wait_clk_sys_selected
 
     lw	a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
     slli a2,a2,0x5  #-- Segunda llamada: a2 = 0 + 5 = 5
