@@ -625,19 +625,14 @@ wait_clk_sys_selected:
     andi t1,t1,1
     beq t1, zero, wait_clk_sys_selected
 
-    lw a6,0(a4)  
-    li a2, 0
-
-    mv a2, a6
+    lw a2, 0(a4)  
     andi a2,a2,0xe0  
     li a5, CLK_SYS_CTRL_XOR
 
     
-    #slli a0,a0,0x2   #-- Segunda llamada: a0 = 5, a0 = 5 << 2 = 20
+    sw a2,0(a5) 
+
     li a0, 0x14
-    sw	a2,0(a5)     #-- Segunda llamada: Escritura en CLK_SYS_CTRL + 0x1000
-
-
     lui	t1,0x20000
     addi	t1,t1,1268 # 200004f4 <configured_freq>
 
