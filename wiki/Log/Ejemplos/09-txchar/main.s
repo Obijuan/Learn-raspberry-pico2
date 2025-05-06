@@ -651,16 +651,14 @@ clock_configure_undivided:
 
     lw a7,0(a4)
 
-   
     li a5, CLK_HSTX_CTRL_XOR
     andi a2,a7, 0xE0
     sw a2, 0(a5)
 
     li a6, 3
     li a2, 1
-    bgeu a2,a6,clock_configure_undivided_label5
-
-clock_configure_undivided_label9:
+ 
+ 
     lui a5,0x2
     add	a5,a5,a4
     bseti a2,zero,0xb
@@ -670,55 +668,6 @@ clock_configure_undivided_label9:
     sw	a3,0(a0)
     sw	a5,4(a4)
     ret
-
-clock_configure_undivided_label4:
-    lw a5,20(t1)
-    divu a5,a5,a7
-    addi a5,a5,1 # 10001 
-    sh1add a5,a5,a5
-
-clock_configure_undivided_label6:
-    addi a5,a5,-2
-    bgez	a5,clock_configure_undivided_label6
-    #j	clock_configure_undivided_label10
-
-clock_configure_undivided_label2:
-    #bne	a1,a5,clock_configure_undivided_label3
-
-    li  a5,0x3000
-    add	a5,a5,a4
-
-    li	a6,3
-    sw	a6,0(a5)
-
-clock_configure_undivided_label7:
-    lw a5,8(a4)  
-    andi a5,a5,1
-    beqz a5,clock_configure_undivided_label7 
-
-    lw	a6,0(a4)    
-    slli a2,a2,0x5  
-    li a5,0x1000
-    xor	a2,a2,a6   
-    andi a2,a2,0xe0  
-    add	a5,a5,a4     
-    lui	t1,0x20000
-    slli a0,a0,0x2   
-    sw	a2,0(a5)    
-    addi t1,t1,1268 # 200004f4 
-
-clock_configure_undivided_label5:
-    lw a6,0(a4)          
-    bset	a2,zero,a1   
-    xor	a1,a1,a6        
-    andi	a1,a1,3     
-    sw	a1,0(a5) 
-
-clock_configure_undivided_label8:
-    lw a5,8(a4)  
-    and	a5,a5,a2
-    beqz	a5,clock_configure_undivided_label8 
-    j	clock_configure_undivided_label9 
 
 
 
