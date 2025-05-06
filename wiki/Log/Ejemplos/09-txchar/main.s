@@ -328,9 +328,10 @@ wait_clk_ref_selected:
     #-- Configurar CLK_SYS
     jal	configure_clk_sys
 
+    #-- Configurar CLK_USB
+    jal	clock_clk_usb
 
-    
-    jal	clock_configure_undivided_ 
+
 
     li a3, 0x2dc6c00
     li a2,0
@@ -569,25 +570,10 @@ wait_clk_sys_selected2:
     ret
 
 
-clock_configure_undivided_:
-
-    li a6, 4
-    li a4, CLK_USB_CTRL
-    li a3, 0x2dc6c00
-    li a2,0
-    li a1,0
-    li a0,8
-
-    lui t1,0x20000
-    addi t1,t1,1268 # 200004f4 
-
-    li a5, CLK_USB_CTRL_CLR
-    li t3, BIT11
-    sw t3, 0(a5) 
-
-    slli a0,a0,0x2
-
-clock_configure_undivided_label10_:
+clock_clk_usb:
+    li t0, CLK_USB_CTRL_CLR
+    li t1, BIT11
+    sw t1, 0(t0) 
 
     li t0, CLK_USB_CTRL
     lw t2, 0(t0)
@@ -606,62 +592,6 @@ clock_configure_undivided_label10_:
     li t1, BIT16
     sw t1, 0(t0)
     ret
-
-
-
-clock_configure_undivided_label4_:
-    lw a5,20(t1)
-    divu a5,a5,a7
-    addi a5,a5,1 # 10001 
-    sh1add a5,a5,a5
-
-clock_configure_undivided_label6_:
-    addi a5,a5,-2
-    bgez	a5,clock_configure_undivided_label6_
-    j	clock_configure_undivided_label10_
-
-clock_configure_undivided_label2_:
-    #bne	a1,a5,clock_configure_undivided_label3_
-
-    li  a5,0x3000
-    add	a5,a5,a4
-
-    li	a6,3
-    sw	a6,0(a5)
-
-clock_configure_undivided_label7_:
-    lw a5,8(a4)  
-    andi a5,a5,1
-    beqz a5,clock_configure_undivided_label7_ 
-
-    lw	a6,0(a4)    
-    slli a2,a2,0x5  
-    li a5,0x1000
-    xor	a2,a2,a6   
-    andi a2,a2,0xe0  
-    add	a5,a5,a4     
-    lui	t1,0x20000
-    slli a0,a0,0x2   
-    sw	a2,0(a5)    
-    addi t1,t1,1268 # 200004f4 
-
-clock_configure_undivided_label5_:
-    lw a6,0(a4)          
-    bset	a2,zero,a1   
-    xor	a1,a1,a6        
-    andi	a1,a1,3     
-    sw	a1,0(a5) 
-
-clock_configure_undivided_label8_:
-    lw a5,8(a4)  
-    and	a5,a5,a2
-    beqz	a5,clock_configure_undivided_label8_ 
-    #j	clock_configure_undivided_label9_ 
-
-
-
-
-
 
 
 
