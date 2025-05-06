@@ -611,16 +611,10 @@ configure_clk_adc:
     li a2, BIT11
     sw a2,0(a5)
 
-    li t1, 0x200004f4
-    li a0, 0
-    add	a0,a0,t1
+    li t0, CLK_ADC_DIV
+    li t1,0x10000
+    sw t1, 0(t0)
 
-    li a5,0x10000
-    #sw	a3,0(a0)
-
-
-    li a4, CLK_ADC_DIV
-    sw a5, 4(a4)
     ret
 
 
