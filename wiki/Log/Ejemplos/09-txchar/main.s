@@ -618,10 +618,7 @@ clock_configure_undivided_:
     li a0,6
 
     li a4, CLK_PERI_CTRL
-   
     li a6, 2
-    li a5, 1
-    bgeu a5,a6, clock_configure_undivided_label2_
 
 clock_configure_undivided_label3_:
     lui t1,0x20000
