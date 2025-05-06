@@ -611,15 +611,8 @@ configure_clk_adc:
 
 
 configure_clk_peri:
-
-    li a3, 0x8f0d180
-    li a1,0
-    li a6, 2
-    li t1, 0x200004f4
-    li a0, 0x18
-
     li t0, CLK_PERI_CTRL
-    lw t2,0(t0)
+    lw t2, 0(t0)
 
     li t0, CLK_PERI_CTRL_XOR
     andi t1,t2,0xE0
