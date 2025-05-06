@@ -592,20 +592,19 @@ clock_configure_undivided_label10_:
     li a4, CLK_USB_CTRL
     lw a7,0(a4)
 
+    #-- Establecer la fuente de reloj auxiliar
     li a5, CLK_USB_CTRL_XOR
     andi a2,a7,0xe0
     sw a2,0(a5)
 
-    li a2,1
-
-    #j .
-    #jal led_init
-    #jal led_blinky
-
-    lui a5,0x2
+    li a5,0x2000
     add	a5,a5,a4
-    bseti a2,zero,0xb
-    sw	a2,0(a5)
+
+    li a5, CLK_USB_CTRL_SET
+    li a2, BIT11
+    sw a2, 0(a5)
+
+
     add	a0,a0,t1
     lui	a5,0x10
     sw	a3,0(a0)
