@@ -616,35 +616,24 @@ wait_clk_sys_selected:
     beq t1, zero, wait_clk_sys_selected
 
     #-- Fuente auxiliar de reloj: PLL_SYS
-    sw zero, 0(a4)
+    li t0, CLK_SYS_CTRL
+    sw zero, 0(t0)
    
-    #jal led_init
-    #jal button_init15
-
-    #jal debug_led1_lsb
-    #jal led_blinky
-
-    
-    li a3, 0x8f0d180
-    li a0, 0x14
-    li t1, 0x200004f4
-   
-    li a5, CLK_SYS_CTRL_XOR
+    li t0, CLK_SYS_CTRL_XOR
     li a1, 1
-    sw a1, 0(a5) 
-    li a2, 2
+    sw a1, 0(t0) 
 
     li t0, CLK_SYS_SELECTED
 wait_clk_sys_selected2:
-    lw t2, 0(t0)
-    andi t2,t2, 0x2
-    beq t2, zero, wait_clk_ref_selected2
+    lw t1, 0(t0)
+    andi t1,t1, 0x2
+    beq t1, zero, wait_clk_ref_selected2
 
     #-- Establecer el divisor a 1
     li t0, CLK_SYS_DIV
     li t1,0x10000   
     sw t1,0(t0)
-    
+
     ret
 
 
