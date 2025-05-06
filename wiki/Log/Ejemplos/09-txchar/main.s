@@ -596,15 +596,10 @@ clock_configure_undivided_label10_:
     li a4, CLK_USB_CTRL
     lw a7,0(a4)
 
-    li a5,0x1000
-    add a5,a5,a4
     li a5, CLK_USB_CTRL_XOR
-    
-    slli a2,a2,0x5
-    xor a2,a2,a7
-    andi a2,a2,0xe0
-   
+    andi a2,a7,0xe0
     sw a2,0(a5)
+    
     li a2,1
     bgeu a2,a6,clock_configure_undivided_label5_
 
