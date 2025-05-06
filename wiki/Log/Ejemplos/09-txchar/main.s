@@ -9,6 +9,7 @@
 
 .equ CLOCK_REF_CTRL,     0x40010030
   .equ CLK_REF_CTRL_XOR, 0x40011030
+  .equ CLK_REF_CTRL_SET, 0x40012030
   .equ CLK_REF_CTRL_CLR, 0x40013030
 .equ CLK_REF_DIV,        0x40013034
 .equ CLK_REF_SELECTED,   0x40013038 
@@ -554,8 +555,13 @@ wait_clk_ref_selected2:
     andi a5,a5, 0xF
     beq a5, zero, wait_clk_ref_selected2
 
-    lui a5,0x2
+
+    #-- TODO
+    li a5,0x2000
     add	a5,a5,a4
+
+    li a5, CLK_REF_CTRL_SET
+
     bseti a2,zero,0xb
     sw	a2,0(a5)
     add	a0,a0,t1
