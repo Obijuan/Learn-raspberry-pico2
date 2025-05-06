@@ -612,18 +612,15 @@ configure_clk_adc:
     sh2add a5,a0,t1
 
     slli a0,a0,0x2
-    
-
-clock_configure_undivided_label10_:
-    lw a7,0(a4)
     slli a2,a2,0x5
+
     lui a5,0x1
     xor a2,a2,a7
     andi a2,a2,224
     add a5,a5,a4
     sw a2,0(a5)
     li a2,1
-    #bgeu a2,a6,clock_configure_undivided_label5_
+
 
 clock_configure_undivided_label9_:
     lui a5,0x2
