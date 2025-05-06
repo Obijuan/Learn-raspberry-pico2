@@ -641,18 +641,15 @@ wait_clk_sys_selected:
    
     li a5, CLK_SYS_CTRL_XOR
     li a1, 1
-    sw a1,0(a5) 
-
+    sw a1, 0(a5) 
     li a2, 2
 
     li t0, CLK_SYS_SELECTED
-clock_configure_undivided_label8_:
-#-- SE QUEDA EN BUCLE INFINITO!!!
-# 10000e90:	
-    #lw a5,8(a4)   #-- CLK_SYS_SELECTED
-    lw a5, 0(t0)
-    andi a5,a5, 0x2
-    beq a5, zero, clock_configure_undivided_label8_  # 10000e90 <clock_configure_undivided+0xcc>
+wait_clk_sys_selected2:
+    lw t2, 0(t0)
+    andi t2,t2, 0x2
+    beq t2, zero, wait_clk_ref_selected2
+    
     j	clock_configure_undivided_label9_  #  10000e22 <clock_configure_undivided+0x5e>
 
 
