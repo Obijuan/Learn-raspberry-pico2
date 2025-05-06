@@ -301,10 +301,6 @@ wait_selected:
     li t1, 3
     sw t1, 0(t0)
 
-    #li a4,3
-    #li a5,0x40013000 #-- CLOCK_BASE + 0x3000
-    #sw	a4,0x30(a5)  #-- CLK_REF_CTRL
-
     #-- Esperar a que se finalice la seleccion
 wait_clk_ref_selected:
     li t0, CLK_REF_SELECTED
