@@ -319,14 +319,17 @@ wait_clk_ref_selected:
     #-- Configurar CLK_REF
     jal	configure_clk_ref
 
+
+
+
+
     li s0,1
     lui	a3,0x8f0d
     mv	a1,s0
     addi a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
     li a2,0
     li a0,5
-    #-- Comentada... la segunda pasada peta :-(
-    jal	clock_configure_undivided # 10000dc4 <clock_configure_undivided>
+    jal	clock_configure_undivided_ # 10000dc4 <clock_configure_undivided>
 
     lui	a3,0x2dc7
     addi	a3,a3,-1024 # 2dc6c00 <HeapSize+0x2dc6400>
@@ -537,6 +540,129 @@ wait_clk_ref_selected2:
     sw t1, 0(t0)
 
     ret
+
+
+#--- Primera llamada: a0 = 4, a1 = 2, a2=0
+#--- Segunda llamada: a0 = 5, a1 = 1, a2=0
+clock_configure_undivided_:
+    li a5,CLOCK_BASE
+    sh1add	a4,a0,a0  #-- sh1add rd, rs1, rs2
+                      #-- X(rd) = X(rs2) + (X(rs1) << 1);
+                      #-- a4 = a0 + a0<<1
+
+    #-- Primera llamada: a4 = 4 + 4<<1 = 12
+    #-- Segunda llamda: a4 = 15
+    sh2add	a4,a4,a5  #-- a4 = a5 + a4<<2  (X(rd) = X(rs2) + (X(rs1) << 2))
+                      #-- Primera llamada: a4 = 0x40010030 (CLK_REF_CTRL)
+                      #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL)
+    lw a6,4(a4) # Se lee registro (CLK_REF_DIV (1ª), CLK_SYS_DIV (2º)
+    li a5,0x10000
+
+    bgeu a6,a5,clock_configure_undivided_label1_  # 10000ddc <clock_configure_undivided+0x18>
+    sw	a5,4(a4)
+
+clock_configure_undivided_label1_:
+# 10000ddc:	
+    addi a6,a0,-4
+    li a5,1
+    bgeu a5,a6, clock_configure_undivided_label2 # 10000e4e
+
+clock_configure_undivided_label3_:
+# 10000de6:	
+
+    lui t1,0x20000
+    addi t1,t1,1268 # 200004f4 <configured_freq>
+    sh2add a5,a0,t1
+    lw a7,0(a5) # 10000 <HeapSize+0xf800>
+    lui	a5,0x3
+    add	a5,a5,a4
+    bseti t3,zero,0xb
+    sw t3,0(a5) # 3000 <HeapSize+0x2800>
+    slli a0,a0,0x2
+    bnez a7,clock_configure_undivided_label4_ # 10000e36 <clock_configure_undivided+0x72>
+
+clock_configure_undivided_label10_:
+# 10000e08
+    lw a7,0(a4)
+    slli a2,a2,0x5
+    lui a5,0x1
+    xor a2,a2,a7
+    andi a2,a2,224
+    add a5,a5,a4
+    sw a2,0(a5)
+    li a2,1
+    bgeu a2,a6,clock_configure_undivided_label5  #  10000e80 <clock_configure_undivided+0xbc>
+
+clock_configure_undivided_label9_:
+# 10000e22:	
+    lui a5,0x2
+    add	a5,a5,a4
+    bseti a2,zero,0xb
+    sw	a2,0(a5)
+    add	a0,a0,t1
+    lui	a5,0x10
+    sw	a3,0(a0)
+    sw	a5,4(a4)
+    ret
+clock_configure_undivided_label4_:
+# 10000e36:	 
+    lw a5,20(t1)
+    divu a5,a5,a7
+    addi a5,a5,1 # 10001 <HeapSize+0xf801>
+    sh1add a5,a5,a5
+
+clock_configure_undivided_label6_:
+# 10000e44:	
+    addi a5,a5,-2
+    bgez	a5,clock_configure_undivided_label6_ # 10000e44 <clock_configure_undivided+0x80>
+    j	clock_configure_undivided_label10_ # 10000e08 <clock_configure_undivided+0x44>
+
+clock_configure_undivided_label2_:
+# 10000e4e:
+# Segunda llamada: a1 = 1, a5=1, a4 = 0x4001003c (CLK_SYS_CTRL)
+    bne	a1,a5,clock_configure_undivided_label3_  # 10000de6 <clock_configure_undivided+0x22>
+
+    li  a5,0x3000
+    add	a5,a5,a4
+    #-- Segunda llamada: a5 = 0x4001003c + 0x3000 = 0x4001303c (CLK_SYS_CTRL_XOR?)
+
+    li	a6,3
+    sw	a6,0(a5) # 3000 <HeapSize+0x2800>
+
+clock_configure_undivided_label7_:
+# 10000e5c:	
+    lw a5,8(a4)    #-- Segunda llamada: a4 = 0x4001003c (CLK_SYS_CTRL) Se lee: CLK_SYS_SELECTED
+    andi a5,a5,1
+    beqz a5,clock_configure_undivided_label7_ # 10000e5c <clock_configure_undivided+0x98>
+
+    lw	a6,0(a4)    #-- Segunda llamada: Lectura de (CLK_SYS_CTRL) (DEBUG) --> Seguir por aqui
+    slli a2,a2,0x5  #-- Segunda llamada: a2 = 0 + 5 = 5
+    li a5,0x1000
+    xor	a2,a2,a6    #-- Segunda llamada: a2 = a2 xor a6 = 3
+    andi a2,a2,0xe0  #-- Segunda llamada: a2 = 0 
+    add	a5,a5,a4     #-- Segunda llamada: CLK_SYS_CTRL + 0x1000
+    lui	t1,0x20000
+    slli a0,a0,0x2   #-- Segunda llamada: a0 = 5, a0 = 5 << 2 = 20
+    sw	a2,0(a5)     #-- Segunda llamada: Escritura en CLK_SYS_CTRL + 0x1000
+    addi	t1,t1,1268 # 200004f4 <configured_freq>
+
+clock_configure_undivided_label5_:
+# 10000e80:	
+    lw a6,0(a4)          #-- Leer registro CLK_SYS_CTRL
+    bset	a2,zero,a1   #-- Segunda llamada: a1 = 1, a2 = 1
+    xor	a1,a1,a6         #-- Segunda llamada: a1 = 1 xor x6 = 01 xor 11 = 10
+    andi	a1,a1,3      #-- Segunda llamada: a1 = 1 and 11 = 1
+
+    #-- AQUI PETA!!!!!!
+    sw	a1,0(a5)  #Comentada para que no pete... (¿?)
+
+clock_configure_undivided_label8_:
+#-- SE QUEDA EN BUCLE INFINITO!!!
+# 10000e90:	
+    lw a5,8(a4)   #-- CLK_SYS_SELECTED
+    and	a5,a5,a2
+    beqz	a5,clock_configure_undivided_label8_  # 10000e90 <clock_configure_undivided+0xcc>
+    j	clock_configure_undivided_label9_  #  10000e22 <clock_configure_undivided+0x5e>
 
 
 
