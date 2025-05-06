@@ -609,12 +609,10 @@ configure_clk_adc:
 
    
     li t1, 0x200004f4
-    li a2, 0
-    li a2,1
     
     li a5, CLK_ADC_CTRL_SET
     li a2, BIT11
-    sw	a2,0(a5)
+    sw a2,0(a5)
 
 
     li a0, 0
