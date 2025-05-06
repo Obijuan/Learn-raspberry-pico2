@@ -541,13 +541,16 @@ configure_clk_ref:
     xor	a1,a1,a6         #-- Segunda llamada: a1 = 1 xor x6 = 01 xor 11 = 10
     andi	a1,a1,3      #-- Segunda llamada: a1 = 1 and 11 = 1
 
-    #-- AQUI PETA!!!!!!
-    sw	a1,0(a5)  #Comentada para que no pete... (¿?)
+    #-- Seleccionar la fuente para CLK_REF
+    #-- Oscilador interno
+    li a1, 2
+    sw	a1,0(a4) 
 
+    #-- TODO
 clock_configure_undivided_label8_:
     lw a5,8(a4)   #-- CLK_SYS_SELECTED
     and	a5,a5,a2
-    beqz a5,clock_configure_undivided_label8 
+    beqz a5,clock_configure_undivided_label8_ 
 
     lui a5,0x2
     add	a5,a5,a4
