@@ -594,22 +594,11 @@ configure_clk_usb:
     sw t1, 0(t0)
     ret
 
-
-
-
 configure_clk_adc:
-    li a3, 0x2dc6c00
-    li a2,0
-    li a1,0
-    li a0,9
-    
-    li a4, CLK_ADC_CTRL
-    li a6, 5
-    li a5,1
 
-    li a5, CLK_ADC_CTRL_SET
-    li a2, BIT11
-    sw a2,0(a5)
+    li t0, CLK_ADC_CTRL_SET
+    li t1, BIT11
+    sw t1, 0(t0)
 
     li t0, CLK_ADC_DIV
     li t1,0x10000
