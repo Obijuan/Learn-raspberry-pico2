@@ -532,32 +532,31 @@ configure_clk_ref:
     sw t3, 0(a5)
 
     li a0, 16
-    li a4, CLOCK_REF_CTRL
 
     li a5, CLK_REF_CTRL_XOR
     sw a2, 0(a5)
 
     #-- Seleccionar la fuente para CLK_REF
     #-- Oscilador interno
-    li a1, 2
-    sw a1,0(a4) 
+    li t0, CLOCK_REF_CTRL
+    li t1, 2
+    sw t1, 0(t0) 
 
     #-- Esperar a que se seleccione la fuente
     li t0, CLK_REF_SELECTED
 wait_clk_ref_selected2:
-    lw a5, 0(t0)
-    andi a5,a5, 0xF
-    beq a5, zero, wait_clk_ref_selected2 
+    lw t1, 0(t0)
+    andi t1,t1, 0xF
+    beq t1, zero, wait_clk_ref_selected2 
 
     #-- ¿Se puede eliminar?
-    li a5, CLK_REF_CTRL_SET
-    sw zero, 0(a5)
+    li t0, CLK_REF_CTRL_SET
+    sw zero, 0(t0)
 
     #-- Divisor a 1
     li t0, CLK_REF_DIV
-    li a5,0x10000
-    sw a5, 0(t0)
-    #sw	a5,4(a4)
+    li t1, BIT16 
+    sw t1, 0(t0)
 
     lw ra, 12(sp)
     addi sp,sp,16
