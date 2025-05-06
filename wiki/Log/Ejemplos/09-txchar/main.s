@@ -648,18 +648,10 @@ clock_configure_undivided:
     li a6, 3
 
     li t1, 0x200004f4 
-    sh2add a5,a0,t1
-    lw a7,0(a5) # 10000
-
-
-    #li a5,0x3000
-    #add	a5,a5,a4
-
+   
     li a5, CLK_HSTX_CTRL_SET
 
-    bseti t3,zero,0xb
-    sw t3,0(a5) # 3000 
-    slli a0,a0,0x2
+    li a0, 0x1C
 
     lw a7,0(a4)
     slli a2,a2,0x5
