@@ -645,12 +645,14 @@ wait_clk_sys_selected:
 
     li a2, 2
 
+    li t0, CLK_SYS_SELECTED
 clock_configure_undivided_label8_:
 #-- SE QUEDA EN BUCLE INFINITO!!!
 # 10000e90:	
-    lw a5,8(a4)   #-- CLK_SYS_SELECTED
-    and	a5,a5,a2
-    beqz	a5,clock_configure_undivided_label8_  # 10000e90 <clock_configure_undivided+0xcc>
+    #lw a5,8(a4)   #-- CLK_SYS_SELECTED
+    lw a5, 0(t0)
+    andi a5,a5, 0x2
+    beq a5, zero, clock_configure_undivided_label8_  # 10000e90 <clock_configure_undivided+0xcc>
     j	clock_configure_undivided_label9_  #  10000e22 <clock_configure_undivided+0x5e>
 
 
