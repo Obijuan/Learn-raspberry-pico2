@@ -315,13 +315,9 @@ wait_clk_ref_selected:
     jal pll_sys_init
     jal	pll_usb_init 
 
-    li s0,1
-    li a3, 0xB71B00
-    li a2,0
-    li a1,2
-    li a0,4
     jal	configure_clk_ref
 
+    li s0,1
     lui	a3,0x8f0d
     mv	a1,s0
     addi a3,a3,384 # 8f0d180 <HeapSize+0x8f0c980>
