@@ -365,6 +365,8 @@ wait_clk_ref_selected:
 
     lui	a5,0x431be
     addi a5,a5,-381 # 431bde83 <__StackTop+0x2313be83>
+
+    li a5, 0x431bde83
     mulhu s1,a0,a5
     li s0,0
     li s2,6
