@@ -32,11 +32,10 @@ main_loop:
     #-- Esperar a recibir un caracter
     jal getchar
 
-    #-- Eco del caracter recibido
-    jal putchar
-
     #-- Cambiar de estado el led
     jal led_toggle
+
+    #-- Repetir
     j main_loop 
 
 
