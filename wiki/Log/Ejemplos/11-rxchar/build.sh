@@ -21,7 +21,7 @@ $AS -g -march=rv32i -mabi=ilp32 -I.. -o button.o button.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o debug.o debug.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o runtime.o runtime.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o uart.o uart.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
+$AS -g -march=rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
 
 # -- Linkado
 $LD -g -m elf32lriscv -T linker.ld -o $MAIN.elf $MAIN.o  runtime.o \

@@ -27,18 +27,64 @@ _start:
     #-- Velocidad: 115200 (con runtime actual)
     jal uart_init 
 
+    li a1,2
+    li a0,1
+    jal gpio_set_function
+
+
+
     #-- Encender el LED
     jal led_on
+
+
 
 
 main_loop:
 
     #-- Transmitir un asterisco inicial
-    #li a0, '*'
-    #jal putchar
+    li a0, '*'
+    jal putchar
 
     #-- Esperar a que se apriete el pulsador
     #jal button_press15
+
+    lui	a4,0x40070
+
+label1_:
+
+    lw a5,24(a4)
+    andi a5,a5,16
+    bnez a5, label1_
+    lw a3,0(a4)
+
+label2_:
+    lw a5,24(a4)
+    andi a5,a5,32
+    bnez a5, label2_ 
+    zext.b a5,a3
+    sw a5,0(a4)
+    j main_loop  #label1_
+
+
+gpio_set_function:
+    lui	a5,0x40038
+    addi a5,a5,4 
+    sh2add a5,a0,a5
+    lw a4,0(a5)
+    lui	a3,0x1
+    add	a3,a3,a5
+    xori a4,a4,64
+    andi a4,a4,192
+    lui	a2,0x40028
+    sw a4,0(a3)
+    sh3add	a0,a0,a2
+    lui	a4,0x3
+    add	a5,a5,a4
+    sw a1,4(a0)
+    li a4,256
+    sw a4,0(a5)
+    ret
+
 
 
     #-- Esperar a que el receptor tenga datos
@@ -60,21 +106,4 @@ wait_rx:
     #-- Repetir
     j main_loop
 
-
-# -----------------------------------------------
-# -- Delay
-# -- Realizar una pausa de medio segundo aprox.
-# -----------------------------------------------
-delay:
-    # -- Usar t0 como contador descendente
-    li t0, 0xFFFFFF
-delay_loop:
-    beq t0,zero, delay_end_loop
-    addi t0, t0, -1
-    j delay_loop
-
-    # -- Cuando el contador llega a cero
-    # -- se termina
-delay_end_loop:
-    ret
 
