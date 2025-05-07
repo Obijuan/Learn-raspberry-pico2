@@ -134,7 +134,7 @@ _start:
     #-- Inicializar la pila
     la sp, _stack_top
 
-    #li s0,0x10001000 #-- XIP BASE + 0x1000
+    #-- Inicializar el sistema
     jal	runtime_init
 
     #-- Configurar el LED
@@ -143,9 +143,6 @@ _start:
     #-- Inicializar la UART
     jal uart_init 
 
-    #-- DEBUG
-    #jal button_init15
-    #jal debug_led1_lsb
 
 main_loop:
 
@@ -230,22 +227,6 @@ wait_reset_done:
     li t1, 2
     sw t1,0(t0)
     ret
-
-#-------------------------------
-#-- Lectura de una variable
-#-------------------------------
-clock_get_hz:
-    li a5, 0x200004f4  #-- RAM-BASE + 0x4f4
-
-    #-- Calcular: a0 = a5 + a0<<2
-    sll a0, a0, 2  #-- a0<<2
-    add a0, a5, a0 
-    
-    lw a0,0(a0)  #-- Mem[0x2000050c]
-    ret
-
-
-
 
 
 # -----------------------------------------------
@@ -372,7 +353,6 @@ xosc_init_loop:
 
 
 pll_sys_init:
-
     #--- Reset del PLL_SYS
     li t0, RESET_CTRL_SET
     li t1, RESET_PLL_SYS
@@ -421,7 +401,6 @@ wait_pll_sys_lock_:
 
 
 pll_usb_init:
-
     #--- Reset del PLL
     li t0, RESET_CTRL_SET
     li t1, RESET_PLL_USB
@@ -469,7 +448,6 @@ wait_pll_usb_lock:
     ret
 
 configure_clk_ref:
-
     #-- Divisor: 1
     li t0, CLK_REF_DIV
     li t1, BIT16  # 0x10000
@@ -496,12 +474,10 @@ wait_clk_ref_selected2:
     li t0, CLK_REF_DIV
     li t1, BIT16 
     sw t1, 0(t0)
-
     ret
 
 
 configure_clk_sys:
-
     #-- Seleccionar la fuente: CLK_REF
     li t0, CLK_SYS_CTRL_CLR
     li t1, 3
@@ -532,7 +508,6 @@ wait_clk_sys_selected2:
     li t0, CLK_SYS_DIV
     li t1,0x10000   
     sw t1,0(t0)
-
     ret
 
 
@@ -560,7 +535,6 @@ configure_clk_usb:
     ret
 
 configure_clk_adc:
-
     li t0, CLK_ADC_CTRL_SET
     li t1, BIT11
     sw t1, 0(t0)
@@ -568,9 +542,7 @@ configure_clk_adc:
     li t0, CLK_ADC_DIV
     li t1,0x10000
     sw t1, 0(t0)
-
     ret
-
 
 
 configure_clk_peri:
