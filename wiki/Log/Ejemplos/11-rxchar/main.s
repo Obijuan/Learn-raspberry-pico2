@@ -68,7 +68,6 @@ gpio_set_function:
     li a5, PAD_GPIO1
     lw a4, 0(a5)
 
-    
     xori a4,a4, 0x40
     andi a4,a4, 0xC0
 
@@ -76,16 +75,12 @@ gpio_set_function:
     sw a4, 0(a3)
 
 
-    #-- sh3add rd, rs1, rs2
-    #-- X(rd) = X(rs2) + (X(rs1) << 3);
-    #--  a0   =  a2  +  (a0 << 3)
+   
+    li a4, 0x3000
+    add	a5,a5,a4
+    li a5, PAD_GPIO1_CLR
 
     li a0, GPIO01_CTRL
-
-
-
-    lui	a4,0x3
-    add	a5,a5,a4
     sw a1,4(a0)
     li a4,256
     sw a4,0(a5)
