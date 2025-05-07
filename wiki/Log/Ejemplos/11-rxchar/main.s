@@ -23,13 +23,15 @@ _start:
     #-- Configurar el pulsador
     jal button_init15
 
-    #-- Inicializar la UART
-    #-- Velocidad: 115200 (con runtime actual)
-    jal uart_init 
+   
 
     li a1,2
     li a0,1
     jal gpio_set_function
+
+     #-- Inicializar la UART
+    #-- Velocidad: 115200 (con runtime actual)
+    jal uart_init 
 
 
 
