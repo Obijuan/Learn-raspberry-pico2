@@ -29,17 +29,8 @@ _start:
 
 main_loop:
 
-wait_rx:
-    li t0, UART0_UARTF
-    lw t1, 0(t0)  
-    andi t1,t1,RXFF
-
-    #-- ¿Bit RXFF==1? (sin caracter), esperar
-    bne t1, zero, wait_rx
-
-    #-- Leer dato recibido
-    li t0,UART0_UARTDR
-    lw a0, 0(t0)
+    #-- Esperar a recibir un caracter
+    jal getchar
 
     #-- Eco del caracter recibido
     jal putchar

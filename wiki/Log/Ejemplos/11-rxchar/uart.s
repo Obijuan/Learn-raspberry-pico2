@@ -3,6 +3,7 @@
 #-----------------------------
 .global uart_init
 .global putchar
+.global getchar
 
 .include "regs.h"
 
@@ -105,4 +106,31 @@ wait_tx:
     sw a0,0(t0)
 
     ret
+    
+
+# --------------------------------------
+# -- Getchar(c)
+# --------------------------------------
+# -- Leer un carácter del puerto serie
+# -- Es bloqueante (se queda esperando  
+# -- a que llegue un carácter)
+# -------------------------------------- 
+getchar:
+
+    #-- Esperar a que llegue un carácter
+wait_rx:
+    li t0, UART0_UARTF
+    lw t1, 0(t0)  
+    andi t1,t1,RXFF
+
+    #-- ¿Bit RXFF==1? (sin caracter), esperar
+    bne t1, zero, wait_rx
+
+    #-- Leer dato recibido
+    li t0,UART0_UARTDR
+    lw a0, 0(t0)
+
+    #-- Retornar
+    ret
+
     
