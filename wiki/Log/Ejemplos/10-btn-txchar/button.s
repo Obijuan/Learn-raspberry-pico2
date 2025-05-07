@@ -152,7 +152,7 @@ btn15_wait_0:
 # -----------------------------------------------
 delay:
     # -- Usar t0 como contador descendente
-    li t0, 0xFFFF
+    li t0, 0xFFFFF
 delay_loop:
     beq t0,zero, delay_end_loop
     addi t0, t0, -1

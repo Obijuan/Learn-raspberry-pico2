@@ -27,6 +27,9 @@ _start:
     #-- Velocidad: 115200 (con runtime actual)
     jal uart_init 
 
+    #-- Encender el LED
+    jal led_on
+
 main_loop:
 
     #-- Transmitir un asterisco inicial
