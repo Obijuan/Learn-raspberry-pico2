@@ -55,8 +55,10 @@ label1_:
 
     li t0, UART0_UARTF
     lw a5, 0(t0)
-    andi a5,a5,16
-    bnez a5, label1_
+
+    andi a5,a5, 0x10
+    bne a5, zero, label1_
+    
     lw a3,0(a4)
 
 label2_:
