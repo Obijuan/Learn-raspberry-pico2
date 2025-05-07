@@ -58,19 +58,16 @@ label1_:
 
     andi a5,a5, 0x10
     bne a5, zero, label1_
-    
-    lw a3,0(a4)
 
-label2_:
-    lw a5,24(a4)
-    andi a5,a5,32
-    bnez a5, label2_ 
-    zext.b a5,a3
-    sw a5,0(a4)
+    #-- Leer el caracter recibido
+    lw a0,0(a4)
 
+    #-- Eco de caracter leido
+    jal putchar
+
+    #-- Cambiar de estado el led
     jal led_toggle
-
-    j main_loop  #label1_
+    j main_loop 
 
 
 gpio_set_function:
