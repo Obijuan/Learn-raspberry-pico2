@@ -38,18 +38,7 @@ _start:
     #-- Encender el LED
     jal led_on
 
-
-
-
 main_loop:
-
-    #-- Transmitir un asterisco inicial
-    li a0, '*'
-    #jal putchar
-
-  
-
-    li a4, UART0_BASE
 
 wait_rx:
     li t0, UART0_UARTF
@@ -59,21 +48,11 @@ wait_rx:
     #-- ¿Bit RXFF==1? (sin caracter), esperar
     bne t1, zero, wait_rx
 
-    #-- Leer dato
+    #-- Leer dato recibido
     li t0,UART0_UARTDR
     lw a0, 0(t0)
 
-
-    #li t0, UART0_UARTF
-    #lw a5, 0(t0)
-
-    #andi a5,a5, 0x10
-    #bne a5, zero, label1_
-
-    #-- Leer el caracter recibido
-    #lw a0,0(a4)
-
-    #-- Eco de caracter leido
+    #-- Eco del caracter recibido
     jal putchar
 
     #-- Cambiar de estado el led
