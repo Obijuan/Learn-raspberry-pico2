@@ -63,6 +63,9 @@
 # * SCHMIT (1): Habilitacion de la entrada Schmitt
 # * SLEWFAST (0): 1= rápido. 0= lento
 #
+
+.equ PADS_BANK0_BASE,  0x40038000
+
 # -- Direcciones
 .equ PAD_GPIO0,       0x40038004
   .equ PAD_GPIO0_XOR, 0x40039004
@@ -173,6 +176,7 @@
 # -- cuando el periférico se ha reseteado 
 # -----------------------------------
 .equ RESET_DONE, 0x40020008
+
 
 .equ SRAM_BASE,             0x20000000
 .equ UART0_BASE,            0x40070000

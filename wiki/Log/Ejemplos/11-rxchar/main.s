@@ -63,12 +63,13 @@ wait_rx:
 gpio_set_function:
     li a1,2
     li a0,1
-    lui	a5,0x40038
-    addi a5,a5,4 
-    sh2add a5,a0,a5
-    lw a4,0(a5)
-    lui	a3,0x1
-    add	a3,a3,a5
+
+    li a5, PAD_GPIO1
+    lw a4, 0(a5)
+
+    li a3, PAD_GPIO1_XOR
+
+
     xori a4,a4,64
     andi a4,a4,192
     lui	a2,0x40028
