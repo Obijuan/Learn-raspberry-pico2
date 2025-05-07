@@ -134,8 +134,8 @@ _start:
     #-- Inicializar la pila
     la sp, _stack_top
 
-    li s0,0x10001000 #-- XIP BASE + 0x1000
-    jal	runtime_run_initializers
+    #li s0,0x10001000 #-- XIP BASE + 0x1000
+    jal	runtime_init
 
     #-- Configurar el LED
     jal led_init  
@@ -269,31 +269,14 @@ delay_end_loop:
 #-----------------------------------
 
 
-runtime_run_initializers:
-    addi	sp,sp,-16
-    sw	s0,8(sp)
-    sw	s1,4(sp)
-    sw	ra,12(sp)
-
-    li s0,0x10001000
-    li s1,0x10001000
-
-    #-- a5 = 0x10001574    
-    addi a5,s0,0x574 # 10001574 <__pre_init_runtime_init_bootrom_reset>
-
-    #-- s1 = 0x100015ac
-    addi s1,s1,0x5ac # 100015ac <__frame_dummy_init_array_entry>
-
-    #-- s0 = 0x10001574
-    addi s0,s0,0x574
+runtime_init:
+    addi sp,sp,-16
+    sw ra,12(sp)
 
     #-- Inicializaciones!!
     jal runtime_init_clocks
-    jal runtime_init_post_clock_resets
-
+   
     lw ra,12(sp)
-    lw s0,8(sp)
-    lw s1,4(sp)
     addi sp,sp,16
     ret
 
@@ -619,17 +602,6 @@ configure_clk_hstx:
     sw t1, 0(t0)
     ret
 
-
-
-
-tick_start:
-    lui	a5,0x40108
-    sh1add	a0,a0,a0
-    sh2add	a0,a0,a5
-    sw	a1,4(a0)
-    li	a5,1
-    sw	a5,0(a0)
-    ret
 
 
 runtime_init_post_clock_resets:
