@@ -43,10 +43,9 @@ main_loop:
 
     #-- Transmitir un asterisco inicial
     li a0, '*'
-    jal putchar
+    #jal putchar
 
-    #-- Esperar a que se apriete el pulsador
-    #jal button_press15
+  
 
     lui	a4,0x40070
 
@@ -63,6 +62,9 @@ label2_:
     bnez a5, label2_ 
     zext.b a5,a3
     sw a5,0(a4)
+
+    jal led_toggle
+
     j main_loop  #label1_
 
 
