@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROG_C="txchar_c"
+PROG_C="rxchar_c"
 
 #-- Hacer make del proyecto C que está en el directorio build
 cd build

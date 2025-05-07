@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 add_executable(rxchar_c rxchar.c)
-pico_enable_stdio_usb(txchar_c 1)
-pico_enable_stdio_uart(txchar_c 1)
-pico_add_extra_outputs(txchar_c)
-target_link_libraries(txchar_c pico_stdlib)
+pico_enable_stdio_usb(rxchar_c 1)
+pico_enable_stdio_uart(rxchar_c 1)
+pico_add_extra_outputs(rxchar_c)
+target_link_libraries(rxchar_c pico_stdlib)
 

@@ -13,6 +13,8 @@
 #define UART_RX_PIN 1
 
 int main() {
+    char c;
+
     // Set up our UART with the required speed.
     uart_init(UART_ID, BAUD_RATE);
 
@@ -24,8 +26,12 @@ int main() {
     // Use some the various UART functions to send out data
     // In a default system, printf will also output via the default UART
 
-    // Send out a character without any conversions
-    uart_putc_raw(UART_ID, 'A');
+    while (1) {
+        c = uart_getc(UART_ID);
+
+        // Send out a character without any conversions
+        uart_putc_raw(UART_ID, c);
+    }
 
     return 0;
 }
