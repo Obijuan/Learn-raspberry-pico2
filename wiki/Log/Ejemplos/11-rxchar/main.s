@@ -1,6 +1,7 @@
  # ----------------------------------------------
- # -- Envío de un carácter por la UART
- # -- Con cada pulsación del pulsador GPIO15
+ # -- Recepción por la UART
+ # -- Cada vez que se recibe un carácter se cambia
+ # -- de estado el LED
  # ----------------------------------------------
 .include "boot.h"
 .include "regs.h"
