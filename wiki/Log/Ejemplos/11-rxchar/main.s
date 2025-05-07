@@ -51,16 +51,27 @@ main_loop:
 
     li a4, UART0_BASE
 
-label1_:
-
+wait_rx:
     li t0, UART0_UARTF
-    lw a5, 0(t0)
+    lw t1, 0(t0)  
+    andi t1,t1,RXFF
 
-    andi a5,a5, 0x10
-    bne a5, zero, label1_
+    #-- ¿Bit RXFF==1? (sin caracter), esperar
+    bne t1, zero, wait_rx
+
+    #-- Leer dato
+    li t0,UART0_UARTDR
+    lw a0, 0(t0)
+
+
+    #li t0, UART0_UARTF
+    #lw a5, 0(t0)
+
+    #andi a5,a5, 0x10
+    #bne a5, zero, label1_
 
     #-- Leer el caracter recibido
-    lw a0,0(a4)
+    #lw a0,0(a4)
 
     #-- Eco de caracter leido
     jal putchar
@@ -92,13 +103,13 @@ gpio_set_function:
 
 
     #-- Esperar a que el receptor tenga datos
-wait_rx:
+wait_rx2:
     li t0, UART0_UARTF
     lw t1, 0(t0)  
     andi t1,t1,RXFF
 
     #-- ¿Bit RXFF==1? (sin caracter), esperar
-    bne t1, zero, wait_rx
+    bne t1, zero, wait_rx2
 
     #-- Leer dato
     li t0,UART0_UARTDR
