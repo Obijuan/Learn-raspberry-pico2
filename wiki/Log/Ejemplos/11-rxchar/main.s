@@ -61,6 +61,8 @@ wait_rx:
 
 
 gpio_set_function:
+    li a1,2
+    li a0,1
     lui	a5,0x40038
     addi a5,a5,4 
     sh2add a5,a0,a5
