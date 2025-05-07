@@ -1,7 +1,6 @@
  # ----------------------------------------------
  # -- Envío de un carácter por la UART
  # ----------------------------------------------
-
 .include "boot.h"
 .include "gpio.h"
 .include "regs.h"
@@ -138,20 +137,6 @@ delay_end_loop:
 runtime_init:
     addi sp,sp,-16
     sw ra,12(sp)
-
-    #-- Inicializaciones!!
-    jal runtime_init_clocks
-   
-    lw ra,12(sp)
-    addi sp,sp,16
-    ret
-
-
-runtime_init_clocks:
-    addi sp,sp,-16
-    sw ra,12(sp)
-
-    #li s0, CLOCK_BASE
 
     #-- Inicializar RESUS
     li t0, CLK_SYS_RESUS_CTRL
