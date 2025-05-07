@@ -340,8 +340,6 @@ wait_clk_ref_selected:
     #-- Configurar CLK_HSTX
     jal	configure_clk_hstx
 
-
-runtime_init_clocks_end:
     lw ra,12(sp)
     addi sp,sp,16
     ret
@@ -601,24 +599,6 @@ configure_clk_hstx:
     li t1, BIT16
     sw t1, 0(t0)
     ret
-
-
-
-runtime_init_post_clock_resets:
-# 10001032:	
-    lui	a4,0x20000
-    addi	a4,a4,-1 # 1fffffff <__flash_binary_end+0xfffe60b>
-    lui	a5,0x40023
-    lui	a3,0x40020
-    sw	a4,0(a5)
-    addi	a3,a3,8 # 40020008 <__StackTop+0x1ff9e008>
-runtime_init_post_clock_resets_label1:    
-# 10001044
-    lw	a5,0(a3)
-    andn	a5,a4,a5
-    bnez	a5,runtime_init_post_clock_resets_label1 # 10001044 <runtime_init_post_clock_resets+0x12>
-    ret
-
 
 
 busy_wait_us:
