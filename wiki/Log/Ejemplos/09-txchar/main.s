@@ -46,7 +46,7 @@ main_loop:
 # -----------------------------------------------
 delay:
     # -- Usar t0 como contador descendente
-    li t0, 0xFFFFF
+    li t0, 0xFFFFFF
 delay_loop:
     beq t0,zero, delay_end_loop
     addi t0, t0, -1
