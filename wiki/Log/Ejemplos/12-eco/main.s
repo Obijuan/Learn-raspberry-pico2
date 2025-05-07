@@ -1,7 +1,8 @@
  # ----------------------------------------------
- # -- Recepción por la UART
- # -- Cada vez que se recibe un carácter se cambia
- # -- de estado el LED
+ # -- Programa de ECO
+ # -- Todo lo recibido se reenvía de nuevo al PC
+ # -- Además se cambia el estado del LED con cada
+ # -- caracter recibido
  # ----------------------------------------------
 .include "boot.h"
 .include "regs.h"
