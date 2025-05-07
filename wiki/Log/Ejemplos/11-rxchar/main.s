@@ -80,9 +80,7 @@ gpio_set_function:
     #-- X(rd) = X(rs2) + (X(rs1) << 3);
     #--  a0   =  a2  +  (a0 << 3)
 
-    li a2, 0x40028000
-    sh3add	a0,a0,a2
-    #li a0, PAD_GPIO1
+    li a0, GPIO01_CTRL
 
 
 
