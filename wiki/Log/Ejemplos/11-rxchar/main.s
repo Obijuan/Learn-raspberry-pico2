@@ -61,9 +61,6 @@ wait_rx:
 
 
 gpio_set_function:
-    li a1,2
-    li a0,1
-
     
     li a5, PAD_GPIO1
     lw a4, 0(a5)
@@ -77,7 +74,9 @@ gpio_set_function:
     li a5, PAD_GPIO1_CLR
 
     li a0, GPIO1_CTRL
-    sw a1,0(a0)
+    li a1, 2
+    sw a1, 0(a0)
+
     li a4,256
     sw a4,0(a5)
     ret
