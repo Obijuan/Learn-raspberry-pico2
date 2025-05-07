@@ -21,30 +21,20 @@ _start:
     jal led_init  
 
     #-- Inicializar la UART
+    #-- Velocidad: 115200 (con runtime actual)
     jal uart_init 
-
 
 main_loop:
 
-    #-- Esperar a que el transmisor esté listo
-wait_tx:
-    li t0, UART0_UARTF
-    lw t1, 0(t0)  
-    andi t1,t1,TXFF
-
-    #-- ¿Bit TXFF==1? (Ocupado), esperar
-    bne t1, zero, wait_tx
-
-    #-- Transmitir!
-    li t0,UART0_UARTDR
-    li t1,'A'
-    sw t1,0(t0)
-
-    #-- Esperar!
-    jal delay
+    #-- Transmitir una 'A'
+    li a0, 'A'
+    jal putchar
 
     #-- Cambiar de estado el LED
     jal led_toggle
+
+    #-- Esperar!
+    jal delay
 
     #-- Repetir
     j main_loop
@@ -112,6 +102,29 @@ wait_reset_done:
     sw t1,0(t0)
     ret
 
+# --------------------------------------------
+# -- Putchar(c)
+# --------------------------------------------
+# -- Enviar un caracter por el puerto serie
+# -- ENTRADAS:
+# --   -a0: Caracter a enviar
+# --------------------------------------------
+putchar:
+
+   #-- Esperar a que el transmisor esté listo
+wait_tx:
+    li t0, UART0_UARTF
+    lw t1, 0(t0)  
+    andi t1,t1,TXFF
+
+    #-- ¿Bit TXFF==1? (Ocupado), esperar
+    bne t1, zero, wait_tx
+
+    #-- Transmitir!
+    li t0,UART0_UARTDR
+    sw a0,0(t0)
+
+    ret
 
 # -----------------------------------------------
 # -- Delay
