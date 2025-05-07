@@ -66,7 +66,7 @@ wait_reset_done:
     sw t1,0(t0)
 
     #-- Asignar el GPIO0 al pin tx de la UART0
-    li t0,GPIO00_CTRL
+    li t0,GPIO0_CTRL
     li t1, 2
     sw t1,0(t0)
 
@@ -77,7 +77,7 @@ wait_reset_done:
     sw t1,0(t0)
 
     #-- Asignar el GPIO0 al pin tx de la UART0
-    li t0,GPIO01_CTRL
+    li t0,GPIO1_CTRL
     li t1, 2
     sw t1,0(t0)
     ret

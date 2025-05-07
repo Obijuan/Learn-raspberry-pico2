@@ -74,14 +74,10 @@ gpio_set_function:
     li a3, PAD_GPIO1_XOR
     sw a4, 0(a3)
 
-
-   
-    li a4, 0x3000
-    add	a5,a5,a4
     li a5, PAD_GPIO1_CLR
 
-    li a0, GPIO01_CTRL
-    sw a1,4(a0)
+    li a0, GPIO1_CTRL
+    sw a1,0(a0)
     li a4,256
     sw a4,0(a5)
     ret

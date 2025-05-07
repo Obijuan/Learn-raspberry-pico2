@@ -21,7 +21,7 @@
 button_init0:
 
     #-- GPIO0: Control por software
-    li t0, GPIO00_CTRL  
+    li t0, GPIO0_CTRL  
     li t1, FUNC_SOFTWARE          
     sw t1, 0(t0)
 
