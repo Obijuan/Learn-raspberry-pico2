@@ -43,7 +43,11 @@ wait_tx:
 
     #-- Esperar!
     jal delay
+
+    #-- Cambiar de estado el LED
     jal led_toggle
+
+    #-- Repetir
     j main_loop
 
 #--------------------------------
