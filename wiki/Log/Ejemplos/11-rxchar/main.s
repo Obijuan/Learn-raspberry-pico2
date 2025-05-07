@@ -49,11 +49,12 @@ main_loop:
 
   
 
-    lui	a4,0x40070
+    li a4, UART0_BASE
 
 label1_:
 
-    lw a5,24(a4)
+    li t0, UART0_UARTF
+    lw a5, 0(t0)
     andi a5,a5,16
     bnez a5, label1_
     lw a3,0(a4)
