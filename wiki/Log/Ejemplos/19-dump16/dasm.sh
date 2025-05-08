@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROG="build/rxchar_c"
+PROG="main"
 
 PICO_TOOLCHAIN_PATH=/home/obijuan/Develop/pico/corev-openhw-gcc-ubuntu2204-20240530/bin
 
