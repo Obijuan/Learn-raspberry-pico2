@@ -1,8 +1,7 @@
  # ----------------------------------------------
- # -- Programa de ECO
- # -- Todo lo recibido se reenvía de nuevo al PC
- # -- Además se cambia el estado del LED con cada
- # -- caracter recibido
+ # -- Contador de 8-bits
+ # -- Se imprime en la consola hexadecimal del tio
+ # -- un contador que arranca en 00
  # ----------------------------------------------
 .include "boot.h"
 .include "regs.h"
