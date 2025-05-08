@@ -19,8 +19,12 @@ dump16:
     sw s0, 8(sp)
     sw s1, 4(sp)
 
+    #-- Poner a 0 los 4 bits de menor peso de la dirección
+    #-- para que sea múltiplo de 16
+    li t0, 0xFFFFFFF0
+
     #-- Meter en s0 la direccion inicial
-    mv s0, a0
+    and s0, a0, t0
 
     #-- Meter en s1 el numero de bloques a volcar
     mv s1, a1
