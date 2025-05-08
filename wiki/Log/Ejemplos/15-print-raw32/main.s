@@ -29,18 +29,19 @@ _start:
 
 
 loop:
-    #-- Imprimir varios numeros de 16bits
-    li a0, 0x1234
-    jal print_raw16
+    #-- Imprimir varios numeros de 32bits
 
-    li a0, 0xABCD
-    jal print_raw16
+    li a0, 0xcafebaca
+    jal print_raw32
 
-    li a0, 0xBACA
-    jal print_raw16
+    li a0, 0xbebecafe
+    jal print_raw32
 
-    li a0, 0x0
-    jal print_raw16
+    li a0, 0x1234567
+    jal print_raw32
+
+    li a0, 0
+    jal print_raw32
 
     #-- Esperar a que se apriete el pulsador
     jal button_press15
