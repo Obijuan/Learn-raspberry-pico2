@@ -5,16 +5,6 @@
 .section .rodata
 head1:  .ascii  "Monitor-V   0.1\n"
         .ascii  "──────────────────────────────────\n\0"
-info1:  .string "Comienzo flash:          "
-info2:  .string "Punto de entrada:        "
-info3:  .string "Variables read-only:     "
-info4:  .string "Final del programa:      "
-info5:  .string "Variables inicializadas: "
-info6:  .string "Fin vars. inicializadas: "
-info7:  .string "Variables no inicializ.: "
-info8:  .string "Fin vars. no inicializ.: "
-info9:  .string "Puntero de pila:         "
-
 
 .section .text
 
@@ -45,11 +35,42 @@ main:
     #-- Borrar pantalla
     jal ansi_cls 
 
-    #-- Imprimir cadena!
+    #-- Imprimir cabecera del Monitor-V
     la a0, head1
     jal print
 
-    #-- Imprimir Comienzo de la flash
+    #-- Mostrar informacion sobre las direciones
+    jal memory_info
+
+    #-- Esperar a que se reciba un caracter
+    jal getchar
+
+    #-- Cambiar estado del led
+    jal led_toggle
+
+    j main
+
+
+# ------------------------------------------------------------
+# - Imprimir informacion sobre las direcciones disponibles
+# ------------------------------------------------------------
+.section .rodata
+info1:  .string "Comienzo flash:          "
+info2:  .string "Punto de entrada:        "
+info3:  .string "Variables read-only:     "
+info4:  .string "Final del programa:      "
+info5:  .string "Variables inicializadas: "
+info6:  .string "Fin vars. inicializadas: "
+info7:  .string "Variables no inicializ.: "
+info8:  .string "Fin vars. no inicializ.: "
+info9:  .string "Puntero de pila:         "
+
+.section .text
+memory_info:
+    addi sp, sp, -16
+    sw ra, 12(sp)
+
+   #-- Imprimir Comienzo de la flash
     la a0, info1
     jal print
     la a0, __flash_ini
@@ -122,12 +143,8 @@ main:
     jal putchar
 
 
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    ret
 
-    #-- Esperar a que se reciba un caracter
-    jal getchar
-
-    #-- Cambiar estado del led
-    jal led_toggle
-
-    j main
-
+    
