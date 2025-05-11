@@ -19,7 +19,7 @@ monitorv_print_header:
 FUNC_START4
 
     CPRINT LYELLOW, "Monitor-V "
-    CPRINT LRED, "0.3\n"
+    CPRINT LRED, "0.4\n"
     CPRINT BLUE, "──────────────────────────────────\n"
 
 FUNC_END4
