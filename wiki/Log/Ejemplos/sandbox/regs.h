@@ -3,6 +3,9 @@
 # ----------------------------------------------
 .equ BIT0,  (1 <<  0)  # 0x0000_0001
 .equ BIT1,  (1 <<  1)  # 0x0000_0002
+.equ BIT2,  (1 <<  2)  # 0x0000_0004
+.equ BIT3,  (1 <<  3)  # 0x0000_0008
+.equ BIT8,  (1 <<  8)  # 0x0000_0100
 .equ BIT11, (1 << 11)  # 0x0000_0800
 .equ BIT14, (1 << 14)  # 0x0000_4000
 .equ BIT15, (1 << 15)  # 0x0000_8000
@@ -230,6 +233,10 @@
 .equ LPOSC_FREQ_KHZ_INT,  0x40100050
 .equ LPOSC_FREQ_KHZ_FRAC, 0x40100054 
 .equ READ_TIME_LOWER,     0x40100074
+.equ POWMAN_TIMER,        0x40100088
+  .equ POWMAN_TIMER_XOR,  0x40101088
+  .equ POWMAN_TIMER_SET,  0x40102088
+  .equ POWMAN_TIMER_CLR,  0x40103088
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c

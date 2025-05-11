@@ -45,7 +45,9 @@ main:
     PRINT "1. Mostrar direcciones relevantes\n"
     PRINT "2. Volcar la flash\n"
     PRINT "3. Volcar las Variables de solo lectura\n"
-    PRINT "4. LPOSC"
+    PRINT "4. READ TIMER\n"
+    PRINT "5. Start timer\n"
+    PRINT "6. Stop timer\n"
     PRINT "\nESP. Mostrar este menu\n"
 
 
@@ -84,6 +86,13 @@ prompt:
     #-- Tecla 4: LPOSC
     li t0, '4'
     beq a0, t0, opcion4
+
+    #-- Tecla 5: TEST
+    li t0, '5'
+    beq a0, t0, opcion5
+
+    li t0, '6'
+    beq a0, t0, opcion6
 
     #------- Caracter desconocido
     #-- Cambiar estado del led
@@ -128,5 +137,35 @@ opcion4:
     lw a0, 0(t0)
     jal print_hex32
     NL
-    
+
+    CPRINT YELLOW, "* POWMAN_TIMER:    "
+    COLOR LBLUE
+    li t0, POWMAN_TIMER
+    lw a0, 0(t0)
+    jal print_hex32
+    NL
+
+    CPRINT YELLOW, "* READ_TIME_LOWER: "
+    COLOR LBLUE
+    li t0, READ_TIME_LOWER
+    lw a0, 0(t0)
+    jal print_hex32
+    NL
+
+    j prompt
+
+opcion5:
+    PRINT "Timer ON\n"
+    li t0, POWMAN_TIMER
+    li t1, 0x5afe0000 + BIT1
+    sw t1, 0(t0)
+
+    j prompt
+
+opcion6:
+    PRINT "Timer OFF\n"
+    li t0, POWMAN_TIMER
+    li t1, 0x5afe0000
+    sw t1, 0(t0)
+
     j prompt
