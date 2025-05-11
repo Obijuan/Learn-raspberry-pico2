@@ -4,10 +4,27 @@
 .include "uart.h"
 .include "ansi.h"
 
+#-----------------------------------------------
+#-- Macros de creación de funciones intermedias
+#-----------------------------------------------
+
+#-- Crear la pila con espacio para 4 palabras
+#-- en los offsets 12, 8, 4 y 0
+.macro FUNC_START4
+    addi sp, sp, 16
+    sw ra, 12(sp)
+.endm
+
+#-- Eliminar la pila de 4 palabras
+#-- y retornar
+.macro FUNC_END4
+    lw ra, 12(sp)
+    addi sp, sp, -16
+    ret
+.endm
+
 .section .rodata
-name:    .string "Monitor-V "
-version: .string "0.2"
-lineah:  .string "──────────────────────────────────"
+test:    .string "TESTING...\n"
 
 .section .text
 
@@ -39,13 +56,7 @@ main:
     CLS
 
     #-- Imprimir cabecera
-    CPRINT YELLOW, name    #-- Nombre del programa
-    CPRINT RED, version    #-- Version
-    NL
-
-    #-- Imprimir linea
-    CPRINT BLUE, lineah
-    NL
+    jal monitorv_print_header
 
     #-- Mostrar informacion sobre las direciones
     jal memory_info
@@ -59,6 +70,28 @@ main:
     j main
 
 
+.section .rodata
+name:    .string "Monitor-V "
+version: .string "0.2"
+lineah:  .string "──────────────────────────────────"
+
+.section .text
+
+# ---------------------------------------------
+# -- Imprimir cabecera de MONITOR-V
+# ---------------------------------------------
+monitorv_print_header:
+    FUNC_START4
+
+    CPRINT YELLOW, name    #-- Nombre del programa
+    CPRINT RED, version    #-- Version
+    NL
+
+    #-- Imprimir linea
+    CPRINT BLUE, lineah
+    NL
+
+    FUNC_END4
 
 
 
