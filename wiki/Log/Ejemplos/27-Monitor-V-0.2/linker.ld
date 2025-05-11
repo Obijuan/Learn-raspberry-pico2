@@ -14,11 +14,13 @@
         /* Codigo. Se situa en la memoria Flash */
         /* Contiene codigo y valores de variables de solo lectura */
         TEXT : {
-
             /* Etiqueta que contiene la direccion inicial de la flash */
             __flash_ini = .;
 
-            /* Colocar primero las secciones .text de todos los ficheros */
+            /* Colocar primero la seccion .boot */
+            *(.boot*)
+
+            /* Colocar despues las secciones .text de todos los ficheros */
             *(.text*)
 
             /* Obtener la direccion del comienzo de las variables de

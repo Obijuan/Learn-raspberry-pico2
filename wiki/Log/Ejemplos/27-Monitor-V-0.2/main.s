@@ -3,9 +3,7 @@
 #---------------------------
 .global _start   #-- Punto de entrada
 
-
 .include "riscv.h"
-.include "boot.h"
 .include "regs.h"
 .include "uart.h"
 .include "ansi.h"
