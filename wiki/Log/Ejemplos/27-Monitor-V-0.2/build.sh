@@ -24,11 +24,12 @@ $AS -g -march=rv32i -mabi=ilp32 -I.. -o uart.o uart.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o delay.o delay.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o dump.o dump.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o ansi.o ansi.s
+$AS -g -march=rv32i -mabi=ilp32 -I.. -o monitorv.o monitorv.s
 $AS -g -march=rv32i -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
 
 # -- Linkado
 $LD -g -m elf32lriscv -T linker.ld -o $MAIN.elf $MAIN.o  runtime.o \
-     led.o button.o debug.o uart.o delay.o dump.o ansi.o
+     led.o button.o debug.o uart.o delay.o dump.o ansi.o monitorv.o 
 
 # -- Convertir a UF2
 $PICOTOOL uf2 convert $MAIN.elf $MAIN.uf2 --family rp2350-riscv --abs-block

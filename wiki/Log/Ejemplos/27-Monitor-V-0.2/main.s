@@ -52,34 +52,6 @@ main:
 
     j main
 
-
-.section .rodata
-name:    .string "Monitor-V "
-version: .string "0.2"
-lineah:  .string "──────────────────────────────────"
-
-.section .text
-
-# ---------------------------------------------
-# -- Imprimir cabecera de MONITOR-V
-# ---------------------------------------------
-monitorv_print_header:
-    FUNC_START4
-
-    CPRINT YELLOW, name    #-- Nombre del programa
-    CPRINT RED, version    #-- Version
-    NL
-
-    #-- Imprimir linea
-    CPRINT BLUE, lineah
-    NL
-
-    FUNC_END4
-
-
-
-
-
 # ------------------------------------------------------------
 # - Imprimir informacion sobre las direcciones disponibles
 # ------------------------------------------------------------
