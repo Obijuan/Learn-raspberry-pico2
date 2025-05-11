@@ -1,3 +1,8 @@
+#---------------------------
+#-- Funciones de interfaz
+#---------------------------
+.global _start   #-- Punto de entrada
+
 
 .include "riscv.h"
 .include "boot.h"
@@ -5,14 +10,9 @@
 .include "uart.h"
 .include "ansi.h"
 
-
-.section .rodata
-test:    .string "TESTING...\n"
-
 .section .text
 
 # -- Punto de entrada
-.global _start
 _start:
 
     #-- Inicializar la pila
