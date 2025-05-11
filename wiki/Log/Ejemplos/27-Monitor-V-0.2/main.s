@@ -42,7 +42,7 @@ main:
     jal monitorv_print_header
 
     #-- Mostrar informacion sobre las direciones
-    jal memory_info
+    jal monitorv_print_memory_info
 
     #-- Esperar a que se reciba un caracter
     jal getchar
@@ -83,7 +83,7 @@ monitorv_print_header:
 # ------------------------------------------------------------
 # - Imprimir informacion sobre las direcciones disponibles
 # ------------------------------------------------------------
-memory_info:
+monitorv_print_memory_info:
 
 .section .rodata
 info1:  .string "Comienzo flash:          "
