@@ -1,11 +1,13 @@
 
 .include "boot.h"
 .include "regs.h"
+.include "uart.h"
+.include "ansi.h"
 
 .section .rodata
 name:    .string "Monitor-V "
-version: .string "0.2 \n"
-lineah:  .string "──────────────────────────────────\n"
+version: .string "0.2"
+lineah:  .string "──────────────────────────────────"
 
 .section .text
 
@@ -14,7 +16,7 @@ lineah:  .string "────────────────────�
 _start:
 
     #-- Inicializar la pila
-    la sp, _stack_top
+    la sp, __stack_top
 
     #-- Inicializar el sistema
     jal	runtime_init
@@ -34,25 +36,16 @@ _start:
 
 main: 
     #-- Borrar pantalla
-    jal ansi_cls 
+    CLS
 
-    #-- Imprimir nombre
-    la a0, YELLOW
-    jal print
-    la a0, name
-    jal print
-
-    #-- Imprimir version
-    la a0, RED
-    jal print
-    la a0, version
-    jal print
+    #-- Imprimir cabecera
+    CPRINT YELLOW, name    #-- Nombre del programa
+    CPRINT RED, version    #-- Version
+    NL
 
     #-- Imprimir linea
-    la a0, BLUE
-    jal print
-    la a0, lineah
-    jal print
+    CPRINT BLUE, lineah
+    NL
 
     #-- Mostrar informacion sobre las direciones
     jal memory_info
@@ -66,9 +59,16 @@ main:
     j main
 
 
+
+
+
+
+
 # ------------------------------------------------------------
 # - Imprimir informacion sobre las direcciones disponibles
 # ------------------------------------------------------------
+memory_info:
+
 .section .rodata
 info1:  .string "Comienzo flash:          "
 info2:  .string "Punto de entrada:        "
@@ -82,128 +82,53 @@ info9:  .string "Puntero de pila:         "
 
 
 .section .text
-memory_info:
     addi sp, sp, -16
     sw ra, 12(sp)
 
-    #-- Imprimir Comienzo de la flash
-    la a0, WHITE
-    jal print
-    la a0, info1
-    jal print
+    #-- Comienzo de la flash
+    CPRINT WHITE, info1
+    CPRINT0x LBLUE, __flash_ini
+    NL
 
-    la a0, LBLUE
-    jal print
-    la a0, __flash_ini
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
-
-    #-- Imprimir Punto de entrada
-    la a0, WHITE
-    jal print
-    la a0, info2
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, _start
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    #-- Punto de entrada
+    CPRINT WHITE, info2
+    CPRINT0x LBLUE, _start
+    NL
 
     #-- VARIABLES DE SOLO LECTURA
-    la a0, WHITE
-    jal print
-    la a0, info3
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, __flash_ro_vars
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    CPRINT WHITE, info3
+    CPRINT0x LBLUE, __flash_ro_vars
+    NL
 
     #-- FINAL DEL PROGRAMA
-    la a0, WHITE
-    jal print
-    la a0, info4
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, __flash_end
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    CPRINT WHITE, info4
+    CPRINT0x LBLUE, __flash_end
+    NL
 
     #-- VARIABLES INICIALIZADAS
-    la a0, WHITE
-    jal print
-    la a0, info5
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, __data_ram_ini
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    CPRINT WHITE, info5
+    CPRINT0x LBLUE, __data_ram_ini
+    NL
 
     #-- FIN VARIABLES INICIALIZADAS
-    la a0, WHITE
-    jal print
-    la a0, info6
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, __data_ram_end
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    CPRINT WHITE, info6
+    CPRINT0x LBLUE, __data_ram_end
+    NL
 
     #-- VARIABLES NO INICIALIZADAS
-     la a0, WHITE
-    jal print
-    la a0, info7
-    jal print
-   
-
-    la a0, LBLUE
-    jal print
-    la a0, __var_no_init
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    CPRINT WHITE, info7
+    CPRINT0x LBLUE, __var_no_init
+    NL
 
     #-- FIN DE LA RAM
-    la a0, WHITE
-    jal print
-    la a0, info8
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, __data_end
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
+    CPRINT WHITE, info8
+    CPRINT0x LBLUE, __data_end
+    NL
 
     #-- PILA
-    la a0, WHITE
-    jal print
-    la a0, info9
-    jal print
-
-    la a0, LBLUE
-    jal print
-    la a0, _stack_top
-    jal print_0x_hex32
-    li a0, '\n'
-    jal putchar
-
+    CPRINT WHITE, info9
+    CPRINT0x LBLUE, __stack_top
+    NL
 
     lw ra, 12(sp)
     addi sp, sp, 16

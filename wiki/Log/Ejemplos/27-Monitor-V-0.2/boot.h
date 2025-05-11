@@ -12,7 +12,7 @@ image_def:
 .word 0x11010142
 .word 0x00000344
 .word _start
-.word _stack_top
+.word __stack_top
 .word 0x000004ff
 .word 0x00000000
 .word 0xab123579

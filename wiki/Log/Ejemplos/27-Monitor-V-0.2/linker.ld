@@ -79,6 +79,6 @@
             . = ALIGN(8);
 
             /* Obtener la direccion de la cima de la pila */
-            _stack_top = . + 4K; /* 4KB stack */
+            __stack_top = . + 4K; /* 4KB stack */
         } > RAM
     }
