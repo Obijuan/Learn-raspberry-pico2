@@ -12,22 +12,15 @@
 # ---------------------------------------------
 # -- Imprimir cabecera de MONITOR-V
 # ---------------------------------------------
-.section .rodata
-name:    .string "Monitor-V "
-version: .string "0.2"
-lineah:  .string "──────────────────────────────────"
 
 .section .text
+
 monitorv_print_header:
 FUNC_START4
 
-    CPRINT YELLOW, name    #-- Nombre del programa
-    CPRINT RED, version    #-- Version
-    NL
-
-    #-- Imprimir linea
-    CPRINT BLUE, lineah
-    NL
+    CPRINT YELLOW, "Monitor-V "
+    CPRINT RED, "0.2\n"
+    CPRINT BLUE, "──────────────────────────────────\n"
 
 FUNC_END4
 
@@ -54,63 +47,51 @@ FUNC_END4
 # -------------------------------------------------------------------
 monitorv_print_memory_info:
 
-.section .rodata
-info1:  .string "Comienzo flash:          "
-info2:  .string "Punto de entrada:        "
-info3:  .string "Variables read-only:     "
-info4:  .string "Final del programa:      "
-info5:  .string "Variables inicializadas: "
-info6:  .string "Fin vars. inicializadas: "
-info7:  .string "Variables no inicializ.: "
-info8:  .string "Fin vars. no inicializ.: "
-info9:  .string "Puntero de pila:         "
-
-
 .section .text
 FUNC_START4
 
     #-- Comienzo de la flash
-    CPRINT WHITE, info1
+    CPRINT WHITE, "Comienzo flash:          "
     CPRINT0x LBLUE, __flash_ini
     NL
 
     #-- Punto de entrada
-    CPRINT WHITE, info2
+    CPRINT WHITE, "Punto de entrada:        "
     CPRINT0x LBLUE, _start
     NL
 
     #-- VARIABLES DE SOLO LECTURA
-    CPRINT WHITE, info3
+    CPRINT WHITE, "Variables read-only:     "
     CPRINT0x LBLUE, __flash_ro_vars
     NL
 
     #-- FINAL DEL PROGRAMA
-    CPRINT WHITE, info4
+    CPRINT WHITE, "Final del programa:      "
     CPRINT0x LBLUE, __flash_end
     NL
 
     #-- VARIABLES INICIALIZADAS
-    CPRINT WHITE, info5
+    CPRINT WHITE, "Variables inicializadas: "
     CPRINT0x LBLUE, __data_ram_ini
     NL
 
     #-- FIN VARIABLES INICIALIZADAS
-    CPRINT WHITE, info6
+    CPRINT WHITE, "Fin vars. inicializadas: "
     CPRINT0x LBLUE, __data_ram_end
     NL
 
     #-- VARIABLES NO INICIALIZADAS
-    CPRINT WHITE, info7
+    CPRINT WHITE, "Variables no inicializ.: "
     CPRINT0x LBLUE, __var_no_init
     NL
 
     #-- FIN DE LA RAM
-    CPRINT WHITE, info8
+    CPRINT WHITE, "Fin vars. no inicializ.: "
     CPRINT0x LBLUE, __data_end
     NL
 
     #-- PILA
-    CPRINT WHITE, info9
+    CPRINT WHITE, "Puntero de pila:         "
     CPRINT0x LBLUE, __stack_top
     NL
 
