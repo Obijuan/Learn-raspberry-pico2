@@ -8,9 +8,9 @@
 #-----------------------------
 #-- Cadenas de colores ansi 
 #-----------------------------
-.global RED
+.global RED, LRED
 .global GREEN
-.global YELLOW
+.global YELLOW, LYELLOW
 .global BLUE, LBLUE
 .global MAGENTA
 .global CYAN
@@ -22,8 +22,10 @@
 .section .rodata
 
 RED:     .string "\x1b[0;31m"
+LRED:     .string "\x1b[1;31m"
 GREEN:   .string "\x1b[0;32m"
 YELLOW:  .string "\x1b[0;33m"
+LYELLOW: .string "\x1b[1;33m"
 BLUE:    .string "\x1b[0;34m"
 LBLUE:   .string "\x1b[1;34m"
 MAGENTA: .string "\x1b[0;35m"
