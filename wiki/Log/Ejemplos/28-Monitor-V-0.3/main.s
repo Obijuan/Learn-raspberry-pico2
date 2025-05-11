@@ -39,13 +39,12 @@ main:
     #-- Imprimir cabecera
     jal monitorv_print_header
 
-    #-- Mostrar informacion sobre las direciones
-    #jal monitorv_print_memory_info
-
     la a0, WHITE
     jal print 
 
     PRINT "1. Mostrar direcciones relevantes\n"
+    PRINT "2. Volcar la flash\n"
+    PRINT "3. Volcar las Variables de solo lectura\n"
     PRINT "\nESP. Mostrar este menu\n"
 
 
@@ -55,6 +54,16 @@ prompt:
     #-- Esperar a que se reciba un caracter
     jal getchar
 
+    #-- Salvar la tecla
+    mv s0, a0
+
+    #-- Eco de al tecla
+    jal putchar
+    PUTCHAR '\n'
+
+    #-- Recuperar tecla
+    mv a0, s0
+
     #-- Tecla Espacio: Mostrar el menu
     li t0, ' ' 
     beq a0, t0, main
@@ -62,6 +71,14 @@ prompt:
     #-- Tecla 1: Mostrar direcciones
     li t0, '1'
     beq a0, t0, opcion1
+
+    #-- Tecla 2: Volcado flash
+    li t0, '2'
+    beq a0, t0, opcion2
+
+    #-- Tecla 3: Volcado flash: Variables de solo lectura
+    li t0, '3'
+    beq a0, t0, opcion3
 
     #------- Caracter desconocido
     #-- Cambiar estado del led
@@ -72,12 +89,19 @@ prompt:
     
     
 opcion1:
-    PUTCHAR '1'
-    PUTCHAR '\n'
     jal monitorv_print_memory_info
     j prompt
     
 
-    #-- Repetir
-    j main
+opcion2:
+    la a0, __flash_ini
+    li a1, 16
+    jal dump16
+    j prompt
+
+opcion3:
+    la a0, __flash_ro_vars
+    li a1, 16
+    jal dump16
+    j prompt
 
