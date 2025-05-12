@@ -16,23 +16,25 @@ LD=$TOOLCHAIN"/bin/riscv32-corev-elf-ld"
 PICOTOOL="/home/obijuan/Develop/pico/picotool/build/picotool"
 
 # -- Ensamblado 
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o led.o led.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o button.o button.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o debug.o debug.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o runtime.o runtime.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o uart.o uart.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o delay.o delay.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o dump.o dump.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o ansi.o ansi.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o monitorv.o monitorv.s
-$AS -g -march=rv32i -mabi=ilp32 -I.. -o boot.o boot.s
-$AS -g -march=rv32i_zicsr -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
+$AS -g -march=rv32i -mabi=ilp32  -o led.o led.s
+$AS -g -march=rv32i -mabi=ilp32  -o button.o button.s
+$AS -g -march=rv32i -mabi=ilp32  -o debug.o debug.s
+$AS -g -march=rv32i -mabi=ilp32  -o runtime.o runtime.s
+$AS -g -march=rv32i -mabi=ilp32  -o uart.o uart.s
+$AS -g -march=rv32i -mabi=ilp32  -o delay.o delay.s
+$AS -g -march=rv32i -mabi=ilp32  -o dump.o dump.s
+$AS -g -march=rv32i -mabi=ilp32  -o ansi.o ansi.s
+$AS -g -march=rv32i -mabi=ilp32  -o monitorv.o monitorv.s
+$AS -g -march=rv32i -mabi=ilp32  -o boot.o boot.s
+$AS -g -march=rv32i_zicsr -mabi=ilp32  -o csr.o csr.s
+$AS -g -march=rv32i_zicsr -mabi=ilp32  -o $MAIN.o $MAIN.s
 # $AS -g -march=rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
 
 # -- Linkado
 $LD -g -m elf32lriscv -T linker.ld -o $MAIN.elf \
      boot.o $MAIN.o  runtime.o led.o button.o \
-     debug.o uart.o delay.o dump.o ansi.o monitorv.o 
+     debug.o uart.o delay.o dump.o ansi.o monitorv.o \
+     csr.o
 
 # -- Convertir a UF2
 $PICOTOOL uf2 convert $MAIN.elf $MAIN.uf2 --family rp2350-riscv --abs-block
