@@ -26,6 +26,21 @@ _start:
 
 main: 
 
+    li a0, 100
+    jal delay_ms
+
+    jal led_toggle
+
+    j main
+    
+#----------------------------------
+#-- Funcion de retardo, en ms
+#----------------------------------
+#-- ENTRADAS:
+#--  a0: ms a esperar (>=1)
+#----------------------------------
+delay_ms:
+
     #-- Encender el AON-Timer
     li t0, POWMAN_TIMER_SET
     li t1, RUN
@@ -34,25 +49,21 @@ main:
     #-- Esperar hasta que transcurra el tiempo
     #-- establecido
 
-timer_wait:
+_timer_wait:
     
     #-- Leer temporizador (en ms)
     li t0, READ_TIME_LOWER
     lw t1, 0(t0) 
 
     #-- Ha transcurrido el tiempo?
-    li t2, 200
-    bltu t1, t2, timer_wait
+    bltu t1, a0, _timer_wait
 
-    #-- Tiempo transcurrido
+    #-- Ha pasado el tiempo indicado
 
     #-- Apagar temporizador
     li t0, POWMAN_TIMER_CLR
     li t1, RUN
     sw t1, 0(t0)
 
-    jal led_toggle
-
-    j main
-    
+    ret
     
