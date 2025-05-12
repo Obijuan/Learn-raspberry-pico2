@@ -36,7 +36,7 @@ main:
     jal print_mtvec
     NL
 
-
+    #-- Registros CSR a tener en cuenta
     #-- MCOUNTINHIBIT 
     #-- MEPC (Machine exception program counter.)
     #-- MCAUSE Register
@@ -48,7 +48,7 @@ main:
     #-- MIMPID (Implementation ID. On RP2350 this reads as 0x86fc4e3f,
       #-- which is release v1.0-rc1 of Hazard3.
     #-- MHARTID 
-    
+
 
 loop: 
 
