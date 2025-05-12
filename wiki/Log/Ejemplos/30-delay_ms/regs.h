@@ -238,8 +238,11 @@
   .equ POWMAN_TIMER_SET,  0x40102088
   .equ POWMAN_TIMER_CLR,  0x40103088
 
+  #-- Valor de seguridad
+  .equ SAFE, 0x5afe0000
+
   #-- Campos del TIMER
-  .equ RUN, BIT1
+  .equ RUN, SAFE + BIT1
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c

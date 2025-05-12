@@ -28,7 +28,7 @@ main:
 
     #-- Encender el AON-Timer
     li t0, POWMAN_TIMER
-    li t1, 0x5afe0000 + RUN
+    li t1, RUN
     sw t1, 0(t0)
 
     #-- Esperar hasta que transcurra el tiempo
@@ -49,7 +49,7 @@ timer_wait:
 
     #-- Apagar temporizador
     li t0, POWMAN_TIMER
-    li t1, 0x5afe0000
+    li t1, SAFE
     sw t1, 0(t0)
 
     j main
