@@ -3,10 +3,6 @@
 #---------------------------
 .global _start   #-- Punto de entrada
 
-.include "riscv.h"
-.include "regs.h"
-.include "uart.h"
-.include "ansi.h"
 .include "delay.h"
 
 .section .text
