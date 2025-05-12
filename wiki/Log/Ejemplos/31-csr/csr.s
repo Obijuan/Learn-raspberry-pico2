@@ -3,6 +3,8 @@
 #----------------------------
 .global print_mstatus
 .global print_misa
+.global print_mie
+.global print_mtvec
 
 .include "riscv.h"
 .include "uart.h"
@@ -78,7 +80,7 @@ FUNC_END4
 print_misa:
 FUNC_START4
 
-   CPRINT LYELLOW, "MISA: "
+    CPRINT LYELLOW, "MISA: "
 
     #-- Leer el registro MISA
     COLOR BLUE
@@ -157,4 +159,92 @@ FUNC_START4
     jal print_bin1
     CPRINT WHITE, "  (A Extension)"
     NL
+FUNC_END4
+
+# ---------------------------------------------------
+# - print_mie
+# - Imprimir el registro MIE y todos sus bits  
+# - (Interrupt Enable)
+# ---------------------------------------------------
+print_mie:
+FUNC_START4
+
+    CPRINT LYELLOW, "MIE: "
+
+    #-- Leer el registro MIE
+    COLOR BLUE
+    csrrw a0, mie, zero
+    mv s0, a0
+    jal print_0x_hex32
+    CPRINT WHITE, "  (Interrupt Enable)\n"
+
+    #-- Imprimir bit MEIE
+    CPRINT YELLOW, "  MEIE:  "
+    COLOR LBLUE
+    mv a0, s0
+    srli a0, a0, 11
+    jal print_bin1
+    CPRINT WHITE, " (External interrupt enable)"
+    NL
+
+    #-- Imprimir bit MTIE
+    CPRINT YELLOW, "  MTIE:  "
+    COLOR LBLUE
+    mv a0, s0
+    srli a0, a0, 7
+    jal print_bin1
+    CPRINT WHITE, " (Timer interrupt enable)"
+    NL
+
+    #-- Imprimir bit MSIE
+    CPRINT YELLOW, "  MSIE:  "
+    COLOR LBLUE
+    mv a0, s0
+    srli a0, a0, 3
+    jal print_bin1
+    CPRINT WHITE, " (Software interrupt enable)"
+    NL
+
+FUNC_END4
+
+
+# ---------------------------------------------------
+# - print_mtvec
+# - Imprimir el registro MTVEC y todos sus bits  
+# - (Trap handler base address)
+# ---------------------------------------------------
+print_mtvec:
+FUNC_START4
+
+    CPRINT LYELLOW, "MTVEC: "
+
+    #-- Leer el registro MTVEC
+    COLOR LBLUE
+    csrrw a0, mtvec, zero
+    mv s0, a0
+    jal print_0x_hex32
+    CPRINT WHITE, "  (Trap handler base address)\n"
+
+    #-- Poner a 0 los dos ultimos bits
+    mv a0, s0
+    li t1, 0xFFFFFFFC
+    and a0, a0, t1
+    mv s1, a0
+
+    #-- Imprimir campo BASE
+    CPRINT YELLOW, "  BASE:  "
+    COLOR BLUE
+    mv a0, s1
+    jal print_0x_hex32
+    CPRINT WHITE, " (Trap vector address)"  
+    NL
+
+    #-- Imprimir campo MODE
+    CPRINT YELLOW, "  MODE:  "
+    COLOR BLUE
+    mv a0, s0
+    jal print_bin2
+    CPRINT WHITE, " (Trap mode)"
+    NL 
+
 FUNC_END4

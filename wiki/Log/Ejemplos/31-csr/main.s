@@ -29,10 +29,12 @@ main:
     CLS
     jal print_mstatus
     NL
-
     jal print_misa
     NL
-
+    jal print_mie
+    NL
+    jal print_mtvec
+    NL
 
 
 loop: 
