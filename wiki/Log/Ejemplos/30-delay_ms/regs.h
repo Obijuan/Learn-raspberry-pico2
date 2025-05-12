@@ -242,7 +242,7 @@
   .equ SAFE, 0x5afe0000
 
   #-- Campos del TIMER
-  .equ RUN, SAFE + BIT1
+  .equ RUN, SAFE + BIT1 #-- Start/Stop
 
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c

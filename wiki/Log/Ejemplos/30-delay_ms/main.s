@@ -27,7 +27,7 @@ _start:
 main: 
 
     #-- Encender el AON-Timer
-    li t0, POWMAN_TIMER
+    li t0, POWMAN_TIMER_SET
     li t1, RUN
     sw t1, 0(t0)
 
@@ -35,22 +35,23 @@ main:
     #-- establecido
 
 timer_wait:
-    #jal delay
+    
+    #-- Leer temporizador (en ms)
     li t0, READ_TIME_LOWER
-    lw t1, 0(t0)  #-- Leer temporizador
-    #jal print_hex32
-    #NL
+    lw t1, 0(t0) 
 
-
-    li t2, 100
+    #-- Ha transcurrido el tiempo?
+    li t2, 200
     bltu t1, t2, timer_wait
 
-    jal led_toggle
+    #-- Tiempo transcurrido
 
     #-- Apagar temporizador
-    li t0, POWMAN_TIMER
-    li t1, SAFE
+    li t0, POWMAN_TIMER_CLR
+    li t1, RUN
     sw t1, 0(t0)
+
+    jal led_toggle
 
     j main
     
