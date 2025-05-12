@@ -37,6 +37,19 @@ main:
     NL
 
 
+    #-- MCOUNTINHIBIT 
+    #-- MEPC (Machine exception program counter.)
+    #-- MCAUSE Register
+    #-- MIP (Machine interrupt pending)
+    #-- MCYCLE 
+    #-- MCYCLEH Register
+    #-- MVENDORID (no me deja leerlo...)
+    #-- MARCHID (Architecture ID)  
+    #-- MIMPID (Implementation ID. On RP2350 this reads as 0x86fc4e3f,
+      #-- which is release v1.0-rc1 of Hazard3.
+    #-- MHARTID 
+    
+
 loop: 
 
     #-- Esperar
