@@ -75,5 +75,38 @@ main:
     csrrs zero, mscratch, t0
     PRINT_MSCRATCH
 
+    #-------------- PseudoInstrucciones
+    #---- WRITE IMM
+    csrwi mscratch, 0x5
+
+    #---- READ
+    csrr a0, mscratch
+    jal print_0x_hex32
+    NL
+
+    #--- WRITE
+    li t0, 0xCAFEBACA
+    csrw mscratch, t0 
+    PRINT_MSCRATCH
+
+    #-- SET IMM
+    csrsi mscratch, 0x5
+    PRINT_MSCRATCH
+
+    #-- SET
+    li t0, 0x30000000
+    csrs mscratch, t0
+    PRINT_MSCRATCH
+
+    #-- CLEAR IMM
+    csrci mscratch, 0x5
+    PRINT_MSCRATCH
+
+    #-- CLEAR
+    li t0, 0x30000000
+    csrc mscratch, t0
+    PRINT_MSCRATCH
+
+
 #-- HALT!
 halt:    j .
