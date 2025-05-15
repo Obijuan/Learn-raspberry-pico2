@@ -33,7 +33,8 @@ menu:
     PRINT "1.- Ecall\n"
     PRINT "2.- Instruccion ilegal\n"
     PRINT "3.- BREAKPOINT\n"
-    PRINT "4.- Direccion no alineada\n"
+    PRINT "4.- LOAD en direccion NO alineada\n"
+    PRINT "5.- STORE en direccion NO alineada\n"
 
 prompt:
     PRINT "> "
@@ -64,6 +65,9 @@ prompt:
     li t0, '4'
     beq a0, t0, opcion4
 
+    li t0, '5'
+    beq a0, t0, opcion5
+
     j prompt
 
 opcion1:
@@ -81,6 +85,11 @@ opcion3:
 opcion4:
     li t0, 1
     lw t0, 0(t0)  #-- Acceso a direccion no alineada
+    j prompt
+
+opcion5: 
+    li t0, 1
+    sw zero, 0(t0) #-- Acceso a direccion no alineada
     j prompt
 
 #-- HALT!
@@ -127,8 +136,11 @@ es_excepcion:
     li t1, BREAKPOINT
     beq t0, t1, es_ebreak
 
-    li t1, NOT_ALIGN
-    beq t0, t1, excep_not_align
+    li t1, NOT_ALIGN_LOAD
+    beq t0, t1, excep_not_align_load
+
+    li t1, NOT_ALIGN_STORE
+    beq t0, t1, excep_not_align_store
 
     #-- Causa desconocida
     PRINT "Desconocida\n"
@@ -150,8 +162,13 @@ excep_ilegal_inst:
     j isr_end
 
 #--- La excepcion es por error de alineamiento
-excep_not_align:
-    PRINT "ERROR DE ALINEAMIENTO\n\n"
+excep_not_align_load:
+    PRINT "ERROR DE ALINEAMIENTO EN LECTURA\n\n"
+    j isr_end
+
+#--- Error de alineamiento en store
+excep_not_align_store:
+    PRINT "ERROR DE ALINEAMIENTO EN ESCRITURA\n\n"
     j isr_end
 
 isr_end:
