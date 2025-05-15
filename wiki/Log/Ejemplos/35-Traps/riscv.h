@@ -24,5 +24,6 @@
 #--- MCAUSE
 .equ ILEGAL_INST, 0x2
 .equ BREAKPOINT,  0x3
+.equ NOT_ALIGN,   0x4
 .equ ECALL, 0xB
 

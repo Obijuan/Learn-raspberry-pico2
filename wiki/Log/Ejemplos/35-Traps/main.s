@@ -33,6 +33,7 @@ menu:
     PRINT "1.- Ecall\n"
     PRINT "2.- Instruccion ilegal\n"
     PRINT "3.- BREAKPOINT\n"
+    PRINT "4.- Direccion no alineada\n"
 
 prompt:
     PRINT "> "
@@ -60,6 +61,9 @@ prompt:
     li t0, '3'
     beq a0, t0, opcion3
 
+    li t0, '4'
+    beq a0, t0, opcion4
+
     j prompt
 
 opcion1:
@@ -72,6 +76,11 @@ opcion2:
 
 opcion3:
     ebreak
+    j prompt
+
+opcion4:
+    li t0, 1
+    lw t0, 0(t0)  #-- Acceso a direccion no alineada
     j prompt
 
 #-- HALT!
@@ -118,6 +127,9 @@ es_excepcion:
     li t1, BREAKPOINT
     beq t0, t1, es_ebreak
 
+    li t1, NOT_ALIGN
+    beq t0, t1, excep_not_align
+
     #-- Causa desconocida
     PRINT "Desconocida\n"
     jal led_blinky3
@@ -137,6 +149,10 @@ excep_ilegal_inst:
     PRINT "INSTRUCCION ILEGAL\n\n"
     j isr_end
 
+#--- La excepcion es por error de alineamiento
+excep_not_align:
+    PRINT "ERROR DE ALINEAMIENTO\n\n"
+    j isr_end
 
 isr_end:
     #-- TERMINAR---------------------------
