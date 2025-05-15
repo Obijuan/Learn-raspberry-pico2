@@ -30,11 +30,12 @@ main:
 menu:
     CLS
     PRINT "Test de interrupciones\n"
-    PRINT "1.- Ecall\n"
+    PRINT "1.- Ecall desde modo M\n"
     PRINT "2.- Instruccion ilegal\n"
     PRINT "3.- BREAKPOINT\n"
     PRINT "4.- LOAD en direccion NO alineada\n"
     PRINT "5.- STORE en direccion NO alineada\n"
+    PRINT "6.- Pasar a modo usuario\n"
 
 prompt:
     PRINT "> "
@@ -68,6 +69,9 @@ prompt:
     li t0, '5'
     beq a0, t0, opcion5
 
+    li t0, '6'
+    beq a0, t0, opcion6
+
     j prompt
 
 opcion1:
@@ -92,8 +96,27 @@ opcion5:
     sw zero, 0(t0) #-- Acceso a direccion no alineada
     j prompt
 
+opcion6:
+    #-- Pasar a modo usuario
+    jal print_mstatus
+
+    #-- Poner a 0 bits del campo MPP
+    #-- Para que el modo de privilegio sea de usuario
+    li t0, MPP
+    csrc mstatus, t0
+
+    #-- Meter en mepc la direccion de retorno
+    la t0, halt
+    csrw mepc, t0
+
+    #-- Saltar a prompt
+    #-- en modo USUARIO
+    mret 
+
 #-- HALT!
-halt:    j .
+halt:
+    nop
+    j .
 
 #------------------------------------------
 #-- Rutina de atencion a la interrupcion 
@@ -142,6 +165,9 @@ es_excepcion:
     li t1, NOT_ALIGN_STORE
     beq t0, t1, excep_not_align_store
 
+    li t1, INST_FAULT
+    beq t0, t1, excep_inst_fault
+
     #-- Causa desconocida
     PRINT "Desconocida\n"
     jal led_blinky3
@@ -170,6 +196,16 @@ excep_not_align_load:
 excep_not_align_store:
     PRINT "ERROR DE ALINEAMIENTO EN ESCRITURA\n\n"
     j isr_end
+
+#-- Instruction fault
+excep_inst_fault:
+    PRINT "FALLO EN INSTRUCCION\n"
+
+    #-- Imprimir mepc: es la instruccion que causo el fallo
+    csrr a0, mepc
+    jal print_0x_hex32
+    NL
+    jal led_blinky3
 
 isr_end:
     #-- TERMINAR---------------------------
