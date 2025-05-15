@@ -101,8 +101,11 @@ es_excepcion:
     #-- Aislar la causa
     andi t0, t0, 0xF
     
-    li t1, 0xB
+    li t1, ECALL
     beq t0, t1, es_ecall
+
+    li t1, ILEGAL_INST
+    beq t0, t1, excep_ilegal_inst
 
     #-- Causa desconocida
     PRINT "Desconocida\n"
@@ -112,8 +115,15 @@ es_excepcion:
 es_ecall:
 
     PRINT "ECALL\n\n"
+    j isr_end
+
+#--- La excepcion es por instruccion ilegal
+excep_ilegal_inst:
+    PRINT "INSTRUCCION ILEGAL\n\n"
+    j isr_end
 
 
+isr_end:
     #-- TERMINAR---------------------------
     #--- Leer la direccion de retorno
     csrr t0, mepc
@@ -125,5 +135,3 @@ es_ecall:
 
     #-- Retornar
     mret
-
-

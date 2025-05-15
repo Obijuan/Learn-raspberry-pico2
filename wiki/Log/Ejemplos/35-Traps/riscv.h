@@ -16,3 +16,11 @@
     addi sp, sp, -16
     ret
 .endm
+
+#---------------------
+#-- REGISTROS CSR
+#---------------------
+
+#--- MCAUSE
+.equ ECALL, 0xB
+.equ ILEGAL_INST, 0x2
