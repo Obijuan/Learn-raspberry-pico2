@@ -31,6 +31,7 @@ menu:
     CLS
     PRINT "Test de interrupciones\n"
     PRINT "1.- Ecall\n"
+    PRINT "2.- Instruccion ilegal\n"
 
 prompt:
     PRINT "> "
@@ -52,11 +53,17 @@ prompt:
     li t0, '1'
     beq a0, t0, opcion1
 
+    li t0, '2'
+    beq a0, t0, opcion2
+
     j prompt
 
 opcion1:
     ecall
+    j prompt
 
+opcion2:
+    .word 0  #-- Instruccion ilegal
     j prompt
 
 #-- HALT!
@@ -118,4 +125,5 @@ es_ecall:
 
     #-- Retornar
     mret
+
 
