@@ -27,7 +27,7 @@ $AS -g -march=rv32i -mabi=ilp32  -o ansi.o ansi.s
 $AS -g -march=rv32i -mabi=ilp32  -o monitorv.o monitorv.s
 $AS -g -march=rv32i -mabi=ilp32  -o boot.o boot.s
 $AS -g -march=rv32i_zicsr -mabi=ilp32  -o csr.o csr.s
-$AS -g -march=rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb -mabi=ilp32  -o $MAIN.o $MAIN.s
+$AS -g -march=rv32i_zicsr -mabi=ilp32  -o $MAIN.o $MAIN.s
 # $AS -g -march=rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
 
 # -- Linkado
