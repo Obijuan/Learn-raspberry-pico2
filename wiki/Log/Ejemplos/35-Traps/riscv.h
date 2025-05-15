@@ -22,5 +22,7 @@
 #---------------------
 
 #--- MCAUSE
-.equ ECALL, 0xB
 .equ ILEGAL_INST, 0x2
+.equ BREAKPOINT,  0x3
+.equ ECALL, 0xB
+

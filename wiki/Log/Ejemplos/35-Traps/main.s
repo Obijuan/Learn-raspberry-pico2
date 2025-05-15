@@ -32,6 +32,7 @@ menu:
     PRINT "Test de interrupciones\n"
     PRINT "1.- Ecall\n"
     PRINT "2.- Instruccion ilegal\n"
+    PRINT "3.- BREAKPOINT\n"
 
 prompt:
     PRINT "> "
@@ -56,6 +57,9 @@ prompt:
     li t0, '2'
     beq a0, t0, opcion2
 
+    li t0, '3'
+    beq a0, t0, opcion3
+
     j prompt
 
 opcion1:
@@ -64,6 +68,10 @@ opcion1:
 
 opcion2:
     .word 0  #-- Instruccion ilegal
+    j prompt
+
+opcion3:
+    ebreak
     j prompt
 
 #-- HALT!
@@ -107,6 +115,9 @@ es_excepcion:
     li t1, ILEGAL_INST
     beq t0, t1, excep_ilegal_inst
 
+    li t1, BREAKPOINT
+    beq t0, t1, es_ebreak
+
     #-- Causa desconocida
     PRINT "Desconocida\n"
     jal led_blinky3
@@ -115,6 +126,10 @@ es_excepcion:
 es_ecall:
 
     PRINT "ECALL\n\n"
+    j isr_end
+
+es_ebreak:
+    PRINT "EBREAK\n\n"
     j isr_end
 
 #--- La excepcion es por instruccion ilegal
