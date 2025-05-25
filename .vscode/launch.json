@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug RISC-V",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/${relativeFileDirname}/main.elf",
+            "cwd": "${workspaceFolder}/${relativeFileDirname}",
+            "miDebuggerPath": "/home/obijuan/Develop/pico/corev-openhw-gcc-ubuntu2204-20240530/bin/riscv32-corev-elf-gdb",
+            "miDebuggerServerAddress": "localhost:3333",
+            "stopAtEntry": true,
+            "preLaunchTask": "Run QEMU"
+        }		
+    ]
+}
