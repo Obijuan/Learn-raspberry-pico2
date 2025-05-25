@@ -11,6 +11,41 @@
             "miDebuggerServerAddress": "localhost:3333",
             "stopAtEntry": true,
             "preLaunchTask": "Run QEMU"
-        }		
+        },	
+        // {
+        //     "name": "Debug PICO2",
+        //     "type": "cppdbg",
+        //     "request": "launch",
+        //     "program": "${workspaceFolder}/${relativeFileDirname}/main.elf",
+        //     "cwd": "${workspaceFolder}/${relativeFileDirname}",
+        //     "miDebuggerPath": "/home/obijuan/Develop/pico/corev-openhw-gcc-ubuntu2204-20240530/bin/riscv32-corev-elf-gdb",
+        //     "miDebuggerServerAddress": "localhost:3333",
+        //     "miDebuggerArgs": "",
+        //     "stopAtEntry": true,
+        //     //"preLaunchTask": "Run QEMU"
+        // },
+        {
+            "name": "Debug PICO2",
+            "cwd": "${workspaceFolder}/${relativeFileDirname}",
+            "executable": "main.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "gdbPath": "/home/obijuan/.pico-sdk/toolchain/RISCV_RPI_2_0_0_5/bin/riscv32-unknown-elf-gdb",
+            "device": "rp2350",
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/rp2350-riscv.cfg"
+            ],
+            "svdFile": "${userHome}/.pico-sdk/sdk/2.1.1/src/rp2350/hardware_regs/RP2350.svd",
+            "runToEntryPoint": "_start",
+            "overrideLaunchCommands": [
+                "monitor reset init",
+                "load main.elf"
+            ],
+            "openOCDLaunchCommands": [
+                "adapter speed 5000"
+            ]
+        },	
     ]
 }
