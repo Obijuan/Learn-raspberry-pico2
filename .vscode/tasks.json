@@ -4,7 +4,7 @@
         {
           "label": "Run QEMU",
           "type": "shell",
-          "command": "echo 'QEMU started'; qemu-riscv32 -g 3333 ${workspaceFolder}/${relativeFileDirname}/main.elf",
+          "command": "echo 'QEMU started'; qemu-riscv32 -g 3333 -d page ${workspaceFolder}/${relativeFileDirname}/main.elf",
           "isBackground": true,
           "problemMatcher": [
             {
