@@ -19,7 +19,7 @@ _start:
     jal runtime_init
 
     #-- Establecer el vector de interrupcion
-    la t0, isr
+    la t0, isr_monitor
     csrw mtvec, t0
 
 main:
@@ -28,64 +28,23 @@ main:
     jal led_off
     jal uart_init
 
-    CLS
-
-    #-- Configurar los permisos de acceso a la flash
+    #-------- Configurar los permisos para el modo usuario -----------
+    #-- ACCESO A LA MEMORIA FLASH desde modo usuario
     li t0, 0x5FFFFFFF
     csrw pmpaddr0, t0
 
     li t1, 0x1F
     csrw pmpcfg0, t1
 
-    #-- Establecer permisos para acceder al LED
-    #-- desde el modo usuario
+    #--- ACCESO A LOS GPIOS desde modo usuario
     li t0, ACCESSCTRL_GPIO_NSMASK0
     li t1, BIT25
     sw t1, 0(t0) 
 
-    #-- Establecer permisos para acceder a la UART 
+    #--- ACCESO A LA UART desde modo usuario
     li t0, ACCESSCTRL_UART0
     li t1, 0xacce00ff
     sw t1, 0(t0)
 
-    
+    j monitorv_trap
 
-    #------- PASAR A MODO USUARIO
-
-    #-- Poner a 0 bits del campo MPP
-    #-- Para que el modo de privilegio sea de usuario
-    csrw mstatus, zero
-
-    #-- Meter en mepc la direccion de retorno
-    la t0, user_mode_entry
-    csrw mepc, t0
-
-    #-- Saltar a modo usuario
-    mret 
-
-
-#------------------------------
-# Código en modo usuario
-#------------------------------
-user_mode_entry:
-
-    #-- Encender el LED desde 
-    #-- el modo usuario
-    jal led_on
-
-
-loop:
-    PRINT "HOLA!\n"
-    jal  getchar
-
-    j loop
-
-#------------------------------------------
-#-- Rutina de atencion a la interrupcion 
-#------------------------------------------
-isr:
-    jal print_mstatus
-    jal print_mcause
-
-    jal led_blinky3
-    

@@ -26,10 +26,15 @@
 .equ ILEGAL_INST,     0x2
 .equ BREAKPOINT,      0x3
 .equ NOT_ALIGN_LOAD,  0x4
+.equ LOAD_FAULT,      0x5
 .equ NOT_ALIGN_STORE, 0x6
-.equ ECALL,           0xB
+.equ STORE_FAULT,     0x7
+.equ ECALL_U,         0x8
+.equ ECALL_M,         0xB
 
 #--- MSTATUS
 
-.equ MPP,  0x3 << 11
+.equ MPP,  0x3 << 11   #-- Previous Privilege Mode
 .equ MPRV, 0x1 << 17
+.equ MODO_USER, 0x0
+.equ MODO_MACHINE, 0x3

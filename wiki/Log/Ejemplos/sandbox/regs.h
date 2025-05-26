@@ -229,7 +229,9 @@
 .equ UART0_UARTCR,          0x40070030 
 .equ UART0_UARTDMACR,       0x40070048
 
-.equ UART1_BASE,     0x40078000
+.equ UART1_BASE,            0x40078000
+.equ UART1_UARTDR,          0x40078000
+.equ UART1_UARTF,           0x40078018
 
 #-- Crystal oscillator
 .equ XOSC_BASE,    0x40048000
