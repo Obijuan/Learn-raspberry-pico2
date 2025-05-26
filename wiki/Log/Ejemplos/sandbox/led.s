@@ -8,6 +8,9 @@
 .global led_blinky2
 .global led_blinky3
 .global led_blinky4
+.global sim_led_on
+.global sim_led_off
+.global sim_led_init
 
 # -- Definición de constantes para acceder 
 # -- a los GPIOs
@@ -167,4 +170,32 @@ delay4_loop:
     # -- Cuando el contador llega a cero
     # -- se termina
 delay4_end_loop:
+    ret
+
+
+#---------------------------------
+#--- Funciones para simulacion 
+#---------------------------------
+
+.equ SIM_LED, 0x2aaac000  #-- Direccion del LED en simulacion
+
+# ---------------------
+# -- Encender el LED
+# ---------------------
+sim_led_on:
+    li t0, SIM_LED
+    li t1, BIT25    #-- Activar el bit 25
+    sw t1, 0(t0)
+    ret 
+
+# ---------------------
+# -- Apagar el LED
+# ---------------------
+sim_led_off:
+    li t0, SIM_LED
+    li t1, BIT25    #-- Desactivar el bit 25
+    sw t1, 0(t0)
+    ret
+
+sim_led_init:
     ret
