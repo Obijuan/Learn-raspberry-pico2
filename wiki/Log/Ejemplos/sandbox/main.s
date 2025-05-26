@@ -27,8 +27,8 @@ main:
     jal led_init
     jal uart_init
 
-    #-- Encender LED
-    jal led_on
+    #-- Apagar LED
+    jal led_off
 
     CLS
 
@@ -38,16 +38,44 @@ main:
     li t1, 0x3
     sw t1, 0(t0)
 
+    #-- Configurar el comparador
+    li t0, MTIMECMPH
+    sw zero, 0(t0)
+    li t0, MTIMECMP
+    li t1, 0x40000000
+    sw t1, 0(t0)
+
+    #-- Activar las interrupciones globales
+    li t0, 1 << MIE
+
 loop:
 
-    #-- Leer temporizador del RISCV
-    PRINT "Timer L: "
+     #-- Leer temporizador del RISCV
+    PRINT "Timer: "
+    li t0, MTIMEH
+    lw a0, 0(t0)
+    jal print_hex32
+    PRINT "-"
     li t0, MTIME
     lw a0, 0(t0)
     jal print_hex32
     NL
 
+    #-- Imprimir el comparador
+    PRINT "CMP:   "
+    li t0, MTIMECMPH
+    lw a0, 0(t0)
+    jal print_hex32
+
+    PRINT "-"
+    li t0, MTIMECMP
+    lw a0, 0(t0)
+    jal print_hex32
+    NL
+    NL
+
     #-- Esperar (espera activa)
+    jal delay
     jal delay
 
     #-- Repetir 

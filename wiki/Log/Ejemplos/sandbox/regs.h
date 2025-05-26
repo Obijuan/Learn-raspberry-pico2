@@ -280,5 +280,5 @@
 .equ MTIME,        0xD00001b0  #-- Temporizador del RISCV
 .equ MTIMEH,       0xD00001b4  #-- Temporizador alto del RISCV
 .equ MTIMECMP,     0xD00001b8  #-- Comparador del temporizador
-
+.equ MTIMECMPH,    0xD00001bc  #-- Comparador alto del temporizador
 

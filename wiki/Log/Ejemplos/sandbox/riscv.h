@@ -33,7 +33,7 @@
 .equ ECALL_M,         0xB
 
 #--- MSTATUS
-
+.equ MIE,  0x1 << 3
 .equ MPP,  0x3 << 11   #-- Previous Privilege Mode
 .equ MPRV, 0x1 << 17
 .equ MODO_USER, 0x0
