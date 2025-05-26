@@ -25,27 +25,33 @@ _start:
 main:
     #-- Configurar perifericos
     jal led_init
-    jal led_off
     jal uart_init
 
-    #-------- Configurar los permisos para el modo usuario -----------
-    #-- ACCESO A LA MEMORIA FLASH desde modo usuario
-    li t0, 0x5FFFFFFF
-    csrw pmpaddr0, t0
+    #-- Encender LED
+    jal led_on
 
-    li t1, 0x1F
-    csrw pmpcfg0, t1
+    CLS
 
-    #--- ACCESO A LOS GPIOS desde modo usuario
-    li t0, ACCESSCTRL_GPIO_NSMASK0
-    li t1, BIT25
-    sw t1, 0(t0) 
-
-    #--- ACCESO A LA UART desde modo usuario
-    li t0, ACCESSCTRL_UART0
-    li t1, 0xacce00ff
+    #--- Activar el temporizador del RISCV
+    #--- Que se actualice en cada ciclo
+    li t0, MTIME_CTRL
+    li t1, 0x3
     sw t1, 0(t0)
 
-    #-- Ejecutar la aplicacion
-    j monitorv_trap
+loop:
+
+    #-- Leer temporizador del RISCV
+    PRINT "Timer L: "
+    li t0, MTIME
+    lw a0, 0(t0)
+    jal print_hex32
+    NL
+
+    #-- Esperar (espera activa)
+    jal delay
+
+    #-- Repetir 
+    j loop
+
+
 

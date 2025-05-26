@@ -59,6 +59,9 @@
 .equ FUNC_SOFTWARE, 0x05  #-- Control por software
 .equ FUNC_NULL,     0x1F  #-- Sin usar
 
+
+
+
 # ----------------------------------------------------------
 # -- Registros de los PADs
 # ----------------------------------------------------------
@@ -108,28 +111,6 @@
 # -- Valor para habilitar el PAD
 # -- Y dejar el resto de campos a su valores por defecto
 .equ PAD_ENABLE_OUT, 0x016  # ISO = 1, 
-
-# ---------------------------------------------------------
-# -- REGISTROS DEL BANCO SIO
-# ---------------------------------------------------------
-# -- Sección 3.1.11. Página 54 del datasheet del RP2350
-# -- https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf
-
-# --- DIRECCIONES ---------------------------------
-
-# --------------------------------------
-# -- Registro de entrada/salida
-# -- GPIOs de 0 a 31
-# --------------------------------------
-.equ GPIO_IN,      0xD0000004  #-- Lectura de GPIOs
-.equ GPIO_OUT,     0xD0000010  #-- Escritura de GPIOs
-.equ GPIO_OUT_SET, 0xD0000018  #-- Poner a 1 los GPIOs
-.equ GPIO_OUT_CLR, 0xD0000020  #-- Poner a 0 los GPIOs
-.equ GPIO_OUT_XOR, 0xD0000028  #-- Invertir el estado de los GPIOs
-.equ GPIO_OE,      0xD0000030  #-- Establecer habilitación de salida
-.equ GPIO_OE_SET,  0xD0000038  #-- Habilitar la salida GPIOs indicados
-.equ GPIO_OE_CLR,  0xD0000040  #-- Deshabilitar la salida GPIOs indicados
-
 
 
 .equ CLOCK_BASE,         0x40010000
@@ -273,4 +254,31 @@
 .equ USBCTRL_REGS_BASE, 0x50110000
 .equ USB_SIE_CTRL,      0x5011004c
 .equ USB_SIE_CTRL_SET,  0x5011204c
+
+# ---------------------------------------------------------
+# -- REGISTROS DEL BANCO SIO
+# ---------------------------------------------------------
+# -- Sección 3.1.11. Página 54 del datasheet del RP2350
+# -- https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf
+
+# --- DIRECCIONES ---------------------------------
+
+# --------------------------------------
+# -- Registro de entrada/salida
+# -- GPIOs de 0 a 31
+# --------------------------------------
+.equ GPIO_IN,      0xD0000004  #-- Lectura de GPIOs
+.equ GPIO_OUT,     0xD0000010  #-- Escritura de GPIOs
+.equ GPIO_OUT_SET, 0xD0000018  #-- Poner a 1 los GPIOs
+.equ GPIO_OUT_CLR, 0xD0000020  #-- Poner a 0 los GPIOs
+.equ GPIO_OUT_XOR, 0xD0000028  #-- Invertir el estado de los GPIOs
+.equ GPIO_OE,      0xD0000030  #-- Establecer habilitación de salida
+.equ GPIO_OE_SET,  0xD0000038  #-- Habilitar la salida GPIOs indicados
+.equ GPIO_OE_CLR,  0xD0000040  #-- Deshabilitar la salida GPIOs indicados
+
+.equ MTIME_CTRL,   0xD00001a4  #-- Timer Control 
+.equ MTIME,        0xD00001b0  #-- Temporizador del RISCV
+.equ MTIMEH,       0xD00001b4  #-- Temporizador alto del RISCV
+.equ MTIMECMP,     0xD00001b8  #-- Comparador del temporizador
+
 
