@@ -2,60 +2,64 @@
     "version": "2.0.0",
     "tasks": [
         {
-          "label": "Run QEMU",
-          "type": "shell",
-          "command": "echo 'QEMU started'; qemu-riscv32 -g 3333 -d page ${workspaceFolder}/${relativeFileDirname}/main.elf",
-          "isBackground": true,
-          "problemMatcher": [
-            {
-              "pattern": [
+            "label": "Run QEMU",
+            "type": "shell",
+            "command": "echo 'QEMU started'; qemu-riscv32 -g 3333 -d page ${workspaceFolder}/${relativeFileDirname}/main.elf",
+            "isBackground": true,
+            "problemMatcher": [
                 {
-                  "regexp": ".",
-                  "file": 1,
-                  "location": 2,
-                  "message": 3
-								}
-							],
-              "background": {
-                "activeOnStart": true,
-                "beginsPattern": ".",
-                "endsPattern": "QEMU started",
-							}
-						}
-					]
-				},
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": "QEMU started"
+                    }
+                }
+            ]
+        },
         {
             "label": "build.sh",
-            "type": "shell",                     // Indica que es un comando de shell
-            "command": "./build.sh",             // El comando a ejecutar
+            "type": "shell",
+            "command": "./build.sh",
             "options": {
-                "cwd": "${workspaceFolder}/${relativeFileDirname}" // Cambia el directorio de trabajo a la subcarpeta 'scripts'
+                "cwd": "${workspaceFolder}/${relativeFileDirname}"
             },
             "group": {
-                "kind": "build",                 // Clasifica esta tarea como una tarea de "build"
-                "isDefault": true                // La convierte en la tarea de build predeterminada
+                "kind": "build",
+                "isDefault": true
             },
             "presentation": {
-                "reveal": "always",              // Muestra el terminal de la tarea siempre
-                "panel": "new"                   // Abre un nuevo panel de terminal para esta tarea
+                "reveal": "always",
+                "panel": "new"
             },
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
         {
             "label": "PROGRAM",
-            "type": "shell",                     // Indica que es un comando de shell
-            "command": "./exec.sh",             // El comando a ejecutar
+            "type": "shell",
+            "command": "./exec.sh",
             "options": {
-                "cwd": "${workspaceFolder}/${relativeFileDirname}" // Cambia el directorio de trabajo a la subcarpeta 'scripts'
+                "cwd": "${workspaceFolder}/${relativeFileDirname}"
             },
             "group": {
-                "kind": "build",                 // Clasifica esta tarea como una tarea de "build"
+                "kind": "build"
             },
             "presentation": {
-                "reveal": "always",              // Muestra el terminal de la tarea siempre
-                "panel": "new"                   // Abre un nuevo panel de terminal para esta tarea
+                "reveal": "always",
+                "panel": "new"
             },
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
-		]
+    ]
 }
