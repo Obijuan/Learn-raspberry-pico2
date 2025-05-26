@@ -46,5 +46,6 @@ main:
     li t1, 0xacce00ff
     sw t1, 0(t0)
 
+    #-- Ejecutar la aplicacion
     j monitorv_trap
 
