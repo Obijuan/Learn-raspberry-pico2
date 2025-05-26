@@ -40,6 +40,22 @@
                 "panel": "new"                   // Abre un nuevo panel de terminal para esta tarea
             },
             "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "PROGRAM",
+            "type": "shell",                     // Indica que es un comando de shell
+            "command": "./exec.sh",             // El comando a ejecutar
+            "options": {
+                "cwd": "${workspaceFolder}/${relativeFileDirname}" // Cambia el directorio de trabajo a la subcarpeta 'scripts'
+            },
+            "group": {
+                "kind": "build",                 // Clasifica esta tarea como una tarea de "build"
+            },
+            "presentation": {
+                "reveal": "always",              // Muestra el terminal de la tarea siempre
+                "panel": "new"                   // Abre un nuevo panel de terminal para esta tarea
+            },
+            "problemMatcher": ["$gcc"]
         }
 		]
 }
