@@ -19,7 +19,7 @@ _start:
     jal runtime_init
 
     #-- Establecer el vector de interrupcion
-    la t0, isr_monitor
+    la t0, isr
     csrw mtvec, t0
 
 main:
@@ -42,15 +42,38 @@ main:
     li t0, MTIMECMPH
     sw zero, 0(t0)
     li t0, MTIMECMP
-    li t1, 0x40000000
+    li t1, 0x20000000
     sw t1, 0(t0)
 
+
+    #-- Activar las interrupciones del temporizador
+    li t0, MIE_MTIE
+    csrs mie, t0
+
+    COLOR WHITE
+    PRINT "Temporizador lanzado!\n\n"
+
     #-- Activar las interrupciones globales
-    li t0, 1 << MIE
+    li t0, MSTATUS_MIE
+    csrs mstatus, t0
 
 loop:
 
-     #-- Leer temporizador del RISCV
+    #-- Imprimir el temporizador
+    jal print_mtimer
+    NL
+
+    #-- Esperar (espera activa)
+    jal delay
+    jal delay
+
+    #-- Repetir 
+    j loop
+
+
+print_mtimer:
+FUNC_START4
+    #-- Leer temporizador del RISCV
     PRINT "Timer: "
     li t0, MTIMEH
     lw a0, 0(t0)
@@ -66,20 +89,23 @@ loop:
     li t0, MTIMECMPH
     lw a0, 0(t0)
     jal print_hex32
-
     PRINT "-"
     li t0, MTIMECMP
     lw a0, 0(t0)
     jal print_hex32
     NL
-    NL
-
-    #-- Esperar (espera activa)
-    jal delay
-    jal delay
-
-    #-- Repetir 
-    j loop
+FUNC_END4
 
 
+isr:
+    SAVE_CONTEXT
+
+    jal led_on
+    CPRINT RED, "ISR: Temporizador!\n"
+    COLOR WHITE
+
+    j .
+
+    RESTORE_CONTEXT
+    mret    
 
