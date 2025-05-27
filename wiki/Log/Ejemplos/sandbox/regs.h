@@ -276,9 +276,9 @@
 .equ GPIO_OE_SET,  0xD0000038  #-- Habilitar la salida GPIOs indicados
 .equ GPIO_OE_CLR,  0xD0000040  #-- Deshabilitar la salida GPIOs indicados
 
-.equ MTIME_CTRL,   0xD00001a4  #-- Timer Control 
-.equ MTIME,        0xD00001b0  #-- Temporizador del RISCV
-.equ MTIMEH,       0xD00001b4  #-- Temporizador alto del RISCV
-.equ MTIMECMP,     0xD00001b8  #-- Comparador del temporizador
-.equ MTIMECMPH,    0xD00001bc  #-- Comparador alto del temporizador
+.equ MTIME_CTRL,   0xD00001A4  #-- Timer Control 
+.equ MTIME,        0xD00001B0  #-- Temporizador del RISCV
+.equ MTIMEH,       0xD00001B4  #-- Temporizador alto del RISCV
+.equ MTIMECMP,     0xD00001B8  #-- Comparador del temporizador
+.equ MTIMECMPH,    0xD00001Bc  #-- Comparador alto del temporizador
 

@@ -30,8 +30,33 @@ main:
     #-- Apagar LED
     jal led_off
 
-    #-- Ejecutar la aplicacion
-    j monitorv_trap
+    #-- Arrancar temporizador
+    li t0, MTIME_CTRL
+    li t1, 0x3
+    sw t1, 0(t0)
 
+    CLS
 
+loop:
+
+    #-- Comenzar medición
+    li t0, MTIME
+    lw t1, 0(t0)
+
+    #--- Instrucciones a medir
+    nop
+
+    #-- Terminar la medición
+    lw t2, 0(t0)
+
+    #-- Calcular el número de ciclos
+    sub s0, t2, t1
+    PRINT "Ciclos: "
+    mv a0, s0
+    jal print_unsigned_int
+    NL
+
+    jal getchar
+
+    j loop 
 

@@ -20,7 +20,7 @@ $AS -g -march=rv32i -mabi=ilp32  -o led.o led.s
 $AS -g -march=rv32i -mabi=ilp32  -o button.o button.s
 $AS -g -march=rv32i -mabi=ilp32  -o debug.o debug.s
 $AS -g -march=rv32i -mabi=ilp32  -o runtime.o runtime.s
-$AS -g -march=rv32i -mabi=ilp32  -o uart.o uart.s
+$AS -g -march=rv32im -mabi=ilp32  -o uart.o uart.s
 $AS -g -march=rv32i -mabi=ilp32  -o delay.o delay.s
 $AS -g -march=rv32i -mabi=ilp32  -o dump.o dump.s
 $AS -g -march=rv32i -mabi=ilp32  -o ansi.o ansi.s

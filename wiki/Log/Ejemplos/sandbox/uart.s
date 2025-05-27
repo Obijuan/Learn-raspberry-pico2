@@ -8,6 +8,7 @@
 .global print_raw16
 .global print_raw32
 .global print_hex4
+.global print_0x_hex8
 .global print_hex8
 .global print_hex16
 .global print_hex32
@@ -17,6 +18,7 @@
 .global print_0x_hex32
 .global print_bin1
 .global print_bin2
+.global print_unsigned_int
 
 
 .include "riscv.h"
@@ -184,6 +186,68 @@ print_raw16:
     ret
 
 
+# --------------------------------------------------
+# -- print_unsigned_int
+#---------------------------------------------------
+# -- Imprimir un entero en la consola
+# -- ENTRADAS:
+# --   a0: Entero a imprimir
+#---------------------------------------------------
+print_unsigned_int:
+FUNC_START4
+    sw s0, 8(sp)
+    sw s1, 4(sp)
+
+    #-- Guardar el puntero de pila actual
+    mv s1, sp
+
+print_int_loop:
+
+#-- Obtener las unidades
+li t0, 10
+remu t1, a0, t0  #-- t1 = a0 % 10
+
+#-- Guardar el numero
+mv s0, a0
+
+#-- Guardar el digito actual en la pila
+addi sp, sp, -4
+sw t1, 0(sp)
+
+#-- Si el numero es 0, hemos terminado
+li t0, 10
+bltu s0, t0, print_int_next  #-- Si es menor a 10, hemos terminado
+
+#-- Obtener el numero restante, con un digito menos
+li t0, 10
+divu a0, s0, t0  #-- a0 = a0 / 10
+
+#-- Repetir
+j print_int_loop
+
+#-- Fase 2: Sacar los digitos de la pila e imprimirlos
+print_int_next:
+    beq sp, s1, print_int_end  #-- Si la pila está vacía, terminar
+    #-- Leer el digito de la pila
+    lw a0, 0(sp)
+    #-- Imprimir el digito
+    jal print_hex4
+    #-- Mover el puntero de pila
+    addi sp, sp, 4
+    #-- Repetir
+    j print_int_next
+
+
+print_int_end:
+    #-- Restaurar el puntero de pila
+    mv sp, s1
+
+    #-- Restaurar registros estaticos
+    lw s0, 8(sp)
+    lw s1, 4(sp)
+FUNC_END4
+
+
 # ---------------------------------------------------------
 # -- print_raw32:
 # --   Imprmir una palabra (32-bits) en la consola
@@ -282,6 +346,34 @@ print_hex8:
     addi sp, sp, 16
     ret
 
+
+# -------------------------------------------------------
+# -- Print_0x_hex8
+# -- Imprimir un numero hexadecimal con el prefijo '0x'
+# -------------------------------------------------------
+# ENTRADAS:
+#  - a0:  Byte a imprimir en hexa
+# -------------------------------------------------------
+print_0x_hex8:
+    addi sp, sp, -16
+    sw ra, 12(sp)
+    sw s0, 8(sp)
+
+    #-- Salvar el numero
+    mv s0, a0
+
+    #-- Imprimir el prefijo
+    la a0, hex_prefix
+    jal print
+
+    #-- Imprimir el numero
+    mv a0, s0
+    jal print_hex8
+
+    lw s0, 8(sp)
+    lw ra, 12(sp)
+    addi sp, sp, 16
+    ret
 
 # ------------------------------------------------
 # -- Print_hex16
