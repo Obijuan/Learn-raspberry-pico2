@@ -11,11 +11,13 @@
 .global print_hex8
 .global print_hex16
 .global print_hex32
+.global print_hex64
 .global print_nl
 .global print
 .global print_0x_hex32
 .global print_bin1
 .global print_bin2
+
 
 .include "riscv.h"
 .include "regs.h"
@@ -341,6 +343,39 @@ print_hex32:
     lw ra, 12(sp)
     addi sp, sp, 16
     ret
+
+# ------------------------------------------------
+# -- Print_hex64
+# -- Imprimir un numero de 64 bits en hexadecimal  
+# ------------------------------------------------
+# -- ENTRADAS:
+# -- a0: Numero a imprimir (Parte baja)
+# -- a1: Numero a imprimir (Parte alta)
+# ------------------------------------------------
+print_hex64:
+FUNC_START4
+
+    #-- Guardar registro s0
+    sw s0, 8(sp)
+
+    #-- Guardar la parte baja
+    mv s0, a0
+
+    #-- Imprimir la parte alta
+    mv a0, a1
+    jal print_hex32
+
+    #-- Imprimir un guion
+    li a0, '-'
+    jal putchar
+
+    #-- Imprimir la parte baja
+    mv a0, s0
+    jal print_hex32
+
+    lw s0, 8(sp)
+FUNC_END4
+
 
 # -------------------------------------------------------
 # -- Print_0x_hex32
