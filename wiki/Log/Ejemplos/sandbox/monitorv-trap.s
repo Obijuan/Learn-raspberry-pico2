@@ -25,7 +25,35 @@ monitorv_trap:
     li t1, MODO_MACHINE
     sw t1, 0(t0)
 
+    #-------- Configurar los permisos para el modo usuario -----------
+    #-- ACCESO A LA MEMORIA FLASH desde modo usuario
+    li t0, 0x5FFFFFFF
+    csrw pmpaddr0, t0
+
+    li t1, 0x1F
+    csrw pmpcfg0, t1
+
+    #--- ACCESO A LOS GPIOS desde modo usuario
+    li t0, ACCESSCTRL_GPIO_NSMASK0
+    li t1, BIT25
+    sw t1, 0(t0) 
+
+    #--- ACCESO A LA UART desde modo usuario
+    li t0, ACCESSCTRL_UART0
+    li t1, 0xacce00ff
+    sw t1, 0(t0)
+
+    #-- Activar las interrupciones del temporizador
+    li t0, MIE_MTIE
+    csrs mie, t0
+
+    #-- Activar las interrupciones globales
+    li t0, MSTATUS_MIE
+    csrs mstatus, t0
+
+
 _menu:
+    COLOR WHITE
     CLS
     PRINT "Test de interrupciones\n"
     jal print_modo
@@ -37,6 +65,8 @@ _menu:
     PRINT "6.- Pasar a modo usuario\n"
     PRINT "7.- Acceso a memoria no permitida (Lectura)\n"
     PRINT "8.- Acceso a memoria no permitida (Escritura)\n"
+    PRINT "9.- Activar temporizador RISCV\n"
+    PRINT "a.- Desactivar temporizador RISCV\n"
 
 prompt:
     PRINT "> "
@@ -78,6 +108,12 @@ prompt:
 
     li t0, '8'
     beq a0, t0, opcion8
+
+    li t0, '9'
+    beq a0, t0, opcion9
+
+    li t0, 'a'
+    beq a0, t0, opcion_a
 
     j prompt
 
@@ -135,6 +171,33 @@ opcion8:
 
     j prompt
 
+opcion9:
+    PRINT "Activando timer RISC-V...\n"
+
+    #--- Activar el temporizador del RISCV
+    #--- Que se actualice en cada ciclo
+    li t0, MTIME_CTRL
+    li t1, 0x3
+    sw t1, 0(t0)
+
+    #-- Configurar el comparador
+    jal inc_timer 
+
+    j prompt
+
+opcion_a:
+    PRINT "Desactivando timer RISC-V...\n"
+
+    #--- Desactivar el temporizador del RISCV
+    li t0, MTIME_CTRL
+    li t1, 0x0
+    sw t1, 0(t0)
+
+    #-- Imprimir el timer y comparador
+    jal print_mtimer
+
+    j prompt
+
 
 #------------------------------
 # Código en modo usuario
@@ -186,8 +249,110 @@ print_modo_end:
 FUNC_END4
 
 
+#-------------------------------------------------
+#-- Sumar dos numeros de 64 bits
+#-------------------------------------------------
+#-- ENTRADAS:
+#--  -Primer numero:
+#--     a1: Parte alta
+#--     a0: Parte baja
+#--  -Segundo numero:
+#--     a3: Parte alta
+#--     a2: Parte baja
+#-- SALIDA:
+#--  - a1: Parte alta
+#--  - a0: Parte baja
+#--------------------------------------------------
+add64:
+    #-- Sumar bytes de menor peso (a0 + a2)
+    add t0, a0, a2
+
+    #-- Calcular el acarreo
+    sltu t2, t0, a0  #-- Si t0 < a0, hay acarreo
+
+    #-- Sumar la parte alta
+    add t1, a1, a3
+
+    #-- Sumar el acarreo
+    add t1, t1, t2
+
+    #-- Devolver resultado
+    mv a1, t1
+    mv a0, t0
+
+    #-- Terminar
+    ret
+
+inc_timer:
+FUNC_START4
+    #-------------------------------------------------
+    #-- Incrementar el comparador
+    #-- Comparador = Timer + 0x20000000
+    #-- La lectura del timer se hace como se indica  
+    #-- en la sección 3.1.8 del Datasheet (Pag. 43)
+    #-------------------------------------------------
+
+_read_timer:
+    #-- La lectura se hace en 4 pasos:
+    #-- 1. Leer la parte alta del timer
+    li t1, MTIMEH  #-- Direccion del timer alto
+    lw a1, 0(t1)  #-- Leer parte alta del timer
+
+    #-- 2. Leer la parte baja
+    li t0, MTIME  #-- Direccion del timer
+    lw a0, 0(t0)  #-- Leer el timer (Parte baja)
+
+    #-- 3. Leer la parte alta de nuevo
+    lw a2, 0(t1)
+
+    #-- 4. Loop if the two upper-half reads returned different values
+    bne a1, a2, _read_timer  #-- Si las dos lecturas no son iguales, repetir
+    
+    #-- a1, a0 contienen el valor del timer
+    
+    #-- Preparar el incremento a sumar
+    li a3, 0x0  #-- Parte alta
+    li a2, 0x20000000  #-- Parte baja
+    
+    #-- Incrementar el timer
+    jal add64
+   
+    #-- Actualizar el comparador
+
+    #-- Tenemos el valor en t1, t0
+    #-- Guardarlo en el comparador
+    li t0, MTIMECMPH  #-- Direccion del comparador alto
+    sw a1, 0(t0)  #-- Escribir la parte alta del comparador
+    li t0, MTIMECMP  #-- Direccion del comparador bajo
+    sw a0, 0(t0)  #-- Escribir la parte baja del comparador
+
+FUNC_END4
 
 
+print_mtimer:
+FUNC_START4
+    #-- Leer temporizador del RISCV
+    PRINT "Timer: "
+    li t0, MTIMEH
+    lw a0, 0(t0)
+    jal print_hex32
+    PRINT "-"
+    li t0, MTIME
+    lw a0, 0(t0)
+    jal print_hex32
+    NL
+
+    #-- Imprimir el comparador
+    PRINT "CMP:   "
+    li t0, MTIMECMPH
+    lw a0, 0(t0)
+    jal print_hex32
+    PRINT "-"
+    li t0, MTIMECMP
+    lw a0, 0(t0)
+    jal print_hex32
+    NL
+FUNC_END4
 
 
 #------------------------------------------
@@ -248,8 +413,33 @@ isr_monitor:
 
     #-- Es una interrupcion
     PRINT "TIPO: Interrupcion\n"
+
+    #-- Leer causa
+    csrr a0, mcause
+
+    #-- Comprobar la causa de la interrupcion
+    andi a0, a0, 0xF  #-- Aislar la causa de la interrupcion
+    li t0, INT_MTIMER
+    beq a0, t0, es_mtimer
+
+
+    #-- Interrupcion desconocida
     PRINT "Desconocida...\n"
     jal led_blinky3
+
+es_mtimer: 
+    #-- Interrupcion del temporizador
+    PRINT "TIMER RISCV!!\n"
+
+    #-- Llamar a la funcion que incrementa el timer
+    jal inc_timer
+
+    #-- Imprimir el timer
+    jal print_mtimer
+
+    #-- Terminar
+    j isr_end
+
 
 es_excepcion:
     PRINT "TIPO: Excepcion\n"

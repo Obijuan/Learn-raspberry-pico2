@@ -21,7 +21,9 @@
 #-- REGISTROS CSR
 #---------------------
 
-#--- MCAUSE
+#-------------------- MCAUSE
+
+#-- Codigos de excepcion
 .equ INST_FAULT,      0x1
 .equ ILEGAL_INST,     0x2
 .equ BREAKPOINT,      0x3
@@ -31,6 +33,9 @@
 .equ STORE_FAULT,     0x7
 .equ ECALL_U,         0x8
 .equ ECALL_M,         0xB
+
+#-- Codigos de interrupcion
+.equ INT_MTIMER,      0x7
 
 #--- MSTATUS
 .equ MSTATUS_MIE,  0x1 << 3
