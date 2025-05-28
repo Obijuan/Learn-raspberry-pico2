@@ -25,6 +25,10 @@ monitorv_trap:
     li t1, MODO_MACHINE
     sw t1, 0(t0)
 
+    #-- Establecer el vector de interrupcion
+    la t0, isr_monitor
+    csrw mtvec, t0
+
     #-------- Configurar los permisos para el modo usuario -----------
     #-- ACCESO A LA MEMORIA FLASH desde modo usuario
     li t0, 0x5FFFFFFF
