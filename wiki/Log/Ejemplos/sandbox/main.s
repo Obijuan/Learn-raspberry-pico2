@@ -6,6 +6,7 @@
 .include "riscv.h"
 .include "regs.h"
 .include "delay.h"
+.include "led.h"
 .include "uart.h"
 .include "ansi.h"
 
@@ -24,34 +25,23 @@ _start:
 
 main:
     #-- Configurar perifericos
-    jal led_init
+    LED_INIT(2)
+    LED_INIT(3)
     jal uart_init
 
-    #-- Apagar LED
-    jal led_off
 
+    nop
+    nop
     CLS
 
-    #-- Configurar LEDs
-    li a0, 2
-    jal ledn_init
-
-    li a0, 3
-    jal ledn_init
-
     #-- Estados iniciales de los LEDs
-    li a0, 2
-    jal ledn_on
+    LED_ON(2)
+    LED_OFF(3)
 
-    li a0, 3
-    jal ledn_off
 
 loop:
-    li a0, 2
-    jal ledn_toggle
-
-    li a0, 3
-    jal ledn_toggle
+    LED_TOGGLE(2)
+    LED_TOGGLE(3)
 
     DELAY_MS(500)
 
@@ -59,9 +49,6 @@ loop:
 
     ecall
     HALT
-
- 
-
 
 isr_panic:
     jal led_blinky3
