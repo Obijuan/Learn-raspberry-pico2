@@ -1,8 +1,14 @@
 # --- Funciones de interfaz
 .global led_init
+.global led2_init
+.global ledn_init
 .global led_on
+.global led2_on
+.global ledn_on
 .global led_off
+.global ledn_off
 .global led_toggle
+.global ledn_toggle
 .global led_set
 .global led_blinky
 .global led_blinky2
@@ -198,4 +204,161 @@ sim_led_off:
     ret
 
 sim_led_init:
+    ret
+
+
+#-----------------------------------------------------------------
+#-- Control de un LED conectado al GPIO2 
+#-----------------------------------------------------------------
+#-- Funciones cableadas que afectan directamente al GPIO2
+#-- Se definen para mostrar la simplicidad
+#-- Es más fácil entender el funcionamiento con ejemplos concretos
+#-- en vez de hacerlo con leds genéricos
+#-----------------------------------------------------------------
+
+
+# ------------------------------
+# -- Configurar el LED2
+# -- Solo hay que escribir en 3 registros para configurar el LED
+#-----------------------------------------------------------------
+
+led2_init:
+
+    #-- Configuracion de GPIO25 para controlarse por software
+    li t0, GPIO2_CTRL  
+    li t1, FUNC_SOFTWARE          
+    sw t1, 0(t0)
+
+    #-- Habilitar el pin GPIO25
+    li t0, PAD_GPIO2  
+    li t1, PAD_ENABLE_OUT
+    sw t1, 0(t0)
+
+    #-- Configuracion de GPIO25 como salida
+    li t0, GPIO_OE_SET      
+    li t1, BIT2
+    sw t1, 0(t0)
+    ret
+
+# ---------------------
+# -- Encender el LED2
+# ---------------------
+led2_on:
+    li t0, GPIO_OUT_SET
+    li t1, BIT2
+    sw t1, 0(t0)
+    ret  
+
+
+#---------------------------------------------------------------
+#-- CONTROL GENERICO DE LEDS
+#---------------------------------------------------------------
+
+#----------------------------------
+#-- Iniciar un LED
+#-- ENTRADAS:
+#--   a0: Numero del GPIO (0-31)
+#----------------------------------
+ledn_init:
+
+    #-- Calcular la direccion del GPIOx
+    #-- Direccion base
+    li t0, GPIO_BASE
+
+    #-- Dir. Base GPIOn
+    #-- BASE_GPIOx = GPIO_BASE + n*8 =
+    #-- = GPIO_BASE + n*(2**3 = GPIO_BASE + n << 3
+    slli t1, a0, 3  #-- t1 = a0 * 8
+    add t0, t0, t1  #-- t0 = GPIO_BASE + n*8
+
+    #-- Establecer funcion: Control por software  
+    li t1, FUNC_SOFTWARE          
+    sw t1, 4(t0)  #-- Reg. de control del GPIOn
+
+    #--------- Paso 2: Habilitar el pin
+    #-- Hay que escribir un valor en el registro PAD_GPIOn 
+
+    #-- Calcular direccion base:
+    #-- Direccion base: 
+    #-- PAD_GPIOn = PADS_BANK0_BASE + (n * 4) + 0x04
+    li t0, PADS_BANK0_BASE
+
+    slli t1, a0, 2  #-- t1 = n * 4
+    add t0, t0, t1  #-- t0 = PADS_BANK0_BASE + n*4
+
+    #-- Habilitar el pin GPIOn
+    li t1, PAD_ENABLE_OUT
+    sw t1, 4(t0)
+
+    #--------- Pase 3: Configurar GPIOn como salida
+    li t0, GPIO_OE_SET      
+
+    #-- Calcular la mascara del bit
+    #-- Mascara del bit: 1 << n
+    li t1, 1
+    sll t2, t1, a0  #-- t2 = 1 << n
+
+    #-- Escribir la mascara en el registro
+    sw t2, 0(t0)
+
+    ret
+
+#------------------------------
+#-- Encender el LED n
+#-- ENTRADAS:
+#--   a0: Numero del GPIO (0-31)
+#------------------------------
+ledn_on:
+    #------------ ENCENDER LED
+    #-- Poner GPIOn a 1
+    li t0, GPIO_OUT_SET
+
+    #-- Calcular la mascara del bit
+    #-- Mascara del bit: 1 << n
+    li t1, 1
+    sll t2, t1, a0  #-- t2 = 1 << n
+
+    #-- Escribir la mascara en el registro
+    sw t2, 0(t0)
+
+    ret
+
+#------------------------------
+#-- Apagar el LED n
+#-- ENTRADAS:
+#--   a0: Numero del GPIO (0-31)
+#------------------------------
+ledn_off:
+
+    #-- Poner GPIOn a 0
+    li t0, GPIO_OUT_CLR
+
+    #-- Calcular la mascara del bit
+    #-- Mascara del bit: 1 << n
+    li t1, 1
+    sll t2, t1, a0  #-- t2 = 1 << n
+
+    #-- Escribir la mascara en el registro
+    sw t2, 0(t0)
+
+    ret
+
+#------------------------------
+#-- Cambiar de estado el LED n
+#-- ENTRADAS:
+#--   a0: Numero del GPIO (0-31)
+#------------------------------
+ledn_toggle:
+
+    #-- Cambiar de estado el GPIOn
+    li t0, GPIO_OUT_XOR
+
+    #-- Calcular la mascara del bit
+    #-- Mascara del bit: 1 << n
+    li t1, 1
+    sll t2, t1, a0  #-- t2 = 1 << n
+
+    #-- Escribir la mascara en el registro
+    sw t2, 0(t0)
+
     ret

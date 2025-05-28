@@ -19,7 +19,7 @@ _start:
     jal runtime_init
 
     #-- Establecer el vector de interrupcion
-    la t0, isr_monitor
+    la t0, isr_panic
     csrw mtvec, t0
 
 main:
@@ -30,33 +30,38 @@ main:
     #-- Apagar LED
     jal led_off
 
-    #-- Arrancar temporizador
-    li t0, MTIME_CTRL
-    li t1, 0x3
-    sw t1, 0(t0)
-
     CLS
 
+    #-- Configurar LEDs
+    li a0, 2
+    jal ledn_init
+
+    li a0, 3
+    jal ledn_init
+
+    #-- Estados iniciales de los LEDs
+    li a0, 2
+    jal ledn_on
+
+    li a0, 3
+    jal ledn_off
+
 loop:
+    li a0, 2
+    jal ledn_toggle
 
-    #-- Comenzar medición
-    li t0, MTIME
-    lw t1, 0(t0)
+    li a0, 3
+    jal ledn_toggle
 
-    #--- Instrucciones a medir
-    nop
+    DELAY_MS(500)
 
-    #-- Terminar la medición
-    lw t2, 0(t0)
+    j loop
 
-    #-- Calcular el número de ciclos
-    sub s0, t2, t1
-    PRINT "Ciclos: "
-    mv a0, s0
-    jal print_unsigned_int
-    NL
+    ecall
+    HALT
 
-    jal getchar
+ 
 
-    j loop 
 
+isr_panic:
+    jal led_blinky3

@@ -17,6 +17,11 @@
     ret
 .endm
 
+#-------- BUCLE INFINITO
+.macro HALT
+    j .
+.endm
+
 #---------------------
 #-- REGISTROS CSR
 #---------------------

@@ -47,10 +47,22 @@
 # | Res   | IRQOVER| Res   | INOVER | OEOVER | OUTOVER | Res  | FUNCSEL |
 
 # -- Direcciones
+
+#-- Direccion basel del comienzo de los GPIOs
+#-- En el offset 0x00 se encuentra el registro de estado de GPIO0
+#-- En el offset 0x04 se encuentra el registro de control de GPIO0
+#-- La direccion para un GPIOX es:
+  #-- Registro de estado = GPIO_BASE + (X * 8)
+  #-- Registro de control = GPIO_BASE + (X * 8) + 4
+.equ GPIO_BASE,    0x40028000
+
+
 .equ GPIO0_STATUS, 0x40028000
 .equ GPIO0_CTRL,   0x40028004
 .equ GPIO1_STATUS, 0x40028008
 .equ GPIO1_CTRL,   0x4002800C
+.equ GPIO2_STATUS, 0x40028010
+.equ GPIO2_CTRL,   0x40028014
 .equ GPIO15_CTRL,  0x4002807C
 .equ GPIO25_CTRL,  0x400280CC
 
@@ -92,7 +104,11 @@
 # * SLEWFAST (0): 1= rápido. 0= lento
 #
 
+#-- Direccion base de los PADs
+#-- El Reg CONTROL de cada PAD se encuentra en la direccion
+#-- PAD_GPIOn = PADS_BANK0_BASE + (n * 4) + 0x04
 .equ PADS_BANK0_BASE,  0x40038000
+ 
 
 # -- Direcciones
 .equ PAD_GPIO0,       0x40038004
@@ -104,6 +120,11 @@
   .equ PAD_GPIO1_XOR, 0x40039008
   .equ PAD_GPIO1_SET, 0x4003A008
   .equ PAD_GPIO1_CLR, 0x4003B008 
+
+.equ PAD_GPIO2,       0x4003800C
+  .equ PAD_GPIO2_XOR, 0x4003900C
+  .equ PAD_GPIO2_SET, 0x4003A00C
+  .equ PAD_GPIO2_CLR, 0x4003B00C 
 
 .equ PAD_GPIO15, 0x40038040
 .equ PAD_GPIO25, 0x40038068
