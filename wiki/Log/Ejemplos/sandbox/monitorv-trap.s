@@ -3,8 +3,6 @@
 #--------------------------
 .global isr_monitor
 .global monitorv_trap
-.global add64
-#.global inc_timer
 
 .include "riscv.h"
 .include "regs.h"
@@ -183,7 +181,8 @@ opcion9:
     sw t1, 0(t0)
 
     #-- Configurar el comparador
-    jal inc_timer 
+    li a0, 0x20000000
+    jal mtime_set_compare
 
     j prompt
 
@@ -248,86 +247,6 @@ _modo_machine:
 
 print_modo_end:
     NL
-FUNC_END4
-
-
-#-------------------------------------------------
-#-- Sumar dos numeros de 64 bits
-#-------------------------------------------------
-#-- ENTRADAS:
-#--  -Primer numero:
-#--     a1: Parte alta
-#--     a0: Parte baja
-#--  -Segundo numero:
-#--     a3: Parte alta
-#--     a2: Parte baja
-#-- SALIDA:
-#--  - a1: Parte alta
-#--  - a0: Parte baja
-#--------------------------------------------------
-add64:
-    #-- Sumar bytes de menor peso (a0 + a2)
-    add t0, a0, a2
-
-    #-- Calcular el acarreo
-    sltu t2, t0, a0  #-- Si t0 < a0, hay acarreo
-
-    #-- Sumar la parte alta
-    add t1, a1, a3
-
-    #-- Sumar el acarreo
-    add t1, t1, t2
-
-    #-- Devolver resultado
-    mv a1, t1
-    mv a0, t0
-
-    #-- Terminar
-    ret
-
-inc_timer:
-FUNC_START4
-    #-------------------------------------------------
-    #-- Incrementar el comparador
-    #-- Comparador = Timer + 0x20000000
-    #-- La lectura del timer se hace como se indica  
-    #-- en la sección 3.1.8 del Datasheet (Pag. 43)
-    #-------------------------------------------------
-
-_read_timer:
-    #-- La lectura se hace en 4 pasos:
-    #-- 1. Leer la parte alta del timer
-    li t1, MTIMEH  #-- Direccion del timer alto
-    lw a1, 0(t1)  #-- Leer parte alta del timer
-
-    #-- 2. Leer la parte baja
-    li t0, MTIME  #-- Direccion del timer
-    lw a0, 0(t0)  #-- Leer el timer (Parte baja)
-
-    #-- 3. Leer la parte alta de nuevo
-    lw a2, 0(t1)
-
-    #-- 4. Loop if the two upper-half reads returned different values
-    bne a1, a2, _read_timer  #-- Si las dos lecturas no son iguales, repetir
-    
-    #-- a1, a0 contienen el valor del timer
-    
-    #-- Preparar el incremento a sumar
-    li a3, 0x0  #-- Parte alta
-    li a2, 0x20000000  #-- Parte baja
-    
-    #-- Incrementar el timer
-    jal add64
-   
-    #-- Actualizar el comparador
-
-    #-- Tenemos el valor en t1, t0
-    #-- Guardarlo en el comparador
-    li t0, MTIMECMPH  #-- Direccion del comparador alto
-    sw a1, 0(t0)  #-- Escribir la parte alta del comparador
-    li t0, MTIMECMP  #-- Direccion del comparador bajo
-    sw a0, 0(t0)  #-- Escribir la parte baja del comparador
-
 FUNC_END4
 
 
@@ -434,7 +353,8 @@ es_mtimer:
     PRINT "TIMER RISCV!!\n"
 
     #-- Llamar a la funcion que incrementa el timer
-    jal inc_timer
+    li a0, 0x20000000
+    jal mtime_set_compare
 
     #-- Imprimir el timer
     jal print_mtimer
