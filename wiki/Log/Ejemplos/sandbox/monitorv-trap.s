@@ -3,6 +3,8 @@
 #--------------------------
 .global isr_monitor
 .global monitorv_trap
+.global add64
+#.global inc_timer
 
 .include "riscv.h"
 .include "regs.h"
