@@ -32,7 +32,5 @@ main:
     LED_OFF(3)
 
     #-- ¡Que comiencen las pruebas!
-    #j mtime_main_test
+    j mtime_main_test
 
-
-    j monitorv_trap
