@@ -4,11 +4,7 @@
 .global _start   #-- Punto de entrada
 
 .include "riscv.h"
-.include "regs.h"
-.include "delay.h"
 .include "led.h"
-.include "uart.h"
-.include "ansi.h"
 
 .section .text
 
@@ -19,6 +15,10 @@ _start:
     la sp, __stack_top
     jal runtime_init
 
+    #-- Cambiar el vector de interrupción
+    la t0, isr_kernel
+    csrw mtvec, t0
+
 main:
     #-- Configurar perifericos
     jal led_init
@@ -28,9 +28,30 @@ main:
 
     #-- Estados iniciales de los LEDs
     jal led_off
-    LED_ON(2)
+    LED_OFF(2)
     LED_OFF(3)
 
-    #-- ¡Que comiencen las pruebas!
-    j mtime_main_test
+    #-- Saltar a ejecutar la tarea 1
+    j task1
 
+    HALT
+
+# -----------------------
+# -- Tarea 1
+# -----------------------
+task1:
+
+    #-- Encender LED de tarea
+    LED_ON(2)
+
+    #-- Test: Llamar al S.O
+    ecall
+
+    HALT
+
+# ----------------------------------
+# -- Kernel de multiplexion
+# ----------------------------------
+isr_kernel:
+    jal led_on
+    mret
