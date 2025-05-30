@@ -16,9 +16,11 @@
     #-- Contexto de la tarea 1
     #-- Se guardan los 32 registros (en vez de x0 se guarda PC)
 ctx1:   .space 32 * 4
+ctx1_end:
 
     #-- Contexto de la tarea 2
 ctx2:   .space 32 * 4
+ctx2_end:
 
     #-- Valores iniciales de las pilas de las tareas
     #-- Se inicializan al arrancar
@@ -66,12 +68,37 @@ main:
     sub sp, sp, t1
     sw sp, 0(t0)
 
+    
+
+    #-- Inicializar el Contexto 1. Todos los registros se ponen a 0
+    #-- Se configura la pila (con el valor de stack1)
+    #-- Se configura el pc (con el valor de task1)
+
+    #-- Inicializar la memoria del contexto 1 a 0
+    la t0, ctx1
+    la t1, ctx1_end
+
+loop_reset1:
+    bge t0, t1, end_reset1
+    sw zero, 0(t0) #-- Inicializar posicion actual
+    add t0,t0,4    #-- Apuntar a la siguiente
+    j loop_reset1
+end_reset1:
+
     #-- Guardar los valores iniciales de las pilas
     #-- en los contextos
     la t0, stack1
     la t1, ctx1
     lw a0, 0(t0)  #-- Leer Pila 1
     sw a0, SP(t1) #-- Guardarla en su contexto
+
+    #--- Guardar el PC
+    la t0, ctx1
+    la t1, task1
+    sw t1, PC(t0)
+
+
+
 
     la t0, stack2
     la t1, ctx2
@@ -83,6 +110,11 @@ main:
     la a0, __stack_top
     jal print_0x_hex32
     NL
+
+    #-- Imprimir contexto de la tarea 1
+    PRINT "--> CONTEXTO TAREA 1\n"
+    la a0, ctx1
+    jal print_context
 
     #-- Saltar a ejecutar la tarea 1
     j task1
