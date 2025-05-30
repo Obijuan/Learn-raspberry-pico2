@@ -100,6 +100,10 @@ task1:
 valor_pc:
     ecall
 
+     mv a0, t0
+    jal print_0x_hex32
+    NL
+
     LED_ON(3)
 
 
@@ -202,6 +206,9 @@ isr_kernel:
     jal led_on
 
     #------------------- Reponer el contexto de la tarea
+     #--- t0 apunta al contexto
+    la t0, ctx1
+
     #-- REPONER EL PC
     #-- Esto lo hace la instruccion mret a partir de la informacion
     #-- almacenada en mepc
@@ -209,22 +216,17 @@ isr_kernel:
     #-- NOTA: El pc se incrementa en 4 para apuntar a la siguiente instrucción
     #-- tras el ecal. No tengo claro si con interrupciones del timer hay que
     #-- hacer lo mismo
-    csrr t0, mepc
-    addi t0, t0, 4
-    csrw mepc, t0
-
-    #--- t0 apunta al contexto
-    la t0, ctx1
+    lw t1, PC(t0)   #-- Recuperar pc
+    addi t1, t1, 4  #-- Incrementar en 4 bytes
+    csrw mepc, t1
 
     #-- El valor antiguo de t0 se guarda en scratch
     #-- (Lo teniamos guardado en la pila del SO)
-    lw t1, 8(sp)
+    lw t1, T0(t0)
     csrw mscratch, t1
 
-    #-- Reponer la pila
-    lw sp, SP(t0)
-
     #-- Reponer registros
+    lw sp, SP(t0)
     lw ra, RA(t0)
     lw gp, GP(t0)
     lw tp, TP(t0)
