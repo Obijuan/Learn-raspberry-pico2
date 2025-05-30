@@ -128,14 +128,15 @@ task1:
 valor_pc:
     ecall
 
-    nop
-
     LED_ON(3)
     PRINT "--> CONTEXTO TAREA 1\n"
 
     #-- Imprimir contexto de la tarea 1
     la a0, ctx1
     jal print_context
+
+    PRINT "-----\n"
+
 
     HALT
 
@@ -216,17 +217,60 @@ isr_kernel:
 
     jal led_on
 
-    #----------- Terminar
-    #-- Incrementar mepc en 4 para apuntar a la siguiente instrucción
-    #-- (porque esto es un ecall)
+    #-------- Reponer el contexto de la tarea
+    #-- REPONER EL PC
+    #-- Esto lo hace la instruccion mret a partir de la informacion
+    #-- almacenada en mepc
+
+    #-- NOTA: El pc se incrementa en 4 para apuntar a la siguiente instrucción
+    #-- tras el ecal. No tengo claro si con interrupciones del timer hay que
+    #-- hacer lo mismo
     csrr t0, mepc
     addi t0, t0, 4
     csrw mepc, t0
 
-    #------------ Reponer el contexto de la tarea
+    #--- t0 apunta al contexto
     la t0, ctx1
+
+    #-- El valor antiguo de t0 se guarda en scratch
+    #-- (Lo teniamos guardado en la pila del SO)
+    lw t1, 8(sp)
+    csrw mscratch, t1
 
     #-- Reponer la pila
     lw sp, SP(t0)
+
+    #-- Reponer registros
+    lw ra, RA(t0)
+    lw gp, GP(t0)
+    lw tp, TP(t0)
+    lw t1, T1(t0)
+    lw t2, T2(t0)
+    lw s0, S0(t0)
+    lw s1, S1(t0)
+    lw a0, A0(t0)
+    lw a1, A1(t0)
+    lw a2, A2(t0)
+    lw a3, A3(t0)
+    lw a4, A4(t0)
+    lw a5, A5(t0)
+    lw a6, A6(t0)
+    lw a7, A7(t0)
+    lw s2, S2(t0)
+    lw s3, S3(t0)
+    lw s4, S4(t0)
+    lw s5, S5(t0)
+    lw s6, S6(t0)
+    lw s7, S7(t0)
+    lw s8, S8(t0)
+    lw s9, S9(t0)
+    lw s10, S10(t0)
+    lw s11, S11(t0)
+    
+    
+
+    #-- Reponer el registro t0
+    csrr t0, mscratch
+
 
     mret
