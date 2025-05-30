@@ -92,43 +92,18 @@ task1:
     #-- Encender LED de tarea
     LED_ON(2)
 
-    #-- Dar valores a los registros
-    li ra, 1
-    li gp, 3
-    li tp, 4
-    li t0, 5
-    li t1, 6
-    li t2, 7
-    li s0, 8
-    li s1, 9
-    li a0, 10
-    li a1, 11
-    li a2, 12
-    li a3, 13
-    li a4, 14
-    li a5, 15
-    li a6, 16
-    li a7, 17
-    li s2, 18
-    li s3, 19
-    li s4, 20
-    li s5, 21
-    li s6, 22
-    li s7, 23
-    li s8, 24
-    li s9, 25
-    li s10, 26
-    li s11, 27
-    li t3, 28
-    li t4, 29
-    li t5, 30
-    li t6, 31
+    #-- Dar valores conocidos a los registros
+    #-- para hacer pruebas
+    SET_REGISTERS
     
     #-- Test: Llamar al S.O
 valor_pc:
     ecall
 
     LED_ON(3)
+
+
+    #-- TEST
     PRINT "--> CONTEXTO TAREA 1\n"
 
     #-- Imprimir contexto de la tarea 1
@@ -137,8 +112,17 @@ valor_pc:
 
     PRINT "-----\n"
 
+    HALT
+
+
+#--------------------------------
+#-- Tarea 2
+#--------------------------------
+task2:
 
     HALT
+
+
 
 
 
@@ -217,7 +201,7 @@ isr_kernel:
 
     jal led_on
 
-    #-------- Reponer el contexto de la tarea
+    #------------------- Reponer el contexto de la tarea
     #-- REPONER EL PC
     #-- Esto lo hace la instruccion mret a partir de la informacion
     #-- almacenada en mepc
@@ -267,10 +251,7 @@ isr_kernel:
     lw s10, S10(t0)
     lw s11, S11(t0)
     
-    
-
     #-- Reponer el registro t0
     csrr t0, mscratch
-
 
     mret

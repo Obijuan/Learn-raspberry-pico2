@@ -31,3 +31,41 @@
 .equ T4, 0x74
 .equ T5, 0x78
 .equ T6, 0x7c
+
+
+#---------------------------------------------
+#-- Macro de prueba: 
+#-- Asignar un valor a TODOS los registros
+#---------------------------------------------
+.macro SET_REGISTERS
+    li ra, 1
+    li gp, 3
+    li tp, 4
+    li t0, 5
+    li t1, 6
+    li t2, 7
+    li s0, 8
+    li s1, 9
+    li a0, 10
+    li a1, 11
+    li a2, 12
+    li a3, 13
+    li a4, 14
+    li a5, 15
+    li a6, 16
+    li a7, 17
+    li s2, 18
+    li s3, 19
+    li s4, 20
+    li s5, 21
+    li s6, 22
+    li s7, 23
+    li s8, 24
+    li s9, 25
+    li s10, 26
+    li s11, 27
+    li t3, 28
+    li t4, 29
+    li t5, 30
+    li t6, 31
+.endm
