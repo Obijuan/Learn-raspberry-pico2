@@ -16,11 +16,9 @@
     #-- Contexto de la tarea 1
     #-- Se guardan los 32 registros (en vez de x0 se guarda PC)
 ctx1:   .space 32 * 4
-ctx1_end:
 
     #-- Contexto de la tarea 2
 ctx2:   .space 32 * 4
-ctx2_end:
 
     #-- Valores iniciales de las pilas de las tareas
     #-- Se inicializan al arrancar
@@ -68,36 +66,11 @@ main:
     sub sp, sp, t1
     sw sp, 0(t0)
 
-    
-
-    #-- Inicializar el Contexto 1. Todos los registros se ponen a 0
-    #-- Se configura la pila (con el valor de stack1)
-    #-- Se configura el pc (con el valor de task1)
-
-    #-- Inicializar la memoria del contexto 1 a 0
-    la t0, ctx1
-    la t1, ctx1_end
-
-loop_reset1:
-    bge t0, t1, end_reset1
-    sw zero, 0(t0) #-- Inicializar posicion actual
-    add t0,t0,4    #-- Apuntar a la siguiente
-    j loop_reset1
-end_reset1:
-
-    #-- Guardar los valores iniciales de las pilas
-    #-- en los contextos
-    la t0, stack1
-    la t1, ctx1
-    lw a0, 0(t0)  #-- Leer Pila 1
-    sw a0, SP(t1) #-- Guardarla en su contexto
-
-    #--- Guardar el PC
-    la t0, ctx1
-    la t1, task1
-    sw t1, PC(t0)
-
-
+    #-- Inicializar la memoria del contexto 1
+    la a0, ctx1
+    la a1, task1
+    la a2, stack1
+    jal ctx_init
 
 
     la t0, stack2
@@ -182,6 +155,40 @@ task2:
     HALT
 
 
+#----------------------------------------------
+#-- Inicializar el contexto
+#-- Se configuran los registros SP y PC
+#-- El resto de registros se dejan a 0
+#----------------------------------------------
+# ENTRADAS:
+#   -a0: Direccion base del contexto
+#   -a1: Valor del PC
+#   -a2: Direccion (variable) del sp
+#-----------------------------------------------
+ctx_init:
+
+#-- t0: Apunta al primer registro
+mv t0, a0
+
+#-- Poner todos los registros a 0
+li t1, 32  #-- Cantidad de registro del contexto
+loop_reset:
+    sw zero, 0(t0)  #-- Inicializar registro actual
+    addi t1,t1,-1   #-- Un registro menos por inicializar
+    beq t1, zero, end_zero  #-- Si ya no quedan mas, hemos terminado
+    addi t0, t0, 4  #-- Apuntar al siguiente registro
+    j loop_reset
+
+end_zero:
+
+    #-- Guardar el PC
+    sw a1, 0(a0)
+
+    #-- Guardar la pila
+    lw t0, 0(a2)  #-- Lee el sp
+    sw t0, SP(a0) #-- Guardarlo en el contexto
+
+    ret
 
 
 
