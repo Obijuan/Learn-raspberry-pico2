@@ -30,6 +30,7 @@ $AS -g -march=rv32i -mabi=ilp32  -o math.o math.s
 $AS -g -march=rv32i_zicsr -mabi=ilp32  -o mtime.o mtime.s
 $AS -g -march=rv32i_zicsr -mabi=ilp32  -o csr.o csr.s
 $AS -g -march=rv32i_zicsr -mabi=ilp32  -o monitorv-trap.o monitorv-trap.s  
+$AS -g -march=rv32i_zicsr -mabi=ilp32  -o kernel-test.o kernel-test.s  
 $AS -g -march=rv32i_zicsr -mabi=ilp32  -o $MAIN.o $MAIN.s
 # $AS -g -march=rv32imac_zicsr_zifencei_zba_zbb_zbs_zbkb -mabi=ilp32 -I.. -o $MAIN.o $MAIN.s
 
@@ -37,7 +38,7 @@ $AS -g -march=rv32i_zicsr -mabi=ilp32  -o $MAIN.o $MAIN.s
 $LD -g -m elf32lriscv -T linker.ld -o $MAIN.elf \
      boot.o $MAIN.o  runtime.o led.o button.o \
      debug.o uart.o delay.o dump.o ansi.o monitorv.o \
-     csr.o monitorv-trap.o math.o mtime.o
+     csr.o monitorv-trap.o math.o mtime.o kernel-test.o \
 
 # -- Convertir a UF2
 $PICOTOOL uf2 convert $MAIN.elf $MAIN.uf2 --family rp2350-riscv --abs-block

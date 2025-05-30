@@ -133,67 +133,13 @@ valor_pc:
     LED_ON(3)
     PRINT "--> CONTEXTO TAREA 1\n"
 
-    PRINT "* PC: "
-    la t0, ctx1
-    lw a0, PC(t0) 
-    jal print_0x_hex32
-    NL
-
-    PRINT "* SP: "
-    la t0, ctx1
-    lw a0, SP(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* Ra: "
-    la t0, ctx1
-    lw a0, RA(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* gp: "
-    la t0, ctx1
-    lw a0, GP(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* tp: "
-    la t0, ctx1
-    lw a0, TP(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* t0: "
-    la t0, ctx1
-    lw a0, T0(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* t1: "
-    la t0, ctx1
-    lw a0, T1(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* t2: "
-    la t0, ctx1
-    lw a0, T2(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* s0: "
-    la t0, ctx1
-    lw a0, S0(t0)
-    jal print_0x_hex32
-    NL
-
-    PRINT "* s1: "
-    la t0, ctx1
-    lw a0, S1(t0)
-    jal print_0x_hex32
-    NL
+    #-- Imprimir contexto de la tarea 1
+    la a0, ctx1
+    jal print_context
 
     HALT
+
+
 
 # ----------------------------------
 # -- Kernel de multiplexion
@@ -245,9 +191,28 @@ isr_kernel:
     sw t2, T2(gp)
     sw s0, S0(gp)
     sw s1, S1(gp)
-
-    
-
+    sw a0, A0(gp)
+    sw a1, A1(gp)
+    sw a2, A2(gp)
+    sw a3, A3(gp)
+    sw a4, A4(gp)
+    sw a5, A5(gp)
+    sw a6, A6(gp)
+    sw a7, A7(gp)
+    sw s2, S2(gp)
+    sw s3, S3(gp)
+    sw s4, S4(gp)
+    sw s5, S5(gp)
+    sw s6, S6(gp)
+    sw s7, S7(gp)
+    sw s8, S8(gp)
+    sw s9, S9(gp)
+    sw s10, S10(gp)
+    sw s11, S11(gp)
+    sw t3, T3(gp)
+    sw t4, T4(gp)
+    sw t5, T5(gp)
+    sw t6, T6(gp)
 
     jal led_on
 
