@@ -13,40 +13,17 @@
 # -- VARIABLES NO INICIALIZADAS
 .section .bss
 
-ctx1:   #-- Contexto de la tarea 1
-        .word 0   #-- PC (offset 0)
-        .word 0   #-- ra (offset 4)
-        .word 0   #-- sp (offset 8)
-        .word 0   #-- gp (offset 0xC)
-        .word 0   #-- tp
-        .word 0   #-- t0
-        .word 0   #-- t1
-        .word 0   #-- t2
-        .word 0   #-- s0
-        .word 0   #-- s1
-        .word 0   #-- a0
-        .word 0   #-- a1
-        .word 0   #-- a2
-        .word 0   #-- a3
-        .word 0   #-- a4
-        .word 0   #-- a5
-        .word 0   #-- a6
-        .word 0   #-- a7
-        .word 0   #-- s2
-        .word 0   #-- s3
-        .word 0   #-- s4
-        .word 0   #-- s5
-        .word 0   #-- s6
-        .word 0   #-- s7
-        .word 0   #-- s8
-        .word 0   #-- s9
-        .word 0   #-- s10
-        .word 0   #-- s11
-        .word 0   #-- t3
-        .word 0   #-- t4
-        .word 0   #-- t5
-        .word 0   #-- t6
+    #-- Contexto de la tarea 1
+    #-- Se guardan los 32 registros (en vez de x0 se guarda PC)
+ctx1:   .space 32 * 4
 
+    #-- Contexto de la tarea 2
+ctx2:   .space 32 * 4
+
+    #-- Valores iniciales de las pilas de las tareas
+    #-- Se inicializan al arrancar
+stack1: .word 0
+stack2: .word 0
 
 .section .text
 
@@ -75,10 +52,25 @@ main:
 
     CLS
 
+    #-- Guardar los valores de las pilas
     #-- Configurar la pila de la tarea 1
-    li t0, 0x1000
-    sub sp, sp, t0
-    mv a0, sp
+    li t1, 0x1000
+    sub sp, sp, t1
+    
+    #-- Almacenar el comienzo de la pila 1
+    la t0, stack1
+    sw sp, 0(t0)
+
+    #-- Configurar la pila de la tarea 2
+    la t0, stack2
+    sub sp, sp, t1
+    sw sp, 0(t0)
+
+    #-- Test
+    PRINT "PILA TOP:    "
+    la a0, __stack_top
+    jal print_0x_hex32
+    NL
 
     #-- Saltar a ejecutar la tarea 1
     j task1
@@ -88,6 +80,16 @@ main:
 # -- Tarea 1
 # -----------------------
 task1:
+
+    #-- Inicializar el puntero de pila de la tarea 1
+    la t0, stack1
+    lw sp, 0(t0)
+
+    PRINT "PILA TAREA1: "
+    mv a0, sp
+    jal print_0x_hex32
+    NL
+
 
     #-- Encender LED de tarea
     LED_ON(2)
@@ -124,6 +126,15 @@ valor_pc:
 #--------------------------------
 task2:
 
+    #-- Inicializar el puntero de pila de la tarea 2
+    la t0, stack2
+    lw sp, 0(t0)
+
+    PRINT "PILA TAREA2: "
+    mv a0, sp
+    jal print_0x_hex32
+    NL
+
     HALT
 
 
@@ -131,7 +142,7 @@ task2:
 
 
 # ----------------------------------
-# -- Kernel de multiplexion
+# -- Kernel de multiplexación
 # ----------------------------------
 isr_kernel:
 
