@@ -7,6 +7,46 @@
 .include "led.h"
 .include "uart.h"
 .include "ansi.h"
+.include "kernel.h"
+
+
+# -- VARIABLES NO INICIALIZADAS
+.section .bss
+
+ctx1:   #-- Contexto de la tarea 1
+        .word 0   #-- PC (offset 0)
+        .word 0   #-- ra (offset 4)
+        .word 0   #-- sp (offset 8)
+        .word 0   #-- gp (offset 0xC)
+        .word 0   #-- tp
+        .word 0   #-- t0
+        .word 0   #-- t1
+        .word 0   #-- t2
+        .word 0   #-- s0
+        .word 0   #-- s1
+        .word 0   #-- a0
+        .word 0   #-- a1
+        .word 0   #-- a2
+        .word 0   #-- a3
+        .word 0   #-- a4
+        .word 0   #-- a5
+        .word 0   #-- a6
+        .word 0   #-- a7
+        .word 0   #-- s2
+        .word 0   #-- s3
+        .word 0   #-- s4
+        .word 0   #-- s5
+        .word 0   #-- s6
+        .word 0   #-- s7
+        .word 0   #-- s8
+        .word 0   #-- s9
+        .word 0   #-- s10
+        .word 0   #-- s11
+        .word 0   #-- t3
+        .word 0   #-- t4
+        .word 0   #-- t5
+        .word 0   #-- t6
+
 
 .section .text
 
@@ -49,21 +89,109 @@ main:
 # -----------------------
 task1:
 
-    #-- Obtener la pila del sistema
-    la sp, __stack_top
-
     #-- Encender LED de tarea
     LED_ON(2)
 
     #-- Dar valores a los registros
     li ra, 1
+    li gp, 3
+    li tp, 4
+    li t0, 5
+    li t1, 6
+    li t2, 7
+    li s0, 8
+    li s1, 9
+    li a0, 10
+    li a1, 11
+    li a2, 12
+    li a3, 13
+    li a4, 14
+    li a5, 15
+    li a6, 16
+    li a7, 17
+    li s2, 18
+    li s3, 19
+    li s4, 20
+    li s5, 21
+    li s6, 22
+    li s7, 23
+    li s8, 24
+    li s9, 25
+    li s10, 26
+    li s11, 27
+    li t3, 28
+    li t4, 29
+    li t5, 30
+    li t6, 31
     
-
     #-- Test: Llamar al S.O
 valor_pc:
     ecall
 
+    nop
+
     LED_ON(3)
+    PRINT "--> CONTEXTO TAREA 1\n"
+
+    PRINT "* PC: "
+    la t0, ctx1
+    lw a0, PC(t0) 
+    jal print_0x_hex32
+    NL
+
+    PRINT "* SP: "
+    la t0, ctx1
+    lw a0, SP(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* Ra: "
+    la t0, ctx1
+    lw a0, RA(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* gp: "
+    la t0, ctx1
+    lw a0, GP(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* tp: "
+    la t0, ctx1
+    lw a0, TP(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* t0: "
+    la t0, ctx1
+    lw a0, T0(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* t1: "
+    la t0, ctx1
+    lw a0, T1(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* t2: "
+    la t0, ctx1
+    lw a0, T2(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* s0: "
+    la t0, ctx1
+    lw a0, S0(t0)
+    jal print_0x_hex32
+    NL
+
+    PRINT "* s1: "
+    la t0, ctx1
+    lw a0, S1(t0)
+    jal print_0x_hex32
+    NL
 
     HALT
 
@@ -71,12 +199,69 @@ valor_pc:
 # -- Kernel de multiplexion
 # ----------------------------------
 isr_kernel:
+
+    #-- Guardar la pila de la tarea actual
+    csrw mscratch, sp
+
+    #-- Obtener la pila del sistema
+    la sp, __stack_top
+
+    #-- Guardar registros usados en la pila del SO
+    addi sp, sp, -16
+    sw t0, 8(sp)
+    sw t1, 4(sp)
+
+    #---------- Guardar el contexto de la tarea actual
+    #-- Puntero al contexto 1
+    la t0, ctx1
+
+    #-- Guardar el PC
+    csrr t1, mepc
+    sw t1, PC(t0)
+
+    #-- Guardar la pila
+    csrr t1, mscratch
+    sw t1, SP(t0)
+
+    #-- Guardar resto de registros
+    sw ra, RA(t0)
+    sw gp, GP(t0)
+    sw tp, TP(t0)
+
+    #-- Ahora que gp está guardado, lo usamos
+    #-- como puntero de contexto en vez t0
+    mv gp, t0
+
+    #-- Guardar t0 y t1. Recuperar su valor inicial
+    #-- y guardarlo en el contexto
+    lw t0, 8(sp)
+    lw t1, 4(sp)
+
+    #-- Guardar t0 y t1
+    sw t0, T0(gp)
+    sw t1, T1(gp)
+
+    #-- Guardar resto de registros
+    sw t2, T2(gp)
+    sw s0, S0(gp)
+    sw s1, S1(gp)
+
+    
+
+
     jal led_on
 
+    #----------- Terminar
     #-- Incrementar mepc en 4 para apuntar a la siguiente instrucción
     #-- (porque esto es un ecall)
     csrr t0, mepc
     addi t0, t0, 4
     csrw mepc, t0
+
+    #------------ Reponer el contexto de la tarea
+    la t0, ctx1
+
+    #-- Reponer la pila
+    lw sp, SP(t0)
 
     mret
