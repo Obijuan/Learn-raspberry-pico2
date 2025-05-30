@@ -66,6 +66,18 @@ main:
     sub sp, sp, t1
     sw sp, 0(t0)
 
+    #-- Guardar los valores iniciales de las pilas
+    #-- en los contextos
+    la t0, stack1
+    la t1, ctx1
+    lw a0, 0(t0)  #-- Leer Pila 1
+    sw a0, SP(t1) #-- Guardarla en su contexto
+
+    la t0, stack2
+    la t1, ctx2
+    lw a0, 0(t0)  #-- Leer pila 2
+    sw a0, 0(t1)  #-- Guardarla en su contexto
+
     #-- Test
     PRINT "PILA TOP:    "
     la a0, __stack_top
