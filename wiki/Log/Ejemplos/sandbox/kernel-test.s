@@ -1,6 +1,7 @@
 #------------------------------
 #-- FUNCIONES DE INTERFAZ
 #------------------------------
+.global ctx_init
 .global print_context
 
 .include "riscv.h"
@@ -185,3 +186,38 @@ print_context:
     lw s0, 8(sp)
     FUNC_END4
 
+
+#----------------------------------------------
+#-- Inicializar el contexto
+#-- Se configuran los registros SP y PC
+#-- El resto de registros se dejan a 0
+#----------------------------------------------
+# ENTRADAS:
+#   -a0: Direccion base del contexto
+#   -a1: Valor del PC
+#   -a2: Direccion (variable) del sp
+#-----------------------------------------------
+ctx_init:
+
+#-- t0: Apunta al primer registro
+mv t0, a0
+
+#-- Poner todos los registros a 0
+li t1, 32  #-- Cantidad de registro del contexto
+loop_reset:
+    sw zero, 0(t0)  #-- Inicializar registro actual
+    addi t1,t1,-1   #-- Un registro menos por inicializar
+    beq t1, zero, end_zero  #-- Si ya no quedan mas, hemos terminado
+    addi t0, t0, 4  #-- Apuntar al siguiente registro
+    j loop_reset
+
+end_zero:
+
+    #-- Guardar el PC
+    sw a1, 0(a0)
+
+    #-- Guardar la pila
+    lw t0, 0(a2)  #-- Lee el sp
+    sw t0, SP(a0) #-- Guardarlo en el contexto
+
+    ret

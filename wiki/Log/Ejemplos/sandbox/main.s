@@ -9,9 +9,23 @@
 .include "ansi.h"
 .include "kernel.h"
 
+# -- VARIABLES DE SOLO LECTURA
+.section .rodata
+
+#-- Tabla de punteros a los diferentes contextos
+#-- de las tareas
+ctx_list:
+    .word ctx1
+    .word ctx2
+ctx_list_end:
+
 
 # -- VARIABLES NO INICIALIZADAS
 .section .bss
+
+#-- Puntero al contexto actual
+#-- (Apunta a un elemento en la lista de contextos)
+ctx:    .word 0
 
     #-- Contexto de la tarea 1
     #-- Se guardan los 32 registros (en vez de x0 se guarda PC)
@@ -72,11 +86,16 @@ main:
     la a2, stack1
     jal ctx_init
 
+    #-- Inicializar la memoria del contexto 2
+    la a0, ctx2
+    la a1, task2
+    la a2, stack2
+    jal ctx_init
 
-    la t0, stack2
-    la t1, ctx2
-    lw a0, 0(t0)  #-- Leer pila 2
-    sw a0, 0(t1)  #-- Guardarla en su contexto
+    #-- Inicializar puntero al contexto actual
+    la t0, ctx_list
+    la t1, ctx
+    sw t0, 0(t1)  #-- ctx --> ctx_list[0]
 
     #-- Test
     PRINT "PILA TOP:    "
@@ -84,13 +103,20 @@ main:
     jal print_0x_hex32
     NL
 
+    #--- Obtener el puntero al contexto actual
+    #--- s0: Puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)
+    lw s0, 0(t0)
+
     #-- Imprimir contexto de la tarea 1
     PRINT "--> CONTEXTO TAREA 1\n"
-    la a0, ctx1
+    mv a0, s0
     jal print_context
 
     #-- Saltar a ejecutar la tarea 1
-    j task1
+    lw t0, PC(s0)
+    jalr t0
 
 
 # -----------------------
@@ -119,7 +145,7 @@ task1:
 valor_pc:
     ecall
 
-     mv a0, t0
+    mv a0, t0
     jal print_0x_hex32
     NL
 
@@ -153,43 +179,6 @@ task2:
     NL
 
     HALT
-
-
-#----------------------------------------------
-#-- Inicializar el contexto
-#-- Se configuran los registros SP y PC
-#-- El resto de registros se dejan a 0
-#----------------------------------------------
-# ENTRADAS:
-#   -a0: Direccion base del contexto
-#   -a1: Valor del PC
-#   -a2: Direccion (variable) del sp
-#-----------------------------------------------
-ctx_init:
-
-#-- t0: Apunta al primer registro
-mv t0, a0
-
-#-- Poner todos los registros a 0
-li t1, 32  #-- Cantidad de registro del contexto
-loop_reset:
-    sw zero, 0(t0)  #-- Inicializar registro actual
-    addi t1,t1,-1   #-- Un registro menos por inicializar
-    beq t1, zero, end_zero  #-- Si ya no quedan mas, hemos terminado
-    addi t0, t0, 4  #-- Apuntar al siguiente registro
-    j loop_reset
-
-end_zero:
-
-    #-- Guardar el PC
-    sw a1, 0(a0)
-
-    #-- Guardar la pila
-    lw t0, 0(a2)  #-- Lee el sp
-    sw t0, SP(a0) #-- Guardarlo en el contexto
-
-    ret
-
 
 
 # ----------------------------------
