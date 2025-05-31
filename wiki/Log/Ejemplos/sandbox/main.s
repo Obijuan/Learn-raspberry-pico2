@@ -109,12 +109,22 @@ main:
     lw t0, 0(t0)
     lw s0, 0(t0)
 
+    #-- TEST: Apuntar al siguiente contexto
+    #jal ctx_next
+
+    #--- Obtener el puntero al contexto actual
+    #--- s0: Puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)
+    lw s0, 0(t0)
+
+
     #-- Imprimir contexto de la tarea 1
-    PRINT "--> CONTEXTO TAREA 1\n"
+    PRINT "--> CONTEXTO ACTUAL\n"
     mv a0, s0
     jal print_context
 
-    #-- Saltar a ejecutar la tarea 1
+    #-- Saltar a ejecutar la tarea actual
     lw t0, PC(s0)
     jalr t0
 
@@ -179,6 +189,37 @@ task2:
     NL
 
     HALT
+
+
+#------------------------------------------------------
+#-- ctx_next: Apuntar al siguiente contexto
+#--   Se actualiza ctx para apuntar al siguiente
+#------------------------------------------------------
+#-- ENTRADAS:
+#--    Ninguna
+#-- SALIDAS:
+#--    Ninguna
+#-------------------------------------------------------
+ctx_next:
+   #-- Apuntar al siguiente contexto
+    la t0, ctx
+    lw t0, 0(t0)   #-- Puntero al contexto actual
+    addi t0,t0, 4  #-- Apuntar al siguiente contexto
+
+    la t1, ctx_list_end
+    bne t0,t1, ctx_end   #-- No hemos llegado al final de la lista, terminar
+
+    #-- Estamos en el final: apuntar al principio
+    la t0, ctx_list
+
+ctx_end:
+
+    #--- t0 contine el nuevo contexto
+    #-- Actualizar la variable ctx
+    la t1, ctx
+    sw t0, 0(t1)
+    ret
+
 
 
 # ----------------------------------
