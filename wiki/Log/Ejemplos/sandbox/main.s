@@ -75,12 +75,6 @@ main:
     la t0, stack1
     sw sp, 0(t0)
 
-    PRINT "T0: "
-    la t0, stack2
-    mv a0, t0
-    jal print_0x_hex32
-    NL
-
     #-- Configurar la pila de la tarea 2
     la t0, stack2
     sub sp, sp, t1
@@ -103,46 +97,11 @@ main:
     la t1, ctx
     sw t0, 0(t1)  #-- ctx --> ctx_list[0]
 
-    PRINT "T0: "
-    la t0, stack2
-    mv a0, t0
-    jal print_0x_hex32
-    NL
-
-
-    #-- Test
-    PRINT "PILA TOP:    "
-    la a0, __stack_top
-    jal print_0x_hex32
-    NL
-
     #--- Obtener el puntero al contexto actual
     #--- s0: Puntero al contexto actual
     la t0, ctx
     lw t0, 0(t0)
     lw s0, 0(t0)
-
-    #-- TEST: Apuntar al siguiente contexto
-    #jal ctx_next
-
-    #--- Obtener el puntero al contexto actual
-    #--- s0: Puntero al contexto actual
-    la t0, ctx
-    lw t0, 0(t0)
-    lw s0, 0(t0)
-
-    #jal ctx_next
-
-    #--- Obtener el puntero al contexto actual
-    #--- s0: Puntero al contexto actual
-    la t0, ctx
-    lw t0, 0(t0)
-    lw s0, 0(t0)
-
-    #-- Imprimir contexto de la tarea 1
-    PRINT "--> CONTEXTO ACTUAL\n"
-    mv a0, s0
-    jal print_context
 
     #-- Saltar a ejecutar la tarea actual
     lw t0, PC(s0)
@@ -161,13 +120,7 @@ task1:
     la t0, stack1
     lw sp, 0(t0)
 
-    PRINT "--> COMIENZO TAREA 1\n"
-
-    PRINT "PILA TAREA1: "
-    mv a0, sp
-    jal print_0x_hex32
-    NL
-
+    PRINT "--> TAREA 1: INIT\n"
 
     #-- Encender LED de tarea
     LED_ON(2)
@@ -177,27 +130,16 @@ task1:
     SET_REGISTERS
     
     #-- Test: Llamar al S.O
-valor_pc:
     ecall
 
-    mv a0, t0
-    jal print_0x_hex32
-    NL
+    PRINT "--> TAREA 1\n"
 
-    PRINT "--> Reanudacion Tarea 1\n"
+    #-- Llamar al S.O
+    ecall
 
-    LED_ON(3)
+    PRINT "--> TAREA 1: FIN\n"
 
-
-    #-- TEST
-    PRINT "--> CONTEXTO TAREA 1\n"
-
-    #-- Imprimir contexto de la tarea 1
-    la a0, ctx1
-    jal print_context
-
-    PRINT "-----\n"
-
+    ecall
     HALT
 
 
@@ -206,7 +148,7 @@ valor_pc:
 #--------------------------------
 task2:
 
-    #--- IMPORTANTE!!!! La primer instruccion NO
+    #--- IMPORTANTE!!!! La primera instruccion NO
     #--- se ejecuta actualmente (porque en la isr se retorna a PC+4)
     nop
 
@@ -214,13 +156,18 @@ task2:
     la t0, stack2
     lw sp, 0(t0)
 
-    PRINT "--> COMIENZO TAREA 2\n"
+    PRINT "--> TAREA 2: INIT\n"
 
-    PRINT "PILA TAREA2: "
-    mv a0, sp
-    jal print_0x_hex32
-    NL
+    #-- Encender LED de tarea
+    LED_ON(3)
 
+    #-- Llamar al Kernel
+    ecall
+
+    PRINT "--> TAREA 2\n"
+    ecall
+
+    PRINT "--> TAREA 2: FIN\n"
     HALT
 
 
@@ -332,7 +279,7 @@ isr_kernel:
 
     jal led_on
 
-    PRINT "--> KERNEL\n"
+    PRINT "******* KERNEL ********\n\n"
     #-- TEST: Imprimir contexto actual
     #------------------- Reponer el contexto de la tarea
     #--- Obtener el puntero al contexto actual
@@ -340,7 +287,7 @@ isr_kernel:
     la t0, ctx
     lw t0, 0(t0)  #-- Entrada de la tabla
     lw a0, 0(t0)  #-- Puntero al contexto
-    jal print_context
+    #jal print_context
 
     #-- Cambiar al siguiente contexto
     jal ctx_next
