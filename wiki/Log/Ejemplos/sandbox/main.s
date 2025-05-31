@@ -238,9 +238,11 @@ isr_kernel:
     sw t0, 8(sp)
     sw t1, 4(sp)
 
-    #---------- Guardar el contexto de la tarea actual
-    #-- Puntero al contexto 1
-    la t0, ctx1
+    #--- Obtener el puntero al contexto actual
+    #--- t0: Puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)  #-- Entrada de la tabla
+    lw t0, 0(t0)  #-- Puntero al contexto
 
     #-- Guardar el PC
     csrr t1, mepc
@@ -298,8 +300,11 @@ isr_kernel:
     jal led_on
 
     #------------------- Reponer el contexto de la tarea
-     #--- t0 apunta al contexto
-    la t0, ctx1
+    #--- Obtener el puntero al contexto actual
+    #--- t0: Puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)  #-- Entrada de la tabla
+    lw t0, 0(t0)  #-- Puntero al contexto
 
     #-- REPONER EL PC
     #-- Esto lo hace la instruccion mret a partir de la informacion
