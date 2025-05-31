@@ -75,6 +75,12 @@ main:
     la t0, stack1
     sw sp, 0(t0)
 
+    PRINT "T0: "
+    la t0, stack2
+    mv a0, t0
+    jal print_0x_hex32
+    NL
+
     #-- Configurar la pila de la tarea 2
     la t0, stack2
     sub sp, sp, t1
@@ -97,6 +103,13 @@ main:
     la t1, ctx
     sw t0, 0(t1)  #-- ctx --> ctx_list[0]
 
+    PRINT "T0: "
+    la t0, stack2
+    mv a0, t0
+    jal print_0x_hex32
+    NL
+
+
     #-- Test
     PRINT "PILA TOP:    "
     la a0, __stack_top
@@ -118,6 +131,13 @@ main:
     lw t0, 0(t0)
     lw s0, 0(t0)
 
+    #jal ctx_next
+
+    #--- Obtener el puntero al contexto actual
+    #--- s0: Puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)
+    lw s0, 0(t0)
 
     #-- Imprimir contexto de la tarea 1
     PRINT "--> CONTEXTO ACTUAL\n"
@@ -134,9 +154,14 @@ main:
 # -----------------------
 task1:
 
+    #-- NO ELIMINAR (de momento)
+    nop
+
     #-- Inicializar el puntero de pila de la tarea 1
     la t0, stack1
     lw sp, 0(t0)
+
+    PRINT "--> COMIENZO TAREA 1\n"
 
     PRINT "PILA TAREA1: "
     mv a0, sp
@@ -159,6 +184,8 @@ valor_pc:
     jal print_0x_hex32
     NL
 
+    PRINT "--> Reanudacion Tarea 1\n"
+
     LED_ON(3)
 
 
@@ -179,9 +206,15 @@ valor_pc:
 #--------------------------------
 task2:
 
+    #--- IMPORTANTE!!!! La primer instruccion NO
+    #--- se ejecuta actualmente (porque en la isr se retorna a PC+4)
+    nop
+
     #-- Inicializar el puntero de pila de la tarea 2
     la t0, stack2
     lw sp, 0(t0)
+
+    PRINT "--> COMIENZO TAREA 2\n"
 
     PRINT "PILA TAREA2: "
     mv a0, sp
@@ -298,6 +331,19 @@ isr_kernel:
     sw t6, T6(gp)
 
     jal led_on
+
+    PRINT "--> KERNEL\n"
+    #-- TEST: Imprimir contexto actual
+    #------------------- Reponer el contexto de la tarea
+    #--- Obtener el puntero al contexto actual
+    #--- t0: Puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)  #-- Entrada de la tabla
+    lw a0, 0(t0)  #-- Puntero al contexto
+    jal print_context
+
+    #-- Cambiar al siguiente contexto
+    jal ctx_next
 
     #------------------- Reponer el contexto de la tarea
     #--- Obtener el puntero al contexto actual
