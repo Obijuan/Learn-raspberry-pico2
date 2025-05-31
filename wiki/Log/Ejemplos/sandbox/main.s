@@ -122,20 +122,28 @@ task1:
 
     PRINT "--> TAREA 1: INIT\n"
 
+tarea1_loop:
+    PRINT "--> TAREA 1\n"
+
     #-- Encender LED de tarea
     LED_ON(2)
 
-    #-- Dar valores conocidos a los registros
-    #-- para hacer pruebas
-    SET_REGISTERS
+    li a0, 1000
+    jal delay_ms
     
     #-- Test: Llamar al S.O
     ecall
 
     PRINT "--> TAREA 1\n"
+    LED_OFF(2)
+
+    li a0, 1000
+    jal delay_ms
 
     #-- Llamar al S.O
     ecall
+
+    j tarea1_loop
 
     PRINT "--> TAREA 1: FIN\n"
 
@@ -158,14 +166,28 @@ task2:
 
     PRINT "--> TAREA 2: INIT\n"
 
+
+tarea2_loop:
+
+    PRINT "--> TAREA 2\n"
+
     #-- Encender LED de tarea
     LED_ON(3)
+
+    li a0, 1000
+    jal delay_ms
 
     #-- Llamar al Kernel
     ecall
 
     PRINT "--> TAREA 2\n"
+    LED_OFF(3)
+
+    li a0, 1000
+    jal delay_ms
+
     ecall
+    j tarea2_loop
 
     PRINT "--> TAREA 2: FIN\n"
     HALT
