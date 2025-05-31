@@ -9,6 +9,9 @@
 .include "ansi.h"
 .include "kernel.h"
 
+#-- Pausa en ms
+.equ PAUSA, 500
+
 # -- VARIABLES DE SOLO LECTURA
 .section .rodata
 
@@ -128,7 +131,7 @@ tarea1_loop:
     #-- Encender LED de tarea
     LED_ON(2)
 
-    li a0, 1000
+    li a0, PAUSA
     jal delay_ms
     
     #-- Test: Llamar al S.O
@@ -137,7 +140,7 @@ tarea1_loop:
     PRINT "--> TAREA 1\n"
     LED_OFF(2)
 
-    li a0, 1000
+    li a0, PAUSA
     jal delay_ms
 
     #-- Llamar al S.O
@@ -174,7 +177,7 @@ tarea2_loop:
     #-- Encender LED de tarea
     LED_ON(3)
 
-    li a0, 1000
+    li a0, PAUSA
     jal delay_ms
 
     #-- Llamar al Kernel
@@ -183,7 +186,7 @@ tarea2_loop:
     PRINT "--> TAREA 2\n"
     LED_OFF(3)
 
-    li a0, 1000
+    li a0, PAUSA
     jal delay_ms
 
     ecall
