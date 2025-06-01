@@ -52,6 +52,7 @@ main:
     lw s0, 0(t0)
 
     #-- Saltar a ejecutar la tarea actual
+    lw sp, SP(s0)
     lw t0, PC(s0)
     jalr t0
 
@@ -61,8 +62,8 @@ main:
 # -----------------------
 task1:
     #-- Inicializar el puntero de pila de la tarea 1
-    la t0, stack1
-    lw sp, 0(t0)
+    #la t0, stack1
+    #lw sp, 0(t0)
 
     PRINT "--> TAREA 1: INIT\n"
 
