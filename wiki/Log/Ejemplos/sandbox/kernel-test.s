@@ -229,7 +229,32 @@ print_context:
 
 kernel_init:
 FUNC_START4
+    #-- Guardar los valores de las pilas
+    #-- Configurar la pila de la tarea 1
+    la t0, __stack_top
+    li t1, 0x1000
+    sub t0, t0, t1
+    
+    #-- Almacenar el comienzo de la pila 1
+    la a0, stack1
+    sw t0, 0(a0)
 
+    #-- Configurar la pila de la tarea 2
+    la a0, stack2
+    sub t0, t0, t1
+    sw t0, 0(a0)
+
+    #-- Inicializar la memoria del contexto 1
+    la a0, ctx1
+    la a1, task1
+    la a2, stack1
+    jal ctx_init
+
+    #-- Inicializar la memoria del contexto 2
+    la a0, ctx2
+    la a1, task2
+    la a2, stack2
+    jal ctx_init
 FUNC_END4
 
 #----------------------------------------------
