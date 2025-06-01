@@ -11,6 +11,7 @@
 .include "kernel.h"
 
 #-- Pausa en ms
+#-- Para el parpadeo del LED de la tarea 1
 .equ PAUSA, 500
 
 .section .text
@@ -44,31 +45,36 @@ main:
 
 # -----------------------
 # -- Tarea 1
+# -- Parpadeo del LED
 # -----------------------
 task1:
     PRINT "--> TAREA 1: INIT\n"
 
 tarea1_loop:
 
-    #-- Encender LED de tarea
+    #-- Cambiar de estado el LED
     jal led_toggle
 
+    #-- Esperar
     li a0, PAUSA
     jal delay_ms
 
+    #-- Repetir
     j tarea1_loop
 
 
-#--------------------------------
+#-----------------------------------------------------
 #-- Tarea 2
-#--------------------------------
+#-- Cambiar de estado el LED 2 cuando se recibe un 
+#-- caracter por el puerto serie
+#-----------------------------------------------------
 task2:
     PRINT "--> TAREA 2: INIT\n"
 
 tarea2_loop:
     PRINT "--> TAREA 2\n"
 
-    #-- Cambiar de estado el LED
+    #-- Cambiar de estado el LED 2
     LED_TOGGLE(2)
 
     #-- Esperar a que se apriete una tecla
