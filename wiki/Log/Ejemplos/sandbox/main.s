@@ -25,14 +25,12 @@ _start:
 main:
     #-- Configurar perifericos
     jal led_init
-    LED_INIT(2)
-    LED_INIT(3)
     jal uart_init
-
+    LED_INIT(2)
+    
     #-- Estados iniciales de los LEDs
     jal led_off
     LED_OFF(2)
-    LED_OFF(3)
 
     CLS
 
@@ -53,7 +51,7 @@ task1:
 tarea1_loop:
 
     #-- Encender LED de tarea
-    LED_TOGGLE(2)
+    jal led_toggle
 
     li a0, PAUSA
     jal delay_ms
@@ -71,7 +69,7 @@ tarea2_loop:
     PRINT "--> TAREA 2\n"
 
     #-- Cambiar de estado el LED
-    LED_TOGGLE(3)
+    LED_TOGGLE(2)
 
     #-- Esperar a que se apriete una tecla
     jal getchar

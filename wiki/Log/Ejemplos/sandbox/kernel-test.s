@@ -454,8 +454,6 @@ isr_kernel:
     sw t5, T5(gp)
     sw t6, T6(gp)
 
-    jal led_on
-
     #-- Actualizar el comparador del timer
     #-- Interrupcion dentro de a0 ciclos
     li a0, TIMEOUT
