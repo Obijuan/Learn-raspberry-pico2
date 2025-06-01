@@ -1,11 +1,7 @@
 #------------------------------
 #-- FUNCIONES DE INTERFAZ
 #------------------------------
-.global ctx_init
-.global print_context
 .global kernel_init
-.global stack1
-.global stack2
 
 .include "regs.h"
 .include "riscv.h"

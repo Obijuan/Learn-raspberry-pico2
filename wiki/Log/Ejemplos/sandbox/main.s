@@ -2,8 +2,6 @@
 #-- Funciones de interfaz
 #---------------------------
 .global _start   #-- Punto de entrada
-.global task1
-.global task2
 
 .include "regs.h"
 .include "riscv.h"
@@ -38,7 +36,9 @@ main:
 
     CLS
 
-    #-- Inicializar el kernel y saltar a ejecutar la primera tarea
+    #-- Inicializar el kernel 
+    #-- Establecer las tareas 
+    #-- y saltar a ejecutar la primera tarea
     la a0, task1
     la a1, task2
     jal kernel_init
