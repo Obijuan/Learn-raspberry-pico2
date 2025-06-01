@@ -45,21 +45,6 @@ main:
 
     jal kernel_init
 
-    #-- Activar las interrupciones del temporizador
-    li t0, MIE_MTIE
-    csrs mie, t0
-
-    #-- Activar las interrupciones globales
-    li t0, MSTATUS_MIE
-    csrs mstatus, t0
-
-    #--- Activar el temporizador del RISCV
-    #--- Que se actualice en cada ciclo
-    li t0, MTIME_CTRL
-    li t1, 0x3
-    sw t1, 0(t0)
-
-
     #--- Obtener el puntero al contexto actual
     #--- s0: Puntero al contexto actual
     la t0, ctx
