@@ -33,6 +33,9 @@
 .equ T6, 0x7c
 
 
+#--- Tiempo (en ciclos) para realizar el cambio de tareas
+.equ TIMEOUT, 0x00400000
+
 #---------------------------------------------
 #-- Macro de prueba: 
 #-- Asignar un valor a TODOS los registros
