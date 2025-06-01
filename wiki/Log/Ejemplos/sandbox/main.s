@@ -43,6 +43,7 @@ main:
 
     CLS
 
+    #-- Inicializar el kernel y saltar a ejecutar la primera tarea
     jal kernel_init
 
 
@@ -50,10 +51,6 @@ main:
 # -- Tarea 1
 # -----------------------
 task1:
-    #-- Inicializar el puntero de pila de la tarea 1
-    #la t0, stack1
-    #lw sp, 0(t0)
-
     PRINT "--> TAREA 1: INIT\n"
 
 tarea1_loop:
@@ -73,7 +70,7 @@ tarea1_loop:
 task2:
     #-- Inicializar el puntero de pila de la tarea 2
     la t0, stack2
-    lw sp, 0(t0)
+    #lw sp, 0(t0)
 
     PRINT "--> TAREA 2: INIT\n"
 
