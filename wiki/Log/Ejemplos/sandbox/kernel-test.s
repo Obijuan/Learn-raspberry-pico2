@@ -4,13 +4,8 @@
 .global ctx_init
 .global print_context
 .global kernel_init
-.global isr_kernel
 .global stack1
 .global stack2
-.global ctx1
-.global ctx2
-.global ctx
-.global ctx_list
 
 .include "regs.h"
 .include "riscv.h"
@@ -229,6 +224,11 @@ print_context:
 
 kernel_init:
 FUNC_START4
+
+    #-- Cambiar el vector de interrupción
+    la t0, isr_kernel
+    csrw mtvec, t0
+
     #-- Guardar los valores de las pilas
     #-- Configurar la pila de la tarea 1
     la t0, __stack_top

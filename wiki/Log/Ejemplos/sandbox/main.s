@@ -15,7 +15,6 @@
 #-- Pausa en ms
 .equ PAUSA, 500
 
-
 .section .text
 
 # -- Punto de entrada
@@ -24,10 +23,6 @@ _start:
     #-- Acciones de arranque
     la sp, __stack_top
     jal runtime_init
-
-    #-- Cambiar el vector de interrupción
-    la t0, isr_kernel
-    csrw mtvec, t0
 
 main:
     #-- Configurar perifericos
@@ -68,12 +63,7 @@ tarea1_loop:
 #-- Tarea 2
 #--------------------------------
 task2:
-    #-- Inicializar el puntero de pila de la tarea 2
-    la t0, stack2
-    #lw sp, 0(t0)
-
     PRINT "--> TAREA 2: INIT\n"
-
 
 tarea2_loop:
     PRINT "--> TAREA 2\n"
