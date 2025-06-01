@@ -3,6 +3,7 @@
 #---------------------------
 .global _start   #-- Punto de entrada
 
+.include "regs.h"
 .include "riscv.h"
 .include "led.h"
 .include "uart.h"
@@ -100,6 +101,32 @@ main:
     la t1, ctx
     sw t0, 0(t1)  #-- ctx --> ctx_list[0]
 
+    #-- Configurar el comparador
+    li t0, MTIMECMPH  #-- Direccion del comparador alto
+    sw zero, 0(t0)  
+    li t0, MTIMECMP  #-- Direccion del comparador bajo
+    sw zero, 0(t0) 
+
+    #-- Actualizar el comparador del timer
+    #-- Interrupcion dentro de a0 ciclos
+    li a0, 0x01000000
+    jal mtime_set_compare
+
+    #-- Activar las interrupciones del temporizador
+    li t0, MIE_MTIE
+    csrs mie, t0
+
+    #-- Activar las interrupciones globales
+    li t0, MSTATUS_MIE
+    csrs mstatus, t0
+
+    #--- Activar el temporizador del RISCV
+    #--- Que se actualice en cada ciclo
+    li t0, MTIME_CTRL
+    li t1, 0x3
+    sw t1, 0(t0)
+
+
     #--- Obtener el puntero al contexto actual
     #--- s0: Puntero al contexto actual
     la t0, ctx
@@ -135,7 +162,7 @@ tarea1_loop:
     jal delay_ms
     
     #-- Test: Llamar al S.O
-    ecall
+    #ecall
 
     PRINT "--> TAREA 1\n"
     LED_OFF(2)
@@ -144,14 +171,9 @@ tarea1_loop:
     jal delay_ms
 
     #-- Llamar al S.O
-    ecall
+    #ecall
 
     j tarea1_loop
-
-    PRINT "--> TAREA 1: FIN\n"
-
-    ecall
-    HALT
 
 
 #--------------------------------
@@ -181,7 +203,7 @@ tarea2_loop:
     jal delay_ms
 
     #-- Llamar al Kernel
-    ecall
+    #ecall
 
     PRINT "--> TAREA 2\n"
     LED_OFF(3)
@@ -189,12 +211,8 @@ tarea2_loop:
     li a0, PAUSA
     jal delay_ms
 
-    ecall
+    #ecall
     j tarea2_loop
-
-    PRINT "--> TAREA 2: FIN\n"
-    HALT
-
 
 #------------------------------------------------------
 #-- ctx_next: Apuntar al siguiente contexto
@@ -304,6 +322,11 @@ isr_kernel:
 
     jal led_on
 
+    #-- Actualizar el comparador del timer
+    #-- Interrupcion dentro de a0 ciclos
+    li a0, 0x01000000
+    jal mtime_set_compare
+
     PRINT "******* KERNEL ********\n\n"
     #-- TEST: Imprimir contexto actual
     #------------------- Reponer el contexto de la tarea
@@ -332,7 +355,7 @@ isr_kernel:
     #-- tras el ecal. No tengo claro si con interrupciones del timer hay que
     #-- hacer lo mismo
     lw t1, PC(t0)   #-- Recuperar pc
-    addi t1, t1, 4  #-- Incrementar en 4 bytes
+    #addi t1, t1, 4  #-- Incrementar en 4 bytes
     csrw mepc, t1
 
     #-- El valor antiguo de t0 se guarda en scratch
