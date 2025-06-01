@@ -13,6 +13,8 @@
 #-- Pausa en ms
 .equ PAUSA, 500
 
+.equ TIMEOUT, 0x01000000
+
 # -- VARIABLES DE SOLO LECTURA
 .section .rodata
 
@@ -109,7 +111,7 @@ main:
 
     #-- Actualizar el comparador del timer
     #-- Interrupcion dentro de a0 ciclos
-    li a0, 0x01000000
+    li a0, TIMEOUT
     jal mtime_set_compare
 
     #-- Activar las interrupciones del temporizador
@@ -202,16 +204,12 @@ tarea2_loop:
     li a0, PAUSA
     jal delay_ms
 
-    #-- Llamar al Kernel
-    #ecall
-
     PRINT "--> TAREA 2\n"
     LED_OFF(3)
 
     li a0, PAUSA
     jal delay_ms
 
-    #ecall
     j tarea2_loop
 
 #------------------------------------------------------
@@ -324,10 +322,9 @@ isr_kernel:
 
     #-- Actualizar el comparador del timer
     #-- Interrupcion dentro de a0 ciclos
-    li a0, 0x01000000
+    li a0, TIMEOUT
     jal mtime_set_compare
 
-    PRINT "******* KERNEL ********\n\n"
     #-- TEST: Imprimir contexto actual
     #------------------- Reponer el contexto de la tarea
     #--- Obtener el puntero al contexto actual
