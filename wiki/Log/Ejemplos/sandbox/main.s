@@ -13,7 +13,7 @@
 #-- Pausa en ms
 .equ PAUSA, 500
 
-.equ TIMEOUT, 0x01000000
+.equ TIMEOUT, 0x00400000
 
 # -- VARIABLES DE SOLO LECTURA
 .section .rodata
@@ -144,10 +144,6 @@ main:
 # -- Tarea 1
 # -----------------------
 task1:
-
-    #-- NO ELIMINAR (de momento)
-    nop
-
     #-- Inicializar el puntero de pila de la tarea 1
     la t0, stack1
     lw sp, 0(t0)
@@ -155,25 +151,12 @@ task1:
     PRINT "--> TAREA 1: INIT\n"
 
 tarea1_loop:
-    PRINT "--> TAREA 1\n"
 
     #-- Encender LED de tarea
-    LED_ON(2)
+    LED_TOGGLE(2)
 
     li a0, PAUSA
     jal delay_ms
-    
-    #-- Test: Llamar al S.O
-    #ecall
-
-    PRINT "--> TAREA 1\n"
-    LED_OFF(2)
-
-    li a0, PAUSA
-    jal delay_ms
-
-    #-- Llamar al S.O
-    #ecall
 
     j tarea1_loop
 
@@ -182,11 +165,6 @@ tarea1_loop:
 #-- Tarea 2
 #--------------------------------
 task2:
-
-    #--- IMPORTANTE!!!! La primera instruccion NO
-    #--- se ejecuta actualmente (porque en la isr se retorna a PC+4)
-    nop
-
     #-- Inicializar el puntero de pila de la tarea 2
     la t0, stack2
     lw sp, 0(t0)
@@ -195,21 +173,15 @@ task2:
 
 
 tarea2_loop:
-
     PRINT "--> TAREA 2\n"
 
-    #-- Encender LED de tarea
-    LED_ON(3)
+    #-- Cambiar de estado el LED
+    LED_TOGGLE(3)
 
-    li a0, PAUSA
-    jal delay_ms
+    #-- Esperar a que se apriete una tecla
+    jal getchar
 
-    PRINT "--> TAREA 2\n"
-    LED_OFF(3)
-
-    li a0, PAUSA
-    jal delay_ms
-
+    #-- Repetir
     j tarea2_loop
 
 #------------------------------------------------------
