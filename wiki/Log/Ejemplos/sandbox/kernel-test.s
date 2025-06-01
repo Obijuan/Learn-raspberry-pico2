@@ -12,7 +12,7 @@
 .global ctx
 .global ctx_list
 
-
+.include "regs.h"
 .include "riscv.h"
 .include "kernel.h"
 .include "uart.h"
@@ -255,6 +255,18 @@ FUNC_START4
     la a1, task2
     la a2, stack2
     jal ctx_init
+
+    #-- Inicializar puntero al contexto actual
+    la t0, ctx_list
+    la t1, ctx
+    sw t0, 0(t1)  #-- ctx --> ctx_list[0]
+
+    #-- Configurar el comparador
+    li t0, MTIMECMPH  #-- Direccion del comparador alto
+    sw zero, 0(t0)  
+    li t0, MTIMECMP  #-- Direccion del comparador bajo
+    sw zero, 0(t0) 
+
 FUNC_END4
 
 #----------------------------------------------

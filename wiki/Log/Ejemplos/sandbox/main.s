@@ -45,17 +45,6 @@ main:
 
     jal kernel_init
 
-    #-- Inicializar puntero al contexto actual
-    la t0, ctx_list
-    la t1, ctx
-    sw t0, 0(t1)  #-- ctx --> ctx_list[0]
-
-    #-- Configurar el comparador
-    li t0, MTIMECMPH  #-- Direccion del comparador alto
-    sw zero, 0(t0)  
-    li t0, MTIMECMP  #-- Direccion del comparador bajo
-    sw zero, 0(t0) 
-
     #-- Actualizar el comparador del timer
     #-- Interrupcion dentro de a0 ciclos
     li a0, TIMEOUT
