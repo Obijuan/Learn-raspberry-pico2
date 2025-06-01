@@ -222,8 +222,24 @@ print_context:
     FUNC_END4
 
 
+#----------------------------------------------
+#-- Kernel_init
+#--  Inicializar el kernel
+#--  Inicializar los contextos de las tareas 1 y 2
+#----------------------------------------------------
+#-- ENTRADAS:
+#--   a0: Tarea 1
+#--   a1: Tarea 2
+#----------------------------------------------------
+
 kernel_init:
 FUNC_START4
+    sw s0, 8(sp)
+    sw s1, 4(sp)
+
+    #-- Guardar las tareas en s0 y s1
+    mv s0, a0
+    mv s1, a1
 
     #-- Cambiar el vector de interrupción
     la t0, isr_kernel
@@ -246,13 +262,13 @@ FUNC_START4
 
     #-- Inicializar la memoria del contexto 1
     la a0, ctx1
-    la a1, task1
+    mv a1, s0
     la a2, stack1
     jal ctx_init
 
     #-- Inicializar la memoria del contexto 2
     la a0, ctx2
-    la a1, task2
+    mv a1, s1
     la a2, stack2
     jal ctx_init
 

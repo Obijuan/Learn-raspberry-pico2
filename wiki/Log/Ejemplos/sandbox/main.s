@@ -39,6 +39,8 @@ main:
     CLS
 
     #-- Inicializar el kernel y saltar a ejecutar la primera tarea
+    la a0, task1
+    la a1, task2
     jal kernel_init
 
 
