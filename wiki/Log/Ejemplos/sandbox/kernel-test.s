@@ -286,6 +286,17 @@ FUNC_START4
     li t1, 0x3
     sw t1, 0(t0)
 
+    #--- Obtener el puntero al contexto actual
+    la t0, ctx
+    lw t0, 0(t0)
+    lw t0, 0(t0)  #-- t0: Puntero al contexto actual
+
+    #-- Establecer la pila de la tarea actual
+    lw sp, SP(t0)
+
+    #-- Saltar a ejecutar la tarea actual
+    lw t0, PC(t0)
+    jalr t0
 
 FUNC_END4
 

@@ -45,17 +45,6 @@ main:
 
     jal kernel_init
 
-    #--- Obtener el puntero al contexto actual
-    #--- s0: Puntero al contexto actual
-    la t0, ctx
-    lw t0, 0(t0)
-    lw s0, 0(t0)
-
-    #-- Saltar a ejecutar la tarea actual
-    lw sp, SP(s0)
-    lw t0, PC(s0)
-    jalr t0
-
 
 # -----------------------
 # -- Tarea 1
