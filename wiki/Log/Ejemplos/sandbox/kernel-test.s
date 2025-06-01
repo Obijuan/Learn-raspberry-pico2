@@ -267,6 +267,11 @@ FUNC_START4
     li t0, MTIMECMP  #-- Direccion del comparador bajo
     sw zero, 0(t0) 
 
+    #-- Actualizar el comparador del timer
+    #-- Interrupcion dentro de a0 ciclos
+    li a0, TIMEOUT
+    jal mtime_set_compare
+
 FUNC_END4
 
 #----------------------------------------------

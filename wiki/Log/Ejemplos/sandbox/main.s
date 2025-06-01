@@ -45,11 +45,6 @@ main:
 
     jal kernel_init
 
-    #-- Actualizar el comparador del timer
-    #-- Interrupcion dentro de a0 ciclos
-    li a0, TIMEOUT
-    jal mtime_set_compare
-
     #-- Activar las interrupciones del temporizador
     li t0, MIE_MTIE
     csrs mie, t0
